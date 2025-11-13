@@ -1,0 +1,33 @@
+{
+  "name": "@infocus/mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "InFocus mobile application (React Native)",
+  "scripts": {
+    "dev": "echo 'Mobile app dev server (to be implemented)'",
+    "build": "echo 'Building mobile app...' && mkdir -p dist && echo 'mobile build placeholder' > dist/index.js",
+    "clean": "rm -rf dist android/app/build ios/build",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "test": "jest --config jest.config.cjs"
+  },
+  "dependencies": {
+    "@infocus/shared": "workspace:*",
+    "react": "18.2.0",
+    "react-native": "0.73.11"
+  },
+  "devDependencies": {
+    "@infocus/eslint-config": "workspace:*",
+    "@infocus/jest-config": "workspace:*",
+    "@infocus/prettier-config": "workspace:*",
+    "@infocus/tsconfig": "workspace:*",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^12.4.1",
+    "@types/jest": "^29.5.11",
+    "@types/react": "^18.2.46",
+    "identity-obj-proxy": "^3.0.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "react-test-renderer": "18.2.0",
+    "typescript": "^5.3.3"
+  }
+}

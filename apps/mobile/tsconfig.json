@@ -1,8 +1,8 @@
 {
-  "extends": "@infocus/tsconfig/node",
+  "extends": "@infocus/tsconfig/react-native",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "include": ["src", "prisma"]
+  "include": ["src"]
 }

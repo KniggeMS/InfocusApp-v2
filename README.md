@@ -2,24 +2,48 @@
 
 InFocus is a collaborative media tracking and recommendation platform that helps families and groups stay synchronized on what they're watching, from movies to TV shows.
 
-## Project Structure
+## Monorepo Structure
+
+This is a monorepo powered by [Turborepo](https://turbo.build/repo) and [pnpm workspaces](https://pnpm.io/workspaces).
 
 ```
 .
 ├── apps/
-│   └── api/                 # Backend API server with Prisma ORM
-│       ├── prisma/
-│       │   ├── schema.prisma        # Database schema definitions
-│       │   ├── seed.ts              # Development data seeding script
-│       │   └── migrations/          # Database migrations (auto-generated)
+│   ├── api/                      # Backend API server (Node.js + TypeScript + Prisma)
+│   │   ├── prisma/               # Database schema, migrations, and seed scripts
+│   │   ├── src/                  # Application source code
+│   │   ├── .env.example          # Environment variables template
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   ├── web/                      # Web application (React - to be implemented)
+│   │   ├── src/
+│   │   ├── .env.example
+│   │   └── package.json
+│   └── mobile/                   # Mobile application (React Native - to be implemented)
 │       ├── src/
-│       │   └── index.ts             # Application entry point
-│       ├── .env.example             # Environment variables template
-│       ├── .env                     # Local environment configuration
-│       ├── package.json             # Dependencies and scripts
-│       ├── tsconfig.json            # TypeScript configuration
-│       └── SCHEMA.md                # Database schema documentation
-└── README.md                        # This file
+│       ├── .env.example
+│       └── package.json
+├── packages/
+│   ├── shared/                   # Shared types, schemas, and utilities
+│   │   ├── src/
+│   │   │   ├── types/            # TypeScript type definitions
+│   │   │   ├── schemas/          # Zod validation schemas
+│   │   │   ├── utils/            # Utility functions
+│   │   │   └── constants/        # Shared constants
+│   │   └── package.json
+│   ├── tsconfig/                 # Shared TypeScript configurations
+│   │   ├── base.json
+│   │   ├── node.json
+│   │   ├── react.json
+│   │   └── react-native.json
+│   ├── eslint-config/            # Shared ESLint configurations
+│   ├── prettier-config/          # Shared Prettier configuration
+│   └── jest-config/              # Shared Jest configurations
+├── .env.example                  # Root environment variables template
+├── package.json                  # Root workspace configuration
+├── pnpm-workspace.yaml           # pnpm workspace configuration
+├── turbo.json                    # Turborepo pipeline configuration
+└── README.md                     # This file
 ```
 
 ## Features
@@ -36,56 +60,136 @@ InFocus is a collaborative media tracking and recommendation platform that helps
 
 ## Technology Stack
 
-- **Backend**: Node.js + TypeScript
-- **ORM**: Prisma
+- **Monorepo**: Turborepo + pnpm workspaces
+- **Backend**: Node.js + TypeScript + Prisma ORM
 - **Database**: PostgreSQL
-- **Authentication**: Session/RefreshToken model
+- **Web**: React (to be implemented)
+- **Mobile**: React Native (to be implemented)
+- **Validation**: Zod
+- **Testing**: Jest + React Testing Library
+- **Linting**: ESLint + Prettier
+
+## Prerequisites
+
+- **Node.js** 18+ 
+- **pnpm** 8+ (install with `npm install -g pnpm`)
+- **PostgreSQL** 14+
 
 ## Getting Started
 
-### Prerequisites
+### 1. Install Dependencies
 
-- Node.js 18+ 
-- PostgreSQL 14+
-- npm or yarn
+From the repository root:
 
-### Installation
-
-1. **Install dependencies**:
 ```bash
-cd apps/api
-npm install
+pnpm install
 ```
 
-2. **Configure environment**:
-Copy `.env.example` to `.env` and update with your database credentials:
+This will install dependencies for all workspaces.
+
+### 2. Configure Environment Variables
+
+Copy the root `.env.example` to `.env` and configure:
+
 ```bash
-# apps/api/.env
-DATABASE_URL="postgresql://user:password@localhost:5432/infocus_dev"
+cp .env.example .env
 ```
 
-3. **Setup PostgreSQL**:
+You'll also want to configure environment-specific variables for each app:
+
+```bash
+# API
+cp apps/api/.env.example apps/api/.env
+
+# Web (when implemented)
+cp apps/web/.env.example apps/web/.env
+
+# Mobile (when implemented)
+cp apps/mobile/.env.example apps/mobile/.env
+```
+
+**Key environment variables:**
+
+- `DATABASE_URL`: PostgreSQL connection string
+- `TMDB_API_KEY`: API key from [The Movie Database](https://www.themoviedb.org/settings/api)
+- `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET`: Secure random strings for JWT token signing
+
+### 3. Setup PostgreSQL
+
 Ensure PostgreSQL is running locally:
+
 ```bash
 # Example: Start PostgreSQL with Docker
-docker run --name postgres-infocus -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:15
+docker run --name postgres-infocus \
+  -e POSTGRES_PASSWORD=postgres \
+  -p 5432:5432 \
+  -d postgres:15
 ```
 
-4. **Run Prisma migrations**:
+### 4. Run Database Migrations
+
 ```bash
 cd apps/api
-npm run migrate
+pnpm run migrate
 ```
 
-5. **Seed development data**:
+### 5. Seed Development Data (Optional)
+
 ```bash
-npm run seed
+cd apps/api
+pnpm run seed
 ```
 
-6. **Start the application**:
+### 6. Start Development
+
+From the repository root, run all development servers:
+
 ```bash
-npm run dev
+pnpm dev
 ```
+
+Or run individual apps:
+
+```bash
+# API only
+cd apps/api
+pnpm dev
+
+# Web only (when implemented)
+cd apps/web
+pnpm dev
+
+# Mobile only (when implemented)
+cd apps/mobile
+pnpm dev
+```
+
+## Available Scripts
+
+### Root-level Scripts
+
+Run these from the repository root:
+
+- `pnpm dev` - Start all development servers
+- `pnpm build` - Build all packages and apps
+- `pnpm test` - Run tests across all packages
+- `pnpm lint` - Lint all packages
+- `pnpm typecheck` - Type-check all packages
+- `pnpm format` - Format all code with Prettier
+- `pnpm format:check` - Check code formatting
+- `pnpm clean` - Clean all build artifacts
+
+### API-specific Scripts
+
+Run these from `apps/api`:
+
+- `pnpm dev` - Start development server with hot reload
+- `pnpm build` - Build TypeScript to JavaScript
+- `pnpm migrate` - Create and run database migrations
+- `pnpm migrate:prod` - Deploy migrations to production
+- `pnpm seed` - Populate database with demo data
+- `pnpm prisma:generate` - Generate Prisma client
+- `pnpm prisma:studio` - Open Prisma Studio (visual database explorer)
 
 ## Database Schema
 
@@ -103,70 +207,74 @@ The application uses a comprehensive Prisma schema with the following core entit
 - **RefreshToken**: Token rotation for security
 - **StreamingProvider**: Media availability across streaming platforms
 
-See [apps/api/SCHEMA.md](apps/api/SCHEMA.md) for detailed schema documentation, including:
-- Entity Relationship Diagram
-- Field descriptions
-- Unique constraints and indices
-- Migration strategy
-- Future considerations
+See [apps/api/SCHEMA.md](apps/api/SCHEMA.md) for detailed schema documentation.
 
-## Available Scripts
+## Shared Package
 
-From the `apps/api` directory:
+The `@infocus/shared` package contains:
 
-- `npm run dev` - Start development server
-- `npm run build` - Build TypeScript to JavaScript
-- `npm run migrate` - Create and run database migrations
-- `npm run migrate:prod` - Deploy migrations to production
-- `npm run seed` - Populate database with demo data
-- `npm run prisma:generate` - Generate Prisma client
-- `npm run prisma:studio` - Open Prisma Studio (visual database explorer)
+- **Types**: TypeScript interfaces for domain models
+- **Schemas**: Zod validation schemas for runtime type checking
+- **Utils**: Utility functions (date formatting, email validation, etc.)
+- **Constants**: Shared constants across all apps
 
-## Development
+Import from shared package:
 
-### Creating Migrations
-
-After modifying `prisma/schema.prisma`:
-
-```bash
-npm run migrate
+```typescript
+import { formatDate, isValidEmail, WatchStatus } from '@infocus/shared';
 ```
 
-This will:
-1. Show a diff of changes
-2. Create a new migration file
-3. Apply the migration to your local database
+## Configuration Packages
 
-### Seeding Data
+### TypeScript (`@infocus/tsconfig`)
 
-```bash
-npm run seed
-```
+Shared TypeScript configurations:
 
-The seed script creates:
-- 3 demo users
-- User profiles
-- Sample media items from TMDB
-- Watchlist entries with various statuses
-- Family groups
-- Recommendations
+- `@infocus/tsconfig/base` - Base configuration
+- `@infocus/tsconfig/node` - Node.js apps
+- `@infocus/tsconfig/react` - React web apps
+- `@infocus/tsconfig/react-native` - React Native mobile apps
+
+### ESLint (`@infocus/eslint-config`)
+
+Shared ESLint configurations:
+
+- `@infocus/eslint-config/base` - Base rules
+- `@infocus/eslint-config/node` - Node.js apps
+- `@infocus/eslint-config/react` - React web apps
+- `@infocus/eslint-config/react-native` - React Native apps
+
+### Jest (`@infocus/jest-config`)
+
+Shared Jest configurations:
+
+- `@infocus/jest-config/node` - Node.js testing
+- `@infocus/jest-config/react` - React testing
+- `@infocus/jest-config/react-native` - React Native testing
 
 ## Testing Your Setup
 
 Once setup is complete, verify everything works:
 
 ```bash
-# 1. Generate Prisma Client
-npm run prisma:generate
+# 1. Install all dependencies
+pnpm install
 
-# 2. Run migrations
-npm run migrate
+# 2. Build all packages
+pnpm build
 
-# 3. Seed data
-npm run seed
+# 3. Run linting
+pnpm lint
 
-# 4. Open Prisma Studio
-npm run prisma:studio
+# 4. Run tests
+pnpm test
+
+# 5. Type check
+pnpm typecheck
+
+# 6. Open Prisma Studio to inspect the database
+cd apps/api
+pnpm run prisma:studio
 ```
 
 Prisma Studio will open at http://localhost:5555 where you can:
@@ -175,21 +283,55 @@ Prisma Studio will open at http://localhost:5555 where you can:
 - Add/edit/delete records
 - Test queries
 
+## Development Workflow
+
+### Adding a New Package
+
+```bash
+cd packages
+mkdir my-package
+cd my-package
+pnpm init
+```
+
+Make sure to:
+- Set `"private": true` in package.json
+- Use workspace protocol for internal dependencies: `"@infocus/shared": "workspace:*"`
+- Extend shared configs (tsconfig, eslint, etc.)
+
+### Adding Dependencies
+
+```bash
+# Add to root (affects all workspaces)
+pnpm add -D <package> -w
+
+# Add to specific workspace
+pnpm add <package> --filter @infocus/api
+pnpm add <package> --filter @infocus/web
+pnpm add <package> --filter @infocus/shared
+```
+
+### Creating Migrations
+
+After modifying `apps/api/prisma/schema.prisma`:
+
+```bash
+cd apps/api
+pnpm run migrate
+```
+
+This will:
+1. Show a diff of changes
+2. Create a new migration file
+3. Apply the migration to your local database
+
 ## Documentation
 
-- [Database Schema Documentation](apps/api/SCHEMA.md) - Comprehensive schema design decisions and entity relationships
-- [Prisma Documentation](https://www.prisma.io/docs/) - Official Prisma ORM docs
-- [PostgreSQL Documentation](https://www.postgresql.org/docs/) - PostgreSQL reference
-
-## Environment Variables
-
-See `apps/api/.env.example` for all available environment variables.
-
-**Required**:
-- `DATABASE_URL` - PostgreSQL connection string
-
-**Optional**:
-- `NODE_ENV` - Environment mode (development/production)
+- [Database Schema Documentation](apps/api/SCHEMA.md) - Comprehensive schema design
+- [API README](apps/api/README.md) - API-specific documentation
+- [Turborepo Documentation](https://turbo.build/repo/docs) - Turborepo guide
+- [pnpm Workspaces](https://pnpm.io/workspaces) - pnpm workspace documentation
+- [Prisma Documentation](https://www.prisma.io/docs/) - Prisma ORM docs
 
 ## License
 

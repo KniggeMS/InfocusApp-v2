@@ -1,11 +1,16 @@
 {
-  "name": "infocus-api",
+  "name": "@infocus/api",
   "version": "1.0.0",
+  "private": true,
   "description": "InFocus API server",
   "main": "dist/index.js",
   "scripts": {
     "dev": "NODE_ENV=development ts-node src/index.ts",
-    "build": "tsc",
+    "build": "tsc --project tsconfig.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" \"prisma/**/*.ts\"",
+    "test": "jest --config jest.config.cjs",
     "migrate": "prisma migrate dev",
     "migrate:prod": "prisma migrate deploy",
     "seed": "ts-node prisma/seed.ts",
@@ -16,9 +21,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@infocus/shared": "workspace:*",
     "@prisma/client": "^5.8.0"
   },
   "devDependencies": {
+    "@infocus/eslint-config": "workspace:*",
+    "@infocus/jest-config": "workspace:*",
+    "@infocus/prettier-config": "workspace:*",
+    "@infocus/tsconfig": "workspace:*",
     "@types/node": "^20.10.6",
     "prisma": "^5.8.0",
     "ts-node": "^10.9.2",
