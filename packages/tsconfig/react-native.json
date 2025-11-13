@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "jsx": "react-native",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "types": ["jest", "react-native", "node"]
+  },
+  "include": ["src", "tests", "*.ts", "*.tsx"],
+  "exclude": ["node_modules", "android", "ios", "dist"]
+}
