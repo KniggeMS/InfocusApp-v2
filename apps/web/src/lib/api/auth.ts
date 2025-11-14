@@ -11,38 +11,47 @@ export interface RegisterData {
   displayName: string;
 }
 
+export interface User {
+  id: string;
+  email: string;
+  name?: string;
+  displayName?: string;
+  createdAt?: string;
+}
+
 export interface AuthResponse {
-  user: {
-    id: string;
-    email: string;
-    displayName: string;
-  };
+  user: User;
   accessToken: string;
-  refreshToken: string;
+  message?: string;
 }
 
 export const authApi = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     const response = await apiClient.post('/auth/login', credentials);
-    return response.data.data;
+    return response.data;
   },
 
   async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await apiClient.post('/auth/register', data);
-    return response.data.data;
+    const response = await apiClient.post('/auth/register', {
+      email: data.email,
+      password: data.password,
+      name: data.displayName,
+    });
+    return response.data;
   },
 
   async logout(): Promise<void> {
     await apiClient.post('/auth/logout');
   },
 
-  async getCurrentUser() {
+  async getCurrentUser(): Promise<User> {
     const response = await apiClient.get('/auth/me');
-    return response.data.data;
+    // Backend returns user directly in data or wrapped in user property
+    return response.data?.user || response.data;
   },
 
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
     const response = await apiClient.post('/auth/refresh', { refreshToken });
-    return response.data.data;
+    return response.data;
   },
 };

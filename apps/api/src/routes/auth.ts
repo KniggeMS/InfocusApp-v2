@@ -3,6 +3,7 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
+import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -227,6 +228,29 @@ router.post('/logout', async (req: any, res: any, next: any): Promise<void> => {
     res.json({ message: 'Logout successful' });
   } catch (error) {
     console.error('Logout route error:', error);
+    next(error);
+  }
+});
+
+// GET /auth/me - Get current authenticated user
+router.get('/me', authMiddleware, async (req: any, res: any, next: any): Promise<void> => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    res.json({
+      message: 'Current user',
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+    });
+  } catch (error) {
+    console.error('Get current user error:', error);
     next(error);
   }
 });
