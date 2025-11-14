@@ -2,13 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { authApi, type AuthResponse } from '@/lib/api/auth';
-
-interface User {
-  id: string;
-  email: string;
-  displayName: string;
-}
+import { authApi, type User } from '@/lib/api/auth';
 
 interface AuthContextType {
   user: User | null;
@@ -44,22 +38,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     initAuth();
   }, []);
 
-  const handleAuthResponse = (data: AuthResponse) => {
-    const { user: userData, accessToken, refreshToken } = data;
+  const handleAuthResponse = (user: User, accessToken: string) => {
     localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
-    setUser(userData);
+    setUser(user);
   };
 
   const login = async (email: string, password: string) => {
     const data = await authApi.login({ email, password });
-    handleAuthResponse(data);
+    handleAuthResponse(data.user, data.accessToken);
     router.push('/watchlist');
   };
 
   const register = async (email: string, password: string, displayName: string) => {
     const data = await authApi.register({ email, password, displayName });
-    handleAuthResponse(data);
+    handleAuthResponse(data.user, data.accessToken);
     router.push('/watchlist');
   };
 

@@ -3,10 +3,11 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 export const apiClient = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 apiClient.interceptors.request.use(
@@ -39,11 +40,11 @@ apiClient.interceptors.response.use(
 
         if (refreshToken) {
           try {
-            const response = await axios.post(`${API_URL}/api/auth/refresh`, {
+            const response = await axios.post(`${API_URL}/auth/refresh`, {
               refreshToken,
             });
 
-            const { accessToken } = response.data.data;
+            const { accessToken } = response.data;
             localStorage.setItem('accessToken', accessToken);
 
             if (originalRequest.headers) {

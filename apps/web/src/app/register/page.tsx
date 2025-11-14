@@ -1,50 +1,57 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '@/lib/context/auth-context';
+import { registerSchema, type RegisterFormData } from '@/lib/validation/auth';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import toast from 'react-hot-toast';
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { register, isAuthenticated } = useAuth();
+  const { register: registerUser, isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+  });
 
-  if (isAuthenticated) {
-    router.push('/watchlist');
-    return null;
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (password.length < 8) {
-      toast.error('Password must be at least 8 characters');
-      return;
+  useEffect(() => {
+    if (isAuthenticated && !authLoading) {
+      router.push('/watchlist');
     }
+  }, [isAuthenticated, authLoading, router]);
 
-    setIsLoading(true);
-
+  const onSubmit = async (data: RegisterFormData) => {
     try {
-      await register(email, password, displayName);
+      await registerUser(data.email, data.password, data.displayName);
       toast.success('Account created successfully!');
     } catch (error) {
-      const errorMessage =
-        error instanceof Error && 'response' in error
-          ? (error as { response?: { data?: { error?: string } } }).response?.data?.error
-          : undefined;
-      toast.error(errorMessage || 'Failed to create account');
-    } finally {
-      setIsLoading(false);
+      let errorMessage = 'Failed to create account. Please try again.';
+
+      if (error instanceof Error) {
+        if ('response' in error) {
+          const response = error as any;
+          errorMessage = response.response?.data?.error || errorMessage;
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      toast.error(errorMessage);
     }
   };
+
+  if (isAuthenticated && !authLoading) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4">
@@ -53,38 +60,52 @@ export default function RegisterPage() {
           <CardTitle>Create an Account</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="Display Name"
-              type="text"
-              placeholder="John Doe"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              required
-              autoComplete="name"
-            />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div>
+              <Input
+                label="Display Name"
+                type="text"
+                placeholder="John Doe"
+                {...register('displayName')}
+                autoComplete="name"
+              />
+              {errors.displayName && <p className="mt-1 text-sm text-red-600">{errors.displayName.message}</p>}
+            </div>
 
-            <Input
-              label="Email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-            />
+            <div>
+              <Input
+                label="Email"
+                type="email"
+                placeholder="you@example.com"
+                {...register('email')}
+                autoComplete="email"
+              />
+              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
+            </div>
 
-            <Input
-              label="Password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="new-password"
-            />
+            <div>
+              <Input
+                label="Password"
+                type="password"
+                placeholder="••••••••"
+                {...register('password')}
+                autoComplete="new-password"
+              />
+              {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
+            </div>
 
-            <Button type="submit" variant="primary" className="w-full" isLoading={isLoading}>
+            <div>
+              <Input
+                label="Confirm Password"
+                type="password"
+                placeholder="••••••••"
+                {...register('confirmPassword')}
+                autoComplete="new-password"
+              />
+              {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>}
+            </div>
+
+            <Button type="submit" variant="primary" className="w-full" isLoading={isSubmitting || authLoading}>
               Register
             </Button>
           </form>
