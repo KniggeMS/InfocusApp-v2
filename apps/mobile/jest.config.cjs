@@ -1,5 +1,5 @@
 module.exports = {
-  preset: 'ts-jest',
+  preset: require('jest-expo'),
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   transformIgnorePatterns: [
