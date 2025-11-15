@@ -7,26 +7,48 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useSearch } from '@/lib/hooks/use-search';
 import { useAddToWatchlist } from '@/lib/hooks/use-watchlist';
-import { Plus, Check } from 'lucide-react';
+import { Plus, AlertCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { getGenreNames } from '@/lib/utils/tmdb-genres';
+import type { SearchResult } from '@/lib/api/search';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
-  const { data: results, isLoading } = useSearch(query);
+  const [addedItems, setAddedItems] = useState<Set<number>>(new Set());
+  const { data: results, isLoading, error } = useSearch(query);
   const addToWatchlistMutation = useAddToWatchlist();
 
-  const handleAddToWatchlist = async (result: any) => {
+  const handleAddToWatchlist = async (result: SearchResult) => {
     try {
+      // Prepare metadata for the watchlist entry
+      const metadata = {
+        title: result.title,
+        description: result.overview,
+        posterPath: result.posterPath,
+        backdropPath: result.backdropPath,
+        releaseDate: result.releaseDate,
+        rating: result.voteAverage,
+        genres: getGenreNames(result.genres || []),
+      };
+
       await addToWatchlistMutation.mutateAsync({
         tmdbId: result.id,
         mediaType: result.mediaType,
         status: 'not_watched',
       });
+
+      setAddedItems((prev) => new Set([...prev, result.id]));
       toast.success(`Added "${result.title}" to your watchlist!`);
-    } catch (error) {
-      toast.error('Failed to add to watchlist');
+    } catch (error: any) {
+      if (error.response?.status === 409) {
+        toast.error('This item is already in your watchlist');
+      } else {
+        toast.error('Failed to add to watchlist');
+      }
     }
   };
+
+  const isItemAdded = (resultId: number) => addedItems.has(resultId);
 
   return (
     <PageShell title="Search" description="Search for movies and TV shows to add to your watchlist">
@@ -37,6 +59,7 @@ export default function SearchPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="max-w-2xl"
+          aria-label="Search for movies and TV shows"
         />
       </div>
 
@@ -47,6 +70,18 @@ export default function SearchPage() {
             <p className="mt-4 text-gray-600">Searching...</p>
           </div>
         </div>
+      )}
+
+      {error && query.length > 2 && (
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="py-8 text-center">
+            <AlertCircle className="mx-auto h-12 w-12 text-red-600" />
+            <h3 className="mt-4 text-lg font-medium text-red-900">Search failed</h3>
+            <p className="mt-2 text-sm text-red-700">
+              {error instanceof Error ? error.message : 'Unable to search. Please try again.'}
+            </p>
+          </CardContent>
+        </Card>
       )}
 
       {!query && (
@@ -71,7 +106,7 @@ export default function SearchPage() {
         </Card>
       )}
 
-      {query.length > 2 && !isLoading && results && results.length === 0 && (
+      {query.length > 2 && !isLoading && !error && results && results.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-gray-600">No results found for &quot;{query}&quot;</p>
@@ -80,58 +115,83 @@ export default function SearchPage() {
       )}
 
       {results && results.length > 0 && (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {results.map((result) => (
-            <Card key={result.id} className="group hover:shadow-lg transition-shadow">
-              <CardContent className="p-4 space-y-3">
-                {/* Poster */}
-                {result.posterPath && (
-                  <div className="aspect-[2/3] -mx-4 -mt-4 mb-3">
-                    <img
-                      src={`https://image.tmdb.org/t/p/w342${result.posterPath}`}
-                      alt={result.title}
-                      className="w-full h-full object-cover rounded-t-lg"
-                    />
-                  </div>
-                )}
-                
-                {/* Title and basic info */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-700 transition-colors">
-                    {result.title}
-                  </h3>
-                  <div className="flex items-center justify-between text-sm text-gray-600 mt-1">
-                    <span className="capitalize">{result.mediaType}</span>
-                    {result.releaseDate && <span>{new Date(result.releaseDate).getFullYear()}</span>}
-                  </div>
-                </div>
+        <div>
+          <p className="mb-4 text-sm text-gray-600">Found {results.length} result(s)</p>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {results.map((result) => (
+              <Card key={result.id} className="group hover:shadow-lg transition-shadow overflow-hidden flex flex-col">
+                <CardContent className="p-0 space-y-0 flex flex-col flex-1">
+                  {/* Poster */}
+                  {result.posterPath ? (
+                    <div className="aspect-[2/3] overflow-hidden bg-gray-200">
+                      <img
+                        src={`https://image.tmdb.org/t/p/w342${result.posterPath}`}
+                        alt={result.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  ) : (
+                    <div className="aspect-[2/3] bg-gray-300 flex items-center justify-center">
+                      <span className="text-gray-500 text-sm">No image</span>
+                    </div>
+                  )}
 
-                {/* Overview */}
-                {result.overview && (
-                  <p className="line-clamp-3 text-sm text-gray-600">{result.overview}</p>
-                )}
+                  <div className="p-4 space-y-3 flex-1 flex flex-col">
+                    {/* Title and basic info */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-700 transition-colors">
+                        {result.title}
+                      </h3>
+                      <div className="flex items-center justify-between text-sm text-gray-600 mt-1">
+                        <span className="capitalize">{result.mediaType}</span>
+                        {result.releaseDate && <span>{new Date(result.releaseDate).getFullYear()}</span>}
+                      </div>
+                    </div>
 
-                {/* Rating */}
-                {result.voteAverage && (
-                  <div className="text-sm font-medium text-yellow-600">
-                    ⭐ {result.voteAverage.toFixed(1)}/10
+                    {/* Genres */}
+                    {result.genres && result.genres.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {getGenreNames(result.genres)
+                          .slice(0, 3)
+                          .map((genre) => (
+                            <span
+                              key={genre}
+                              className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded"
+                            >
+                              {genre}
+                            </span>
+                          ))}
+                      </div>
+                    )}
+
+                    {/* Overview */}
+                    {result.overview && (
+                      <p className="line-clamp-3 text-sm text-gray-600 flex-1">{result.overview}</p>
+                    )}
+
+                    {/* Rating */}
+                    {result.voteAverage && (
+                      <div className="text-sm font-medium text-yellow-600">
+                        ⭐ {result.voteAverage.toFixed(1)}/10
+                      </div>
+                    )}
+
+                    {/* Add to Watchlist Button */}
+                    <Button
+                      onClick={() => handleAddToWatchlist(result)}
+                      disabled={addToWatchlistMutation.isPending || isItemAdded(result.id)}
+                      isLoading={addToWatchlistMutation.isPending}
+                      className="w-full mt-2"
+                      size="sm"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      {isItemAdded(result.id) ? 'Added' : 'Add to Watchlist'}
+                    </Button>
                   </div>
-                )}
-
-                {/* Add to Watchlist Button */}
-                <Button
-                  onClick={() => handleAddToWatchlist(result)}
-                  disabled={addToWatchlistMutation.isPending}
-                  isLoading={addToWatchlistMutation.isPending}
-                  className="w-full"
-                  size="sm"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add to Watchlist
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       )}
     </PageShell>

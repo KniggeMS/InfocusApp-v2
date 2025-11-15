@@ -4,10 +4,12 @@ export interface SearchResult {
   id: number;
   title: string;
   mediaType: 'movie' | 'tv';
-  posterPath?: string;
+  posterPath?: string | null;
+  backdropPath?: string | null;
   releaseDate?: string;
   overview?: string;
   voteAverage?: number;
+  genres?: number[];
 }
 
 export const searchApi = {

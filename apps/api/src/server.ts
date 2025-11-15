@@ -8,6 +8,7 @@ import { authRouter } from './routes/auth';
 import { watchlistRouter } from './routes/watchlist';
 import { familyRouter } from './routes/family';
 import recommendationsRouter from './routes/recommendations';
+import { searchRouter } from './routes/search';
 import { errorHandler } from './middleware/errorHandler';
 import { authMiddleware } from './middleware/auth';
 
@@ -41,6 +42,7 @@ app.use('/auth', authRouter);
 app.use('/watchlist', watchlistRouter);
 app.use('/families', familyRouter);
 app.use('/recommendations', recommendationsRouter);
+app.use('/search', searchRouter);
 
 // Protected route example
 app.get('/api/profile', authMiddleware, (req, res) => {
