@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { AxiosError } from 'axios';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
@@ -34,10 +35,11 @@ export const LoginScreen: React.FC = () => {
     try {
       setLoading(true);
       await login(data.email, data.password);
-    } catch (error: any) {
+    } catch (error) {
+      const axiosError = error as AxiosError<{ error?: string }>;
       Alert.alert(
         'Login Failed',
-        error.response?.data?.error || error.message || 'Invalid email or password',
+        axiosError.response?.data?.error || (error as Error).message || 'Invalid email or password',
       );
     } finally {
       setLoading(false);
@@ -101,7 +103,7 @@ export const LoginScreen: React.FC = () => {
           onPress={() => navigation.navigate('Register')}
         >
           <Text style={styles.registerText}>
-            Don't have an account? <Text style={styles.registerTextBold}>Sign Up</Text>
+            Don&apos;t have an account? <Text style={styles.registerTextBold}>Sign Up</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -110,33 +112,33 @@ export const LoginScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  form: {
+    flex: 1,
+  },
   header: {
     marginBottom: 32,
     marginTop: 40,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1f2937',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#6b7280',
-  },
-  form: {
-    flex: 1,
-  },
   registerLink: {
-    marginTop: 24,
     alignItems: 'center',
+    marginTop: 24,
   },
   registerText: {
-    fontSize: 14,
     color: '#6b7280',
+    fontSize: 14,
   },
   registerTextBold: {
     color: '#3b82f6',
     fontWeight: '600',
+  },
+  subtitle: {
+    color: '#6b7280',
+    fontSize: 16,
+  },
+  title: {
+    color: '#1f2937',
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 8,
   },
 });

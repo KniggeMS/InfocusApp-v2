@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { AxiosError } from 'axios';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Container } from '../../components/layout/Container';
@@ -44,10 +45,13 @@ export const OnboardingScreen: React.FC = () => {
     try {
       setLoading(true);
       await completeOnboarding(data.displayName, selectedProviders);
-    } catch (error: any) {
+    } catch (error) {
+      const axiosError = error as AxiosError<{ error?: string }>;
       Alert.alert(
         'Onboarding Failed',
-        error.response?.data?.error || error.message || 'Unable to complete onboarding',
+        axiosError.response?.data?.error ||
+          (error as Error).message ||
+          'Unable to complete onboarding',
       );
     } finally {
       setLoading(false);
@@ -58,7 +62,7 @@ export const OnboardingScreen: React.FC = () => {
     try {
       setLoading(true);
       await completeOnboarding();
-    } catch (error: any) {
+    } catch {
       Alert.alert('Error', 'Unable to skip onboarding');
     } finally {
       setLoading(false);
@@ -69,7 +73,7 @@ export const OnboardingScreen: React.FC = () => {
     <Container scrollable>
       <View style={styles.header}>
         <Text style={styles.title}>Welcome to InFocus!</Text>
-        <Text style={styles.subtitle}>Let's personalize your experience</Text>
+        <Text style={styles.subtitle}>Let&apos;s personalize your experience</Text>
       </View>
 
       <View style={styles.form}>
@@ -138,63 +142,63 @@ export const OnboardingScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  form: {
+    flex: 1,
+  },
   header: {
     marginBottom: 32,
     marginTop: 40,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1f2937',
-    marginBottom: 8,
+  providerCard: {
+    backgroundColor: '#fff',
+    borderColor: '#ddd',
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
-  subtitle: {
-    fontSize: 16,
+  providerCardSelected: {
+    backgroundColor: '#eff6ff',
+    borderColor: '#3b82f6',
+  },
+  providerText: {
     color: '#6b7280',
-  },
-  form: {
-    flex: 1,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1f2937',
-    marginBottom: 4,
-  },
-  sectionSubtitle: {
     fontSize: 14,
-    color: '#6b7280',
-    marginBottom: 16,
+    fontWeight: '500',
+  },
+  providerTextSelected: {
+    color: '#3b82f6',
   },
   providersGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 12,
   },
-  providerCard: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#fff',
+  section: {
+    marginBottom: 24,
   },
-  providerCardSelected: {
-    borderColor: '#3b82f6',
-    backgroundColor: '#eff6ff',
-  },
-  providerText: {
-    fontSize: 14,
+  sectionSubtitle: {
     color: '#6b7280',
-    fontWeight: '500',
+    fontSize: 14,
+    marginBottom: 16,
   },
-  providerTextSelected: {
-    color: '#3b82f6',
+  sectionTitle: {
+    color: '#1f2937',
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 4,
   },
   skipButton: {
     marginTop: 12,
+  },
+  subtitle: {
+    color: '#6b7280',
+    fontSize: 16,
+  },
+  title: {
+    color: '#1f2937',
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 8,
   },
 });

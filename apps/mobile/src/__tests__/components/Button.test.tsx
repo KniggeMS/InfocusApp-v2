@@ -44,7 +44,9 @@ describe('Button Component', () => {
       expect.arrayContaining([expect.objectContaining({ backgroundColor: '#3b82f6' })]),
     );
 
-    rerender(<Button title="Secondary" onPress={() => {}} variant="secondary" testID="test-button" />);
+    rerender(
+      <Button title="Secondary" onPress={() => {}} variant="secondary" testID="test-button" />,
+    );
     button = screen.getByTestId('test-button');
     expect(button.props.style).toEqual(
       expect.arrayContaining([expect.objectContaining({ backgroundColor: '#64748b' })]),

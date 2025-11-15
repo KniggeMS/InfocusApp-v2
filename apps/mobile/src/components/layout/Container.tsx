@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ViewStyle,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface ContainerProps {
@@ -18,7 +25,10 @@ export const Container: React.FC<ContainerProps> = ({ children, style, scrollabl
         style={styles.keyboardAvoid}
       >
         {scrollable ? (
-          <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+          >
             {content}
           </ScrollView>
         ) : (
@@ -30,16 +40,16 @@ export const Container: React.FC<ContainerProps> = ({ children, style, scrollabl
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
+  content: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    padding: 20,
   },
   keyboardAvoid: {
     flex: 1,
   },
-  content: {
+  safeArea: {
+    backgroundColor: '#f9fafb',
     flex: 1,
-    padding: 20,
   },
   scrollContent: {
     flexGrow: 1,
