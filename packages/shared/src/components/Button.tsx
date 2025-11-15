@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface ButtonProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   onPress?: () => void;
   variant?: 'primary' | 'secondary' | 'outline';
   size?: 'sm' | 'md' | 'lg';
@@ -10,7 +10,6 @@ export interface ButtonProps {
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  children,
   onPress,
   variant = 'primary',
   size = 'md',

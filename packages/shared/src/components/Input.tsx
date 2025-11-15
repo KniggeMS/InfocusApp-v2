@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface InputProps {
-  value: string;
+  value?: string;
   onChangeText?: (text: string) => void;
   placeholder?: string;
   label?: string;
