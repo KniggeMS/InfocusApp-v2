@@ -58,40 +58,40 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    height: 48,
-    borderRadius: 8,
-    justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 8,
+    height: 48,
+    justifyContent: 'center',
     paddingHorizontal: 16,
-  },
-  primaryButton: {
-    backgroundColor: '#3b82f6',
-  },
-  secondaryButton: {
-    backgroundColor: '#64748b',
-  },
-  outlineButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#3b82f6',
   },
   disabledButton: {
     opacity: 0.5,
   },
-  text: {
-    fontSize: 16,
-    fontWeight: '600',
+  disabledText: {
+    opacity: 0.7,
   },
-  primaryText: {
-    color: '#fff',
-  },
-  secondaryText: {
-    color: '#fff',
+  outlineButton: {
+    backgroundColor: 'transparent',
+    borderColor: '#3b82f6',
+    borderWidth: 1,
   },
   outlineText: {
     color: '#3b82f6',
   },
-  disabledText: {
-    opacity: 0.7,
+  primaryButton: {
+    backgroundColor: '#3b82f6',
+  },
+  primaryText: {
+    color: '#fff',
+  },
+  secondaryButton: {
+    backgroundColor: '#64748b',
+  },
+  secondaryText: {
+    color: '#fff',
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

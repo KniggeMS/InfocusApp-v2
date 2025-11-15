@@ -12,18 +12,18 @@ export const SplashScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f9fafb',
-  },
-  title: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: '#1f2937',
-    marginBottom: 24,
+    flex: 1,
+    justifyContent: 'center',
   },
   loader: {
     marginTop: 16,
+  },
+  title: {
+    color: '#1f2937',
+    fontSize: 48,
+    fontWeight: 'bold',
+    marginBottom: 24,
   },
 });

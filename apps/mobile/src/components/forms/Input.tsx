@@ -26,28 +26,28 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
   },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 8,
+  error: {
+    color: '#ef4444',
+    fontSize: 12,
+    marginTop: 4,
   },
   input: {
-    height: 48,
-    borderWidth: 1,
+    backgroundColor: '#fff',
     borderColor: '#ddd',
     borderRadius: 8,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    backgroundColor: '#fff',
+    borderWidth: 1,
     color: '#000',
+    fontSize: 16,
+    height: 48,
+    paddingHorizontal: 16,
   },
   inputError: {
     borderColor: '#ef4444',
   },
-  error: {
-    fontSize: 12,
-    color: '#ef4444',
-    marginTop: 4,
+  label: {
+    color: '#333',
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
   },
 });

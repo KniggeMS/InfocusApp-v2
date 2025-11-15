@@ -46,37 +46,37 @@ export const SettingsScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  actions: {
+    marginTop: 'auto',
+  },
   container: {
     flex: 1,
   },
   header: {
     marginBottom: 32,
   },
+  label: {
+    color: '#6b7280',
+    fontSize: 12,
+    marginBottom: 4,
+    marginTop: 12,
+  },
   title: {
+    color: '#1f2937',
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1f2937',
     marginBottom: 24,
   },
   userInfo: {
     backgroundColor: '#fff',
-    padding: 16,
+    borderColor: '#e5e7eb',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-  },
-  label: {
-    fontSize: 12,
-    color: '#6b7280',
-    marginBottom: 4,
-    marginTop: 12,
+    padding: 16,
   },
   value: {
-    fontSize: 16,
     color: '#1f2937',
+    fontSize: 16,
     fontWeight: '500',
-  },
-  actions: {
-    marginTop: 'auto',
   },
 });

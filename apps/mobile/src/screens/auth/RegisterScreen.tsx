@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { AxiosError } from 'axios';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
@@ -36,10 +37,11 @@ export const RegisterScreen: React.FC = () => {
     try {
       setLoading(true);
       await register(data.email, data.password, data.displayName);
-    } catch (error: any) {
+    } catch (error) {
+      const axiosError = error as AxiosError<{ error?: string }>;
       Alert.alert(
         'Registration Failed',
-        error.response?.data?.error || error.message || 'Unable to create account',
+        axiosError.response?.data?.error || (error as Error).message || 'Unable to create account',
       );
     } finally {
       setLoading(false);
@@ -146,33 +148,33 @@ export const RegisterScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  form: {
+    flex: 1,
+  },
   header: {
     marginBottom: 32,
     marginTop: 40,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1f2937',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#6b7280',
-  },
-  form: {
-    flex: 1,
-  },
   loginLink: {
-    marginTop: 24,
     alignItems: 'center',
+    marginTop: 24,
   },
   loginText: {
-    fontSize: 14,
     color: '#6b7280',
+    fontSize: 14,
   },
   loginTextBold: {
     color: '#3b82f6',
     fontWeight: '600',
+  },
+  subtitle: {
+    color: '#6b7280',
+    fontSize: 16,
+  },
+  title: {
+    color: '#1f2937',
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 8,
   },
 });

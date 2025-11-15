@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const completeOnboarding = async (displayName?: string, streamingProviders?: string[]) => {
     const updateData: Partial<User> = {};
-    
+
     if (displayName) {
       updateData.name = displayName;
       updateData.displayName = displayName;
