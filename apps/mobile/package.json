@@ -50,8 +50,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.6",
-    "@expo/config": "~8.5.0",
     "@infocus/eslint-config": "workspace:*",
     "@infocus/jest-config": "workspace:*",
     "@infocus/prettier-config": "workspace:*",

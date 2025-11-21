@@ -1,9 +1,9 @@
 {
-  "extends": "@infocus/tsconfig/node",
+  "extends": "../../packages/tsconfig/node.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "."
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "prisma", "**/*.test.ts"]
+  "include": ["src", "prisma"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
