@@ -22,6 +22,7 @@ export interface User {
 export interface AuthResponse {
   user: User;
   accessToken: string;
+  refreshToken?: string;
   message?: string;
 }
 
@@ -52,5 +53,10 @@ export const authApi = {
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
     const response = await apiClient.post('/auth/refresh', { refreshToken });
     return response.data;
+  },
+
+  async updateProfile(data: { displayName?: string; profile?: { preferences?: { streamingProviders?: string[] } } }): Promise<User> {
+    const response = await apiClient.patch('/profile', data);
+    return response.data?.user || response.data;
   },
 };
