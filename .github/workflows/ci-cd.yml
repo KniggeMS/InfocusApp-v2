@@ -227,18 +227,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        if: secrets.RAILWAY_TOKEN != ''
         run: |
-          echo "Deployment to Railway would be executed here"
-          echo "Commands would use railway CLI to deploy the application"
-          # Uncomment and configure when Railway CLI is available
-          # npx railway deploy --service infocus-api
+          echo "Deploying to Railway..."
+          railway up --service infocus-api --detach
+        timeout-minutes: 15
 
       - name: Deploy to Render (if configured)
         env:
           RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-        if: env.RENDER_DEPLOY_HOOK_URL != ''
+        if: env.RENDER_DEPLOY_HOOK_URL != '' && secrets.RENDER_DEPLOY_HOOK_URL != ''
         run: |
-          curl -X POST $RENDER_DEPLOY_HOOK_URL
+          echo "Triggering Render deployment..."
+          curl -X POST "$RENDER_DEPLOY_HOOK_URL"

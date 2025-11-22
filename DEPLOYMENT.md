@@ -57,11 +57,15 @@ JWT_REFRESH_SECRET=<generate-with: openssl rand -hex 32>
 # Node Environment
 NODE_ENV=production
 
-# API Port
+# API Port (defaults to 3000)
 PORT=3000
 
 # TMDB API Key
 TMDB_API_KEY=<your-api-key-from-themoviedb.org>
+
+# CORS Origin(s) - comma-separated list of allowed origins
+# Required for production to restrict cross-origin requests
+CORS_ORIGIN=https://yourdomain.com,https://app.yourdomain.com
 ```
 
 ### Generating Secure Secrets
@@ -85,7 +89,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ### Optional Variables
 
 - `LOG_LEVEL` - Logging level (default: info)
-- `CORS_ORIGIN` - CORS origin for frontend (default: \* in production disables CORS)
+- `CORS_ORIGIN` - Already covered in required variables above
 
 ## Local Deployment Testing
 
@@ -201,14 +205,17 @@ railway link
 
 ```bash
 # Set required variables
-railway variables set DATABASE_URL "postgresql://..." \
-  JWT_ACCESS_SECRET "..." \
-  JWT_REFRESH_SECRET "..." \
+railway variables set \
+  DATABASE_URL "postgresql://user:password@host:port/infocus" \
+  JWT_ACCESS_SECRET "$(openssl rand -hex 32)" \
+  JWT_REFRESH_SECRET "$(openssl rand -hex 32)" \
   NODE_ENV "production" \
-  TMDB_API_KEY "..."
+  PORT "3000" \
+  TMDB_API_KEY "your-tmdb-api-key" \
+  CORS_ORIGIN "https://app.yourdomain.com"
 ```
 
-Or use the Railway dashboard to set variables in the project settings.
+Or use the Railway dashboard to set variables in the project settings. Ensure `CORS_ORIGIN` matches your frontend domain exactly.
 
 #### 4. Deploy
 
@@ -219,8 +226,9 @@ railway deploy
 The deployment will:
 
 - Build the Docker image
-- Run migrations (via Procfile release phase)
-- Start the application
+- Run migrations automatically (via Procfile release phase)
+- Start the application on port 3000
+- Apply CORS configuration from `CORS_ORIGIN` environment variable
 
 #### 5. Verify Deployment
 
@@ -228,31 +236,29 @@ The deployment will:
 # Check deployment status
 railway status
 
-# View logs
+# View logs (check for successful migrations and startup messages)
 railway logs
 
-# Check health
+# Check health endpoint
 curl https://your-railway-domain.railway.app/health
+
+# Verify CORS configuration (should include Access-Control-Allow-Origin header)
+curl -H "Origin: https://app.yourdomain.com" \
+  -H "Access-Control-Request-Method: POST" \
+  -H "Access-Control-Request-Headers: Content-Type" \
+  https://your-railway-domain.railway.app/auth/login -v
+```
+
+If deployment fails, check logs for migration errors:
+
+```bash
+railway logs --service infocus-api
 ```
 
 ### Rolling Back
 
 ```bash
 railway rollback
-```
-
-### Troubleshooting Railway
-
-Check logs for migration errors:
-
-```bash
-railway logs --service infocus-api
-```
-
-View environment variables:
-
-```bash
-railway variables list
 ```
 
 ## Render Deployment
@@ -279,18 +285,21 @@ railway variables list
 
 #### 2. Set Environment Variables
 
-In the Render dashboard, go to Environment:
+In the Render dashboard, go to Environment and set all required variables:
 
 ```
-DATABASE_URL=postgresql://...
-JWT_ACCESS_SECRET=<generated-secret>
-JWT_REFRESH_SECRET=<generated-secret>
+DATABASE_URL=postgresql://user:password@host:port/infocus
+JWT_ACCESS_SECRET=<generated-with: openssl rand -hex 32>
+JWT_REFRESH_SECRET=<generated-with: openssl rand -hex 32>
 NODE_ENV=production
-TMDB_API_KEY=your-api-key
+TMDB_API_KEY=your-tmdb-api-key
 PORT=3000
+CORS_ORIGIN=https://app.yourdomain.com
 ```
 
-#### 3. Configure Procfile (Optional)
+Ensure `CORS_ORIGIN` is set to your frontend domain to allow API requests.
+
+#### 3. Configure Procfile
 
 Render can automatically use the Procfile if present:
 
@@ -298,6 +307,8 @@ Render can automatically use the Procfile if present:
 release: pnpm run migrate:prod
 web: node dist/index.js
 ```
+
+This ensures migrations run automatically during deployment before the application starts.
 
 #### 4. Deploy
 
@@ -310,14 +321,32 @@ git push origin main
 Render will automatically:
 
 - Build the image
-- Run migrations
-- Deploy the application
+- Run migrations via the release phase
+- Deploy the application on port 3000
+- Apply CORS configuration from environment variables
 
 #### 5. Verify Deployment
 
 ```bash
-# View in Render dashboard or curl the health endpoint
+# Check health endpoint
 curl https://your-render-domain.onrender.com/health
+
+# Verify CORS configuration (look for Access-Control-Allow-Origin header)
+curl -H "Origin: https://app.yourdomain.com" \
+  -H "Access-Control-Request-Method: POST" \
+  https://your-render-domain.onrender.com/auth/login -v
+
+# Check Render logs in dashboard for migration success and startup messages
+```
+
+If migrations fail to run automatically, you can manually execute them:
+
+```bash
+# Via Render shell
+render exec pnpm run migrate:prod
+
+# Or directly using your production DATABASE_URL
+DATABASE_URL="your-prod-db-url" pnpm run migrate:prod
 ```
 
 ### Custom Domains
@@ -343,24 +372,29 @@ The project includes a comprehensive CI/CD pipeline (`.github/workflows/ci-cd.ym
 
 #### Secrets Configuration
 
-Configure these secrets in GitHub repository settings:
+Configure these secrets in GitHub repository settings to enable automated deployments:
 
-- `RAILWAY_TOKEN` - Railway API token for deployments
+**For Railway Deployment:**
+- `RAILWAY_TOKEN` - Railway API token for automated deployments
+
+**For Render Deployment (Optional):**
 - `RENDER_DEPLOY_HOOK_URL` - Webhook URL for Render deployments
 
 ### Configuring Secrets
 
-#### For Railway
+#### For Railway (Recommended)
 
 1. Generate Railway token at https://railway.app/account/tokens
-2. Go to GitHub repository → Settings → Secrets
-3. Add `RAILWAY_TOKEN` with the generated token
+2. Go to GitHub repository → Settings → Secrets and variables → Actions
+3. Create new secret: `RAILWAY_TOKEN` with the generated token
+4. The CI/CD pipeline will automatically deploy to Railway when you push to main
 
-#### For Render
+#### For Render (Optional)
 
-1. Get deploy hook URL from Render service settings
-2. Go to GitHub repository → Settings → Secrets
-3. Add `RENDER_DEPLOY_HOOK_URL` with the webhook URL
+1. Get deploy hook URL from Render service → Settings → Deploy Hook
+2. Go to GitHub repository → Settings → Secrets and variables → Actions
+3. Create new secret: `RENDER_DEPLOY_HOOK_URL` with the webhook URL
+4. Render will deploy automatically when the webhook is triggered
 
 ### Workflow Triggers
 
@@ -389,20 +423,48 @@ Migrations run automatically during deployment via the Procfile release phase:
 release: pnpm run migrate:prod
 ```
 
+Both Railway and Render support this pattern. The release phase executes before the application starts, ensuring your database schema is up-to-date.
+
+### Verifying Migration Status
+
+After deployment, verify that migrations completed successfully:
+
+```bash
+# Railway
+railway logs
+
+# Render
+# Check logs in the Render dashboard
+
+# Both: Test the health endpoint to confirm the app is running
+curl https://your-deployed-domain.com/health
+```
+
+Look for log messages indicating successful migration (e.g., "migrations completed" or no prisma migration errors).
+
 ### Manual Migration (If Needed)
 
-If migrations don't run automatically:
+If migrations don't run automatically or you need to troubleshoot:
 
 ```bash
 # Via Railway
 railway run pnpm run migrate:prod
 
-# Via Render (SSH into container)
+# Via Render
 render exec pnpm run migrate:prod
 
-# Local testing
+# Local testing with production database
 cd apps/api
 DATABASE_URL="your-prod-db-url" pnpm run migrate:prod
+```
+
+### Checking Pending Migrations
+
+To see if there are any pending migrations:
+
+```bash
+cd apps/api
+DATABASE_URL="your-db-url" pnpm run prisma -- migrate status
 ```
 
 ### Creating New Migrations
