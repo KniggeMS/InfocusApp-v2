@@ -87,6 +87,16 @@ pnpm install
 
 This will install dependencies for all workspaces.
 
+#### pnpm build script approvals
+
+pnpm requires explicit approval for packages that execute install/postinstall scripts.
+The workspace keeps the approved list in `pnpm-workspace.yaml` under
+`onlyBuiltDependencies` (currently `@prisma/client`, `@prisma/engines`, `prisma`,
+`detox`, and `dtrace-provider`). When adding a dependency that needs to run build
+scripts, run `pnpm approve-builds` locally, select the package, and commit the
+resulting update to `pnpm-workspace.yaml` so CI and Vercel use the same trusted
+list.
+
 ### 2. Configure Environment Variables
 
 Copy the root `.env.example` to `.env` and configure:
