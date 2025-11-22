@@ -16,8 +16,14 @@ const prisma = new PrismaClient();
 
 // Security middleware
 app.use(helmet());
+
+// CORS configuration with dynamic origin support
+const corsOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
+  : process.env.NODE_ENV === 'production' ? false : true;
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? false : true,
+  origin: corsOrigins,
   credentials: true
 }));
 
@@ -48,7 +54,7 @@ app.get('/api/profile', authMiddleware, (req, res) => {
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 async function startServer() {
   try {
