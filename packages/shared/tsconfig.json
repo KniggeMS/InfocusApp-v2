@@ -1,9 +1,10 @@
 {
-  "extends": "../tsconfig/node.json",
+  "extends": "@infocus/tsconfig/node",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "types": ["jest"]
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "tests"]
+  "exclude": ["node_modules", "dist"]
 }
