@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
+import { useWatchlist, useWatchlistExport } from '@/lib/hooks/use-watchlist';
 import { ExportPanel } from '../ExportPanel';
 
 // Mock the toast
@@ -72,17 +73,13 @@ const renderWithQueryClient = (component: React.ReactElement) => {
     },
   });
 
-  return render(
-    <QueryClientProvider client={queryClient}>
-      {component}
-    </QueryClientProvider>
-  );
+  return render(<QueryClientProvider client={queryClient}>{component}</QueryClientProvider>);
 };
 
 describe('ExportPanel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Setup mock link element
     const mockLink = {
       href: '',
@@ -111,8 +108,12 @@ describe('ExportPanel', () => {
   it('shows format descriptions correctly', () => {
     renderWithQueryClient(<ExportPanel />);
 
-    expect(screen.getByText('Comma-separated values, easy to open in Excel or Google Sheets')).toBeInTheDocument();
-    expect(screen.getByText('Structured data format, ideal for developers and backups')).toBeInTheDocument();
+    expect(
+      screen.getByText('Comma-separated values, easy to open in Excel or Google Sheets'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Structured data format, ideal for developers and backups'),
+    ).toBeInTheDocument();
   });
 
   it('allows format selection', () => {
@@ -133,7 +134,7 @@ describe('ExportPanel', () => {
   it('shows format guidelines', () => {
     renderWithQueryClient(<ExportPanel />);
 
-    expect(screen.getByText('What\'s included:')).toBeInTheDocument();
+    expect(screen.getByText("What's included:")).toBeInTheDocument();
     expect(screen.getByText(/Title, year, and media type/)).toBeInTheDocument();
     expect(screen.getByText(/Watch status, rating, and personal notes/)).toBeInTheDocument();
     expect(screen.getByText(/Date added and completion date/)).toBeInTheDocument();
@@ -150,7 +151,7 @@ describe('ExportPanel', () => {
 
   it('handles CSV export correctly', async () => {
     const mockMutateAsync = jest.fn().mockResolvedValue(new Blob(['csv,data']));
-    jest.mocked(require('@/lib/hooks/use-watchlist').useWatchlistExport).mockReturnValue({
+    jest.mocked(useWatchlistExport).mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: false,
     });
@@ -181,7 +182,7 @@ describe('ExportPanel', () => {
 
   it('handles JSON export correctly', async () => {
     const mockMutateAsync = jest.fn().mockResolvedValue(new Blob(['{"data": "json"}']));
-    jest.mocked(require('@/lib/hooks/use-watchlist').useWatchlistExport).mockReturnValue({
+    jest.mocked(useWatchlistExport).mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: false,
     });
@@ -208,7 +209,7 @@ describe('ExportPanel', () => {
   });
 
   it('shows loading state during export', () => {
-    jest.mocked(require('@/lib/hooks/use-watchlist').useWatchlistExport).mockReturnValue({
+    jest.mocked(useWatchlistExport).mockReturnValue({
       mutateAsync: jest.fn(),
       isPending: true,
     });
@@ -222,7 +223,7 @@ describe('ExportPanel', () => {
 
   it('handles export error correctly', async () => {
     const mockMutateAsync = jest.fn().mockRejectedValue(new Error('Export failed'));
-    jest.mocked(require('@/lib/hooks/use-watchlist').useWatchlistExport).mockReturnValue({
+    jest.mocked(useWatchlistExport).mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: false,
     });
@@ -245,7 +246,7 @@ describe('ExportPanel', () => {
         },
       },
     });
-    jest.mocked(require('@/lib/hooks/use-watchlist').useWatchlistExport).mockReturnValue({
+    jest.mocked(useWatchlistExport).mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: false,
     });
@@ -261,7 +262,7 @@ describe('ExportPanel', () => {
   });
 
   it('shows empty state when watchlist is empty', () => {
-    jest.mocked(require('@/lib/hooks/use-watchlist').useWatchlist).mockReturnValue({
+    jest.mocked(useWatchlist).mockReturnValue({
       data: [],
       isLoading: false,
       error: null,
@@ -270,14 +271,16 @@ describe('ExportPanel', () => {
     renderWithQueryClient(<ExportPanel />);
 
     expect(screen.getByText('No items to export')).toBeInTheDocument();
-    expect(screen.getByText(/Add some movies and TV shows to your watchlist first/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Add some movies and TV shows to your watchlist first/),
+    ).toBeInTheDocument();
 
     const exportButton = screen.getByRole('button', { name: 'Export Watchlist' });
     expect(exportButton).toBeDisabled();
   });
 
   it('shows error toast when trying to export empty watchlist', () => {
-    jest.mocked(require('@/lib/hooks/use-watchlist').useWatchlist).mockReturnValue({
+    jest.mocked(useWatchlist).mockReturnValue({
       data: [],
       isLoading: false,
       error: null,

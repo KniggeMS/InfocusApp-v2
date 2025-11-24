@@ -15,11 +15,13 @@ Comprehensive smoke testing script for Railway deployments.
 ### Examples
 
 #### Test with registration (creates test user):
+
 ```bash
 ./scripts/verify-railway-deployment.sh infocus-api-abc123.railway.app
 ```
 
 #### Test with existing access token:
+
 ```bash
 ./scripts/verify-railway-deployment.sh infocus-api-abc123.railway.app "eyJhbGc..."
 ```
@@ -35,6 +37,7 @@ Comprehensive smoke testing script for Railway deployments.
 ### Output
 
 The script provides colored output indicating:
+
 - ✓ (green) - Test passed
 - ✗ (red) - Test failed
 - ⊘ (yellow) - Test skipped
@@ -108,16 +111,19 @@ Or let the script create one during registration testing.
 ### Troubleshooting
 
 **Script fails to connect:**
+
 - Verify Railway domain is correct: `railway domains list`
 - Ensure service is running: `railway status`
 - Check deployment status: `railway logs --tail 20`
 
 **Authentication tests fail:**
+
 - Verify JWT secrets are set: `railway variables get JWT_ACCESS_SECRET`
 - Check database connectivity: `railway run pnpm run prisma -- db push`
 - Review logs: `railway logs | grep -i "error\|auth"`
 
 **CORS tests skip:**
+
 - CORS may be configured differently
 - Check CORS_ORIGIN variable: `railway variables get CORS_ORIGIN`
 - Ensure frontend domain is listed in CORS_ORIGIN

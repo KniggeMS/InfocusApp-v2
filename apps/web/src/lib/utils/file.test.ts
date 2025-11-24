@@ -1,9 +1,9 @@
-import { 
-  downloadBlob, 
-  generateTimestampedFilename, 
-  formatFileSize, 
-  isValidImportFile, 
-  isValidFileSize 
+import {
+  downloadBlob,
+  generateTimestampedFilename,
+  formatFileSize,
+  isValidImportFile,
+  isValidFileSize,
 } from '../file';
 
 // Mock URL.createObjectURL and URL.revokeObjectURL
@@ -31,7 +31,7 @@ Object.defineProperty(document.body, 'removeChild', {
 describe('File Utilities', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Setup mock link element
     const mockLink = {
       href: '',
@@ -51,7 +51,7 @@ describe('File Utilities', () => {
       expect(global.URL.createObjectURL).toHaveBeenCalledWith(blob);
       expect(mockCreateElement).toHaveBeenCalledWith('a');
       expect(mockAppendChild).toHaveBeenCalled();
-      
+
       const mockLink = mockCreateElement.mock.results[0].value;
       expect(mockLink.href).toBe('mock-url');
       expect(mockLink.download).toBe(filename);
@@ -67,9 +67,9 @@ describe('File Utilities', () => {
       jest.spyOn(global, 'Date').mockImplementation(() => fixedDate as any);
 
       const filename = generateTimestampedFilename('watchlist', 'csv');
-      
+
       expect(filename).toBe('watchlist-2024-03-15.csv');
-      
+
       jest.restoreAllMocks();
     });
 
@@ -79,7 +79,7 @@ describe('File Utilities', () => {
 
       expect(generateTimestampedFilename('data', 'json')).toBe('data-2024-03-15.json');
       expect(generateTimestampedFilename('export', 'txt')).toBe('export-2024-03-15.txt');
-      
+
       jest.restoreAllMocks();
     });
   });
@@ -134,7 +134,9 @@ describe('File Utilities', () => {
 
     it('handles case insensitive extensions', () => {
       const upperCaseFile = new File(['content'], 'TEST.CSV', { type: 'application/octet-stream' });
-      const mixedCaseFile = new File(['content'], 'Test.Json', { type: 'application/octet-stream' });
+      const mixedCaseFile = new File(['content'], 'Test.Json', {
+        type: 'application/octet-stream',
+      });
 
       expect(isValidImportFile(upperCaseFile)).toBe(true);
       expect(isValidImportFile(mixedCaseFile)).toBe(true);

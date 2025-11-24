@@ -63,7 +63,7 @@ const renderWithProviders = (component: React.ReactElement) => {
   return render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>{component}</AuthProvider>
-    </QueryClientProvider>
+    </QueryClientProvider>,
   );
 };
 

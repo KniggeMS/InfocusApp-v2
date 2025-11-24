@@ -9,20 +9,17 @@ jest.mock('lucide-react', () => ({
   ChevronDown: () => <div data-testid="chevron-icon">Chevron</div>,
 }));
 
-const createTestQueryClient = () => new QueryClient({
-  defaultOptions: {
-    queries: { retry: false },
-    mutations: { retry: false },
-  },
-});
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
 
 const renderWithProviders = (ui: React.ReactElement) => {
   const queryClient = createTestQueryClient();
-  return render(
-    <QueryClientProvider client={queryClient}>
-      {ui}
-    </QueryClientProvider>
-  );
+  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
 };
 
 describe('FilterControls', () => {
@@ -40,7 +37,7 @@ describe('FilterControls', () => {
         sortBy="dateAdded_desc"
         onStatusChange={mockOnStatusChange}
         onSortChange={mockOnSortChange}
-      />
+      />,
     );
 
     expect(screen.getByTestId('filter-icon')).toBeInTheDocument();
@@ -56,7 +53,7 @@ describe('FilterControls', () => {
         sortBy="title_asc"
         onStatusChange={mockOnStatusChange}
         onSortChange={mockOnSortChange}
-      />
+      />,
     );
 
     expect(screen.getByDisplayValue('Currently Watching')).toBeInTheDocument();
@@ -70,7 +67,7 @@ describe('FilterControls', () => {
         sortBy="dateAdded_desc"
         onStatusChange={mockOnStatusChange}
         onSortChange={mockOnSortChange}
-      />
+      />,
     );
 
     const statusSelect = screen.getByDisplayValue('All Status');
@@ -86,7 +83,7 @@ describe('FilterControls', () => {
         sortBy="dateAdded_desc"
         onStatusChange={mockOnStatusChange}
         onSortChange={mockOnSortChange}
-      />
+      />,
     );
 
     const sortSelect = screen.getByDisplayValue('Recently Added');
@@ -102,11 +99,11 @@ describe('FilterControls', () => {
         sortBy="dateAdded_desc"
         onStatusChange={mockOnStatusChange}
         onSortChange={mockOnSortChange}
-      />
+      />,
     );
 
     const statusSelect = screen.getByDisplayValue('All Status');
-    
+
     expect(statusSelect).toContainHTML('option[value="all"]');
     expect(statusSelect).toContainHTML('option[value="not_watched"]');
     expect(statusSelect).toContainHTML('option[value="watching"]');
@@ -120,11 +117,11 @@ describe('FilterControls', () => {
         sortBy="dateAdded_desc"
         onStatusChange={mockOnStatusChange}
         onSortChange={mockOnSortChange}
-      />
+      />,
     );
 
     const sortSelect = screen.getByDisplayValue('Recently Added');
-    
+
     expect(sortSelect).toContainHTML('option[value="dateAdded_desc"]');
     expect(sortSelect).toContainHTML('option[value="dateAdded_asc"]');
     expect(sortSelect).toContainHTML('option[value="title_asc"]');

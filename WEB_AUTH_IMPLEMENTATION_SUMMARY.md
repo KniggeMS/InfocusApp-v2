@@ -5,6 +5,7 @@
 ### Acceptance Criteria Met
 
 ✅ **Users can register**
+
 - Registration form with React Hook Form + Zod validation
 - Display name, email, password, confirm password fields
 - Password strength requirements (min 8 chars, uppercase, lowercase, number)
@@ -12,6 +13,7 @@
 - Error handling with toast notifications
 
 ✅ **Users can login**
+
 - Login form with React Hook Form + Zod validation
 - Email and password fields
 - Form validation with user-friendly error messages
@@ -19,6 +21,7 @@
 - Success message and redirect to watchlist
 
 ✅ **Users remain authenticated across reloads**
+
 - Access tokens persisted in localStorage
 - Auth context initializes from stored tokens on page load
 - `getCurrentUser()` API endpoint fetches user profile
@@ -26,6 +29,7 @@
 - Token refresh handled automatically
 
 ✅ **Protected routes redirect unauthenticated visitors**
+
 - Next.js middleware protects: /watchlist, /search, /family, /settings
 - Unauthenticated users redirected to /login
 - ProtectedRoute component provides client-side protection
@@ -36,11 +40,13 @@
 #### 1. Form Validation (React Hook Form + Zod)
 
 **Files Created/Modified:**
+
 - `src/lib/validation/auth.ts` - Zod schemas for login/register
 - `src/app/login/page.tsx` - Login form with RHF
 - `src/app/register/page.tsx` - Register form with RHF
 
 **Features:**
+
 - Email format validation
 - Password strength requirements
 - Password confirmation matching
@@ -50,6 +56,7 @@
 #### 2. Token Management & Persistence
 
 **Files Created/Modified:**
+
 - `src/lib/api/client.ts` - Axios instance with interceptors
   - Automatic token injection in requests
   - 401 response handling with token refresh
@@ -58,6 +65,7 @@
 - `src/lib/context/auth-context.tsx` - Global auth state
 
 **Features:**
+
 - Access token in localStorage (client-side access)
 - Refresh token in httpOnly cookie (backend-set, secure)
 - Automatic token refresh on expiration
@@ -67,9 +75,11 @@
 #### 3. Global User Context
 
 **Files Created/Modified:**
+
 - `src/lib/context/auth-context.tsx` - AuthProvider and useAuth hook
 
 **Provides:**
+
 - `user` - Current user object (id, email, name)
 - `isAuthenticated` - Boolean auth status
 - `isLoading` - Loading state during initialization
@@ -80,10 +90,12 @@
 #### 4. Route Protection
 
 **Files Created/Modified:**
+
 - `middleware.ts` - Next.js middleware (project root)
 - `src/components/layout/ProtectedRoute.tsx` - Protected route component
 
 **Protected Routes:**
+
 - `/watchlist` - User's watchlist
 - `/search` - Search functionality
 - `/family` - Family groups
@@ -92,6 +104,7 @@
 #### 5. Error Handling
 
 **Implementation:**
+
 - Client-side form validation errors
 - API error messages displayed as toast notifications
 - Specific error messages for different scenarios:
@@ -104,11 +117,13 @@
 #### 6. Backend Enhancements
 
 **Files Modified:**
+
 - `apps/api/src/routes/auth.ts`
   - Added `/auth/me` endpoint (protected with authMiddleware)
   - Returns current user profile with secure token verification
 
 **API Endpoints Available:**
+
 - `POST /auth/register` - Create new account
 - `POST /auth/login` - Authenticate user
 - `POST /auth/refresh` - Refresh access token
@@ -118,6 +133,7 @@
 #### 7. Comprehensive Test Coverage
 
 **Test Files Created:**
+
 - `src/__tests__/auth.test.tsx` - Form validation tests
   - Login form validation
   - Register form validation
@@ -141,6 +157,7 @@
   - Form validation prevents invalid submissions
 
 **Test Coverage:**
+
 - ✅ Form validation (all fields)
 - ✅ Successful login with redirect
 - ✅ Successful register with redirect
@@ -161,6 +178,7 @@
 ### Configuration Files
 
 **Created/Modified:**
+
 - `middleware.ts` - Next.js middleware for route protection
 - `package.json` - Added dependencies
 - `AUTH_IMPLEMENTATION.md` - Comprehensive documentation
@@ -193,6 +211,7 @@
 ### Development Notes
 
 **Local Testing:**
+
 ```bash
 # Install dependencies
 cd apps/web
@@ -212,12 +231,14 @@ pnpm lint
 ```
 
 **API Configuration:**
+
 ```env
 # apps/web/.env.local
 NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
 
 **Backend must be running on:**
+
 - http://localhost:3000 (default)
 - Or configure NEXT_PUBLIC_API_URL environment variable
 

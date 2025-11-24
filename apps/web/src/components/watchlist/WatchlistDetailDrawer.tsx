@@ -32,7 +32,7 @@ export interface WatchlistDetailDrawerProps {
 
 export function WatchlistDetailDrawer({ isOpen, onClose, entry }: WatchlistDetailDrawerProps) {
   const [isDeleting, setIsDeleting] = useState(false);
-  
+
   const updateMutation = useUpdateWatchlistEntry();
   const removeMutation = useRemoveFromWatchlist();
 
@@ -92,8 +92,12 @@ export function WatchlistDetailDrawer({ isOpen, onClose, entry }: WatchlistDetai
       }
 
       // For TV shows, include episode progress
-      if (entry.mediaItem.mediaType === 'tv' && episodesWatched !== undefined && totalEpisodes !== undefined) {
-        updateData.notes = data.notes 
+      if (
+        entry.mediaItem.mediaType === 'tv' &&
+        episodesWatched !== undefined &&
+        totalEpisodes !== undefined
+      ) {
+        updateData.notes = data.notes
           ? `${data.notes}\n\nProgress: ${episodesWatched}/${totalEpisodes} episodes`
           : `Progress: ${episodesWatched}/${totalEpisodes} episodes`;
       }
@@ -154,30 +158,32 @@ export function WatchlistDetailDrawer({ isOpen, onClose, entry }: WatchlistDetai
               <div className="flex-1">
                 <h3 className="font-semibold text-gray-900 mb-1">{entry.mediaItem.title}</h3>
                 <p className="text-sm text-gray-600 capitalize mb-2">
-                  {entry.mediaItem.mediaType} • {new Date(entry.mediaItem.releaseDate || '').getFullYear()}
+                  {entry.mediaItem.mediaType} •{' '}
+                  {new Date(entry.mediaItem.releaseDate || '').getFullYear()}
                 </p>
                 {entry.mediaItem.description && (
                   <p className="text-sm text-gray-600 line-clamp-3">
                     {entry.mediaItem.description}
                   </p>
                 )}
-                
+
                 {/* Streaming Providers */}
-                {entry.mediaItem.streamingProviders && entry.mediaItem.streamingProviders.length > 0 && (
-                  <div className="mt-3">
-                    <p className="text-xs font-medium text-gray-700 mb-1">Available on:</p>
-                    <div className="flex flex-wrap gap-1">
-                      {entry.mediaItem.streamingProviders.map((provider) => (
-                        <span
-                          key={provider.id}
-                          className="inline-block px-2 py-1 text-xs bg-blue-50 text-blue-700 rounded"
-                        >
-                          {provider.provider}
-                        </span>
-                      ))}
+                {entry.mediaItem.streamingProviders &&
+                  entry.mediaItem.streamingProviders.length > 0 && (
+                    <div className="mt-3">
+                      <p className="text-xs font-medium text-gray-700 mb-1">Available on:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {entry.mediaItem.streamingProviders.map((provider) => (
+                          <span
+                            key={provider.id}
+                            className="inline-block px-2 py-1 text-xs bg-blue-50 text-blue-700 rounded"
+                          >
+                            {provider.provider}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             </div>
           </CardContent>
@@ -193,9 +199,7 @@ export function WatchlistDetailDrawer({ isOpen, onClose, entry }: WatchlistDetai
 
         {/* Rating */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Rating (Optional)
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Rating (Optional)</label>
           <RatingInput
             value={watchedRating ? Number(watchedRating) : undefined}
             onChange={handleRatingChange}
@@ -242,16 +246,11 @@ export function WatchlistDetailDrawer({ isOpen, onClose, entry }: WatchlistDetai
             <Save className="w-4 h-4 mr-2" />
             Save Changes
           </Button>
-          
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            className="flex-1"
-          >
+
+          <Button type="button" variant="outline" onClick={onClose} className="flex-1">
             Cancel
           </Button>
-          
+
           <Button
             type="button"
             variant="danger"

@@ -139,6 +139,7 @@ pnpm run migrate:prod
 5. **Deploy**: Push to main branch and monitor CI/CD pipeline
 
 For detailed information, see:
+
 - [DEPLOYMENT.md](DEPLOYMENT.md) - Complete deployment guide
 - [RAILWAY_DEPLOYMENT_VERIFICATION.md](RAILWAY_DEPLOYMENT_VERIFICATION.md) - Railway verification and smoke tests
 - [RAILWAY_SETUP_CHECKLIST.md](RAILWAY_SETUP_CHECKLIST.md) - Railway configuration checklist

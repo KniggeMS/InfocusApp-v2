@@ -46,7 +46,7 @@ const renderWithProviders = (component: React.ReactElement) => {
   return render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>{component}</AuthProvider>
-    </QueryClientProvider>
+    </QueryClientProvider>,
   );
 };
 
@@ -195,7 +195,9 @@ describe('Authentication', () => {
       await user.click(registerButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/password must contain at least one uppercase letter/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/password must contain at least one uppercase letter/i),
+        ).toBeInTheDocument();
       });
     });
 

@@ -49,10 +49,7 @@ const row = rawWatchlistRowSchema.parse({
 Use for displaying import preview with TMDB match candidates:
 
 ```typescript
-import {
-  normalizedPreviewItemSchema,
-  type NormalizedPreviewItem,
-} from '@infocus/shared';
+import { normalizedPreviewItemSchema, type NormalizedPreviewItem } from '@infocus/shared';
 
 const preview = normalizedPreviewItemSchema.parse({
   originalTitle: 'Inception',
@@ -78,10 +75,7 @@ const preview = normalizedPreviewItemSchema.parse({
 Use for submitting a batch import with duplicate resolution:
 
 ```typescript
-import {
-  bulkImportRequestSchema,
-  type BulkImportRequest,
-} from '@infocus/shared';
+import { bulkImportRequestSchema, type BulkImportRequest } from '@infocus/shared';
 
 const request = bulkImportRequestSchema.parse({
   items: [
@@ -109,10 +103,7 @@ const request = bulkImportRequestSchema.parse({
 Use for exporting watchlist data:
 
 ```typescript
-import {
-  exportResponseSchema,
-  type ExportResponse,
-} from '@infocus/shared';
+import { exportResponseSchema, type ExportResponse } from '@infocus/shared';
 
 const exportData = exportResponseSchema.parse({
   exportedAt: new Date().toISOString(),
@@ -186,7 +177,7 @@ const confidence = calculateMatchConfidence(
   2010, // TMDB year
   'Inception', // User's title
   2010, // User's year
-  true // Has poster
+  true, // Has poster
 );
 // Returns: 1.0 (perfect match)
 ```
@@ -251,7 +242,7 @@ Skip the imported item, keep existing entry unchanged:
 
 ```typescript
 {
-  strategy: 'skip'
+  strategy: 'skip';
 }
 ```
 
@@ -261,7 +252,7 @@ Replace the existing entry completely with imported data:
 
 ```typescript
 {
-  strategy: 'overwrite'
+  strategy: 'overwrite';
 }
 ```
 

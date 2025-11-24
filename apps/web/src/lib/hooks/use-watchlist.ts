@@ -1,15 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { watchlistApi } from '@/lib/api/watchlist';
-import type { 
-  CreateWatchlistEntryData, 
-  UpdateWatchlistEntryData, 
-  WatchlistEntry 
+import type {
+  CreateWatchlistEntryData,
+  UpdateWatchlistEntryData,
+  WatchlistEntry,
 } from '@/lib/api/watchlist';
-import type { 
-  NormalizedPreviewItem, 
-  BulkImportRequest, 
-  ImportResult 
-} from '@infocus/shared';
+import type { NormalizedPreviewItem, BulkImportRequest, ImportResult } from '@infocus/shared';
 
 export function useWatchlist() {
   return useQuery({
@@ -89,9 +85,14 @@ export function useUpdateWatchlistEntry() {
       queryClient.setQueryData<WatchlistEntry[]>(['watchlist'], (old = []) =>
         old.map((entry) =>
           entry.id === id
-            ? { ...entry, ...data, updatedAt: new Date().toISOString(), dateUpdated: new Date().toISOString() }
-            : entry
-        )
+            ? {
+                ...entry,
+                ...data,
+                updatedAt: new Date().toISOString(),
+                dateUpdated: new Date().toISOString(),
+              }
+            : entry,
+        ),
       );
 
       return { previousWatchlist };
@@ -123,7 +124,7 @@ export function useRemoveFromWatchlist() {
 
       // Optimistically remove the entry
       queryClient.setQueryData<WatchlistEntry[]>(['watchlist'], (old = []) =>
-        old.filter((entry) => entry.id !== id)
+        old.filter((entry) => entry.id !== id),
       );
 
       return { previousWatchlist };

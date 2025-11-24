@@ -3,10 +3,12 @@
 The Search API provides endpoints for discovering movies and TV shows through TMDB integration with intelligent caching and provider data enrichment.
 
 ## Base URL
+
 - Development: `http://localhost:3001/search`
 - Production: `https://api.infocus.app/search`
 
 ## Authentication
+
 Search endpoints do not require authentication. However, some features like cache management may be restricted in production.
 
 ## Endpoints
@@ -25,11 +27,13 @@ Search for movies and TV shows across the TMDB database with results enriched wi
 | include_adult | boolean | No | false | Include adult content in results |
 
 **Request Example:**
+
 ```bash
 GET /search?query=inception&page=1&include_adult=false
 ```
 
 **Response Example:**
+
 ```json
 {
   "page": 1,
@@ -62,6 +66,7 @@ GET /search?query=inception&page=1&include_adult=false
 ```
 
 **Response Fields:**
+
 - `page`: Current page number
 - `results`: Array of search results
 - `total_results`: Total number of results
@@ -70,6 +75,7 @@ GET /search?query=inception&page=1&include_adult=false
 - `stale`: Boolean indicating if cached data is stale (only present when using fallback)
 
 **Result Object Fields:**
+
 - `id`: TMDB ID
 - `title`: Title (movie or TV show name)
 - `overview`: Description/plot summary
@@ -85,6 +91,7 @@ GET /search?query=inception&page=1&include_adult=false
 **Error Responses:**
 
 400 Bad Request:
+
 ```json
 {
   "error": "Invalid query parameters",
@@ -99,6 +106,7 @@ GET /search?query=inception&page=1&include_adult=false
 ```
 
 500 Internal Server Error:
+
 ```json
 {
   "error": "Failed to perform search",
@@ -124,11 +132,13 @@ Get detailed information about a specific movie or TV show including streaming p
 | language | string | No | en | Language code for results |
 
 **Request Example:**
+
 ```bash
 GET /media/27205?type=movie&language=en
 ```
 
 **Response Example:**
+
 ```json
 {
   "id": 27205,
@@ -189,10 +199,12 @@ GET /media/27205?type=movie&language=en
 ```
 
 **Additional Response Fields for Movies:**
+
 - `runtime`: Duration in minutes
 - `status`: Release status
 
 **Additional Response Fields for TV Shows:**
+
 - `number_of_seasons`: Total number of seasons
 - `number_of_episodes`: Total number of episodes
 - `status`: Series status
@@ -200,6 +212,7 @@ GET /media/27205?type=movie&language=en
 **Error Responses:**
 
 400 Bad Request:
+
 ```json
 {
   "error": "Invalid parameters",
@@ -214,6 +227,7 @@ GET /media/27205?type=movie&language=en
 ```
 
 404 Not Found:
+
 ```json
 {
   "error": "Failed to fetch media details",
@@ -233,11 +247,13 @@ Get list of available genres for movies or TV shows.
 | type | string | Yes | Genre type: "movie" or "tv" |
 
 **Request Example:**
+
 ```bash
 GET /genres/movie
 ```
 
 **Response Example:**
+
 ```json
 {
   "genres": [
@@ -325,6 +341,7 @@ GET /genres/movie
 **Error Responses:**
 
 400 Bad Request:
+
 ```json
 {
   "error": "Invalid type. Must be \"movie\" or \"tv\""
@@ -334,11 +351,13 @@ GET /genres/movie
 ### 4. Cache Management
 
 #### Clear Cache
+
 Clear all cached search and media data.
 
 **Endpoint:** `POST /cache/clear`
 
 **Response Example:**
+
 ```json
 {
   "message": "Cache cleared successfully"
@@ -346,11 +365,13 @@ Clear all cached search and media data.
 ```
 
 #### Get Cache Statistics
+
 Get current cache statistics for monitoring and debugging.
 
 **Endpoint:** `GET /cache/stats`
 
 **Response Example:**
+
 ```json
 {
   "keys": 1247,
@@ -362,6 +383,7 @@ Get current cache statistics for monitoring and debugging.
 ```
 
 **Cache Statistics Fields:**
+
 - `keys`: Number of cached keys
 - `hits`: Number of cache hits
 - `misses`: Number of cache misses
@@ -371,18 +393,22 @@ Get current cache statistics for monitoring and debugging.
 ## Caching Behavior
 
 ### Cache TTL (Time To Live)
+
 - **Search Results**: 5 minutes (300 seconds)
 - **Media Details**: 30 minutes (1800 seconds)
 - **Genres**: 24 hours (86400 seconds)
 - **Watch Providers**: 1 hour (3600 seconds)
 
 ### Cache Invalidation
+
 - Cache is automatically invalidated when TTL expires
 - Manual cache clearing available via `/cache/clear` endpoint
 - Stale cache fallback when TMDB API is unavailable
 
 ### Fallback Behavior
+
 When TMDB API is unavailable:
+
 - Search returns stale cached data with `stale: true` flag
 - Media details return stale cached data with `stale: true` flag
 - Warning message included in response
@@ -397,12 +423,14 @@ When TMDB API is unavailable:
 ## Error Handling
 
 ### Common Error Codes
+
 - `400`: Bad Request - Invalid parameters
 - `404`: Not Found - Resource not found
 - `429`: Too Many Requests - Rate limit exceeded
 - `500`: Internal Server Error - API or TMDB service error
 
 ### Error Response Format
+
 ```json
 {
   "error": "Error description",
@@ -414,6 +442,7 @@ When TMDB API is unavailable:
 ## Integration with Watchlist
 
 When users add media to their watchlist:
+
 1. If media exists in database: Use existing record
 2. If media doesn't exist: Automatically fetch from TMDB and persist
 3. Enrich with streaming provider data
@@ -422,10 +451,12 @@ When users add media to their watchlist:
 ## Image URLs
 
 TMDB image paths can be converted to full URLs:
+
 - Base URL: `https://image.tmdb.org/t/p/`
 - Sizes: `w92`, `w154`, `w185`, `w342`, `w500`, `w780`, `original`
 
 Example:
+
 ```
 https://image.tmdb.org/t/p/w500/qmDpIHrmpDINLDtE9IuPWqI6p4f.jpg
 ```

@@ -11,11 +11,21 @@ import { WatchlistImportPanel } from '@/components/watchlist/WatchlistImportPane
 import { ImportPreviewTable } from '@/components/watchlist/ImportPreviewTable';
 import { DuplicateResolutionDialog } from '@/components/watchlist/DuplicateResolutionDialog';
 import { ExportPanel } from '@/components/watchlist/ExportPanel';
-import { useWatchlist, useRemoveFromWatchlist, useConfirmWatchlistImport } from '@/lib/hooks/use-watchlist';
-import { filterAndSortWatchlist, groupWatchlistByStatus, type StatusFilter, type SortOption } from '@/lib/utils/watchlist-utils';
+import {
+  useWatchlist,
+  useRemoveFromWatchlist,
+  useConfirmWatchlistImport,
+} from '@/lib/hooks/use-watchlist';
+import {
+  filterAndSortWatchlist,
+  groupWatchlistByStatus,
+  type StatusFilter,
+  type SortOption,
+} from '@/lib/utils/watchlist-utils';
 import { PlayCircle, CheckCircle, Clock, Plus, Download, Upload } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import type { WatchlistEntry } from '@/lib/api/watchlist';
+import type { StatusFilter } from '@/components/ui/FilterControls';
 import type { NormalizedPreviewItem, DuplicateResolution } from '@infocus/shared';
 
 export default function WatchlistPage() {
@@ -23,7 +33,7 @@ export default function WatchlistPage() {
   const [sortBy, setSortBy] = useState<SortOption>('dateAdded_desc');
   const [selectedEntry, setSelectedEntry] = useState<WatchlistEntry | null>(null);
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
-  
+
   // Import/Export state
   const [activeView, setActiveView] = useState<'watchlist' | 'import' | 'export'>('watchlist');
   const [importPreview, setImportPreview] = useState<NormalizedPreviewItem[]>([]);
@@ -34,18 +44,19 @@ export default function WatchlistPage() {
   const confirmImportMutation = useConfirmWatchlistImport();
 
   // Filter and sort the watchlist
-  const filteredAndSorted = watchlist 
+  const filteredAndSorted = watchlist
     ? filterAndSortWatchlist(watchlist, { statusFilter, sortBy })
     : [];
 
   // Group by status if showing all, otherwise use filtered results
-  const groups = statusFilter === 'all' 
-    ? groupWatchlistByStatus(filteredAndSorted)
-    : {
-        not_watched: statusFilter === 'not_watched' ? filteredAndSorted : [],
-        watching: statusFilter === 'watching' ? filteredAndSorted : [],
-        completed: statusFilter === 'completed' ? filteredAndSorted : [],
-      };
+  const groups =
+    statusFilter === 'all'
+      ? groupWatchlistByStatus(filteredAndSorted)
+      : {
+          not_watched: statusFilter === 'not_watched' ? filteredAndSorted : [],
+          watching: statusFilter === 'watching' ? filteredAndSorted : [],
+          completed: statusFilter === 'completed' ? filteredAndSorted : [],
+        };
 
   const handleEditEntry = (entry: WatchlistEntry) => {
     setSelectedEntry(entry);
@@ -53,7 +64,9 @@ export default function WatchlistPage() {
   };
 
   const handleRemoveEntry = async (entry: WatchlistEntry) => {
-    const confirmed = window.confirm(`Are you sure you want to remove "${entry.mediaItem.title}" from your watchlist?`);
+    const confirmed = window.confirm(
+      `Are you sure you want to remove "${entry.mediaItem.title}" from your watchlist?`,
+    );
     if (!confirmed) return;
 
     try {
@@ -90,11 +103,11 @@ export default function WatchlistPage() {
       };
 
       const result = await confirmImportMutation.mutateAsync(bulkRequest);
-      
+
       toast.success(
-        `Import completed: ${result.imported} imported, ${result.skipped} skipped, ${result.merged} merged`
+        `Import completed: ${result.imported} imported, ${result.skipped} skipped, ${result.merged} merged`,
       );
-      
+
       // Reset import state
       setImportPreview([]);
       setShowDuplicateDialog(false);
@@ -139,7 +152,8 @@ export default function WatchlistPage() {
     );
   }
 
-  const hasContent = groups.not_watched.length > 0 || groups.watching.length > 0 || groups.completed.length > 0;
+  const hasContent =
+    groups.not_watched.length > 0 || groups.watching.length > 0 || groups.completed.length > 0;
 
   return (
     <PageShell
@@ -154,9 +168,10 @@ export default function WatchlistPage() {
               onClick={() => setActiveView('watchlist')}
               className={`
                 px-4 py-2 rounded-lg font-medium transition-colors
-                ${activeView === 'watchlist'
-                  ? 'bg-primary-100 text-primary-700 border border-primary-200'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                ${
+                  activeView === 'watchlist'
+                    ? 'bg-primary-100 text-primary-700 border border-primary-200'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }
               `}
             >
@@ -166,9 +181,10 @@ export default function WatchlistPage() {
               onClick={() => setActiveView('import')}
               className={`
                 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2
-                ${activeView === 'import'
-                  ? 'bg-primary-100 text-primary-700 border border-primary-200'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                ${
+                  activeView === 'import'
+                    ? 'bg-primary-100 text-primary-700 border border-primary-200'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }
               `}
             >
@@ -179,9 +195,10 @@ export default function WatchlistPage() {
               onClick={() => setActiveView('export')}
               className={`
                 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2
-                ${activeView === 'export'
-                  ? 'bg-primary-100 text-primary-700 border border-primary-200'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                ${
+                  activeView === 'export'
+                    ? 'bg-primary-100 text-primary-700 border border-primary-200'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }
               `}
             >
@@ -228,17 +245,18 @@ export default function WatchlistPage() {
                   />
                 </svg>
                 <h3 className="mt-4 text-lg font-medium text-gray-900">
-                  {statusFilter === 'all' ? 'Your watchlist is empty' : `No ${statusFilter.replace('_', ' ')} items`}
+                  {statusFilter === 'all'
+                    ? 'Your watchlist is empty'
+                    : `No ${statusFilter.replace('_', ' ')} items`}
                 </h3>
                 <p className="mt-2 text-sm text-gray-600">
-                  {statusFilter === 'all' 
+                  {statusFilter === 'all'
                     ? 'Start by searching for movies and TV shows to add to your watchlist, or import an existing watchlist.'
-                    : 'Try changing the filters to see more items.'
-                  }
+                    : 'Try changing the filters to see more items.'}
                 </p>
                 {statusFilter === 'all' && (
                   <div className="mt-6 flex space-x-3 justify-center">
-                    <Button onClick={() => window.location.href = '/search'}>
+                    <Button onClick={() => (window.location.href = '/search')}>
                       <Plus className="w-4 h-4 mr-2" />
                       Browse Content
                     </Button>
@@ -308,9 +326,7 @@ export default function WatchlistPage() {
       )}
 
       {/* Export View */}
-      {activeView === 'export' && (
-        <ExportPanel />
-      )}
+      {activeView === 'export' && <ExportPanel />}
 
       {/* Detail Drawer */}
       <WatchlistDetailDrawer

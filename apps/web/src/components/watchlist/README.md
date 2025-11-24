@@ -9,6 +9,7 @@ This directory contains components for importing and exporting watchlist data in
 A panel component that handles file upload for importing watchlist data.
 
 **Features:**
+
 - Drag and drop file upload
 - File type validation (CSV, JSON, TXT)
 - File size validation (10MB limit)
@@ -16,9 +17,11 @@ A panel component that handles file upload for importing watchlist data.
 - Format instructions
 
 **Props:**
+
 - `onPreviewGenerated: (items: NormalizedPreviewItem[]) => void` - Callback when file is successfully parsed
 
 **Usage:**
+
 ```tsx
 <WatchlistImportPanel onPreviewGenerated={handlePreviewGenerated} />
 ```
@@ -28,6 +31,7 @@ A panel component that handles file upload for importing watchlist data.
 A table component that displays parsed import data and allows users to select TMDB matches.
 
 **Features:**
+
 - Expandable rows to view TMDB match candidates
 - Confidence scoring with color coding
 - Duplicate detection and badges
@@ -35,11 +39,13 @@ A table component that displays parsed import data and allows users to select TM
 - TMDB links for selected matches
 
 **Props:**
+
 - `items: NormalizedPreviewItem[]` - The parsed import items
 - `onItemsUpdate: (items: NormalizedPreviewItem[]) => void` - Callback when items are modified
 - `onProceedToResolutions: () => void` - Callback to proceed to duplicate resolution
 
 **Usage:**
+
 ```tsx
 <ImportPreviewTable
   items={importPreview}
@@ -53,6 +59,7 @@ A table component that displays parsed import data and allows users to select TM
 A modal dialog for handling duplicate entries during import.
 
 **Features:**
+
 - Focus trap for accessibility
 - Keyboard navigation (Escape to close, Tab to navigate)
 - Multiple resolution strategies (skip, overwrite, merge)
@@ -60,12 +67,14 @@ A modal dialog for handling duplicate entries during import.
 - Side-by-side comparison of existing vs incoming data
 
 **Props:**
+
 - `items: NormalizedPreviewItem[]` - Items with duplicates
 - `existingEntries: WatchlistEntry[]` - Current watchlist entries
 - `onConfirm: (resolutions: DuplicateResolution[]) => void` - Callback when resolutions are confirmed
 - `onCancel: () => void` - Callback to cancel the dialog
 
 **Usage:**
+
 ```tsx
 <DuplicateResolutionDialog
   items={duplicateItems}
@@ -80,6 +89,7 @@ A modal dialog for handling duplicate entries during import.
 A panel component for exporting watchlist data.
 
 **Features:**
+
 - Format selection (CSV, JSON)
 - Watchlist summary display
 - Format descriptions and guidelines
@@ -90,6 +100,7 @@ A panel component for exporting watchlist data.
 None (uses hooks internally)
 
 **Usage:**
+
 ```tsx
 <ExportPanel />
 ```
@@ -101,6 +112,7 @@ None (uses hooks internally)
 Mutation hook for uploading and parsing import files.
 
 **Returns:**
+
 - `mutateAsync: (file: File) => Promise<NormalizedPreviewItem[]>`
 - `isPending: boolean`
 - `error: Error | null`
@@ -110,6 +122,7 @@ Mutation hook for uploading and parsing import files.
 Mutation hook for confirming and executing the import.
 
 **Returns:**
+
 - `mutateAsync: (request: BulkImportRequest) => Promise<ImportResult>`
 - `isPending: boolean`
 - `error: Error | null`
@@ -119,6 +132,7 @@ Mutation hook for confirming and executing the import.
 Mutation hook for exporting watchlist data.
 
 **Returns:**
+
 - `mutateAsync: (format: 'csv' | 'json') => Promise<Blob>`
 - `isPending: boolean`
 - `error: Error | null`
@@ -144,6 +158,7 @@ Mutation hook for exporting watchlist data.
 ### Import Formats
 
 #### CSV
+
 - Required columns: `title`
 - Optional columns: `year`, `status`, `rating`, `notes`, `dateAdded`, `streamingProviders`
 - Status values: `not_watched`, `watching`, `completed` (various aliases accepted)
@@ -151,8 +166,10 @@ Mutation hook for exporting watchlist data.
 - Date format: ISO 8601 or YYYY-MM-DD
 
 #### JSON
+
 - Array of objects with same fields as CSV
 - Example:
+
 ```json
 [
   {
@@ -170,11 +187,13 @@ Mutation hook for exporting watchlist data.
 ### Export Formats
 
 #### CSV
+
 - Standard CSV format with headers
 - Compatible with Excel, Google Sheets
 - Includes all watchlist data
 
 #### JSON
+
 - Structured JSON array
 - Includes TMDB IDs for re-importing
 - Machine-readable format
@@ -182,6 +201,7 @@ Mutation hook for exporting watchlist data.
 ## Testing
 
 All components include comprehensive Jest tests covering:
+
 - User interactions
 - File handling
 - Error states
@@ -189,6 +209,7 @@ All components include comprehensive Jest tests covering:
 - Integration scenarios
 
 Run tests with:
+
 ```bash
 npm test -- --testPathPattern=watchlist
 ```
@@ -196,6 +217,7 @@ npm test -- --testPathPattern=watchlist
 ## Accessibility
 
 All components follow WCAG guidelines:
+
 - Keyboard navigation support
 - Focus management
 - Screen reader compatibility

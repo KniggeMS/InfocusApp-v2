@@ -21,7 +21,7 @@ export function WatchlistGroup({
   onRemoveEntry,
   emptyMessage = 'No entries in this category',
   icon,
-  className
+  className,
 }: WatchlistGroupProps) {
   if (entries.length === 0) {
     return (
@@ -47,9 +47,7 @@ export function WatchlistGroup({
         <CardTitle className="flex items-center gap-2 text-lg">
           {icon}
           {title}
-          <span className="ml-2 text-sm font-normal text-gray-500">
-            ({entries.length})
-          </span>
+          <span className="ml-2 text-sm font-normal text-gray-500">({entries.length})</span>
         </CardTitle>
       </CardHeader>
       <CardContent>

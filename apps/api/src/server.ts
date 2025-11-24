@@ -20,13 +20,17 @@ app.use(helmet());
 
 // CORS configuration with dynamic origin support
 const corsOrigins = process.env.CORS_ORIGIN
-  ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
-  : process.env.NODE_ENV === 'production' ? false : true;
+  ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
+  : process.env.NODE_ENV === 'production'
+    ? false
+    : true;
 
-app.use(cors({
-  origin: corsOrigins,
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: corsOrigins,
+    credentials: true,
+  }),
+);
 
 // Body parsing middleware
 app.use(express.json());
@@ -61,7 +65,7 @@ async function startServer() {
   try {
     await prisma.$connect();
     console.log('Database connected successfully');
-    
+
     app.listen(PORT, () => {
       console.log(`InFocus API server running on port ${PORT}`);
     });

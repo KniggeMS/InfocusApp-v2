@@ -19,9 +19,7 @@ describe('InviteModal', () => {
   });
 
   it('renders invite form', () => {
-    render(
-      <InviteModal familyId="family-1" onClose={mockOnClose} onInvite={mockOnInvite} />,
-    );
+    render(<InviteModal familyId="family-1" onClose={mockOnClose} onInvite={mockOnInvite} />);
 
     expect(screen.getByText('Invite Family Member')).toBeInTheDocument();
     expect(screen.getByLabelText('Email Address')).toBeInTheDocument();
@@ -35,9 +33,7 @@ describe('InviteModal', () => {
       data: { token: 'test-token-123' },
     });
 
-    render(
-      <InviteModal familyId="family-1" onClose={mockOnClose} onInvite={mockOnInvite} />,
-    );
+    render(<InviteModal familyId="family-1" onClose={mockOnClose} onInvite={mockOnInvite} />);
 
     const emailInput = screen.getByLabelText('Email Address');
     await user.type(emailInput, 'test@example.com');
@@ -56,9 +52,7 @@ describe('InviteModal', () => {
       data: { token: 'test-token-123' },
     });
 
-    render(
-      <InviteModal familyId="family-1" onClose={mockOnClose} onInvite={mockOnInvite} />,
-    );
+    render(<InviteModal familyId="family-1" onClose={mockOnClose} onInvite={mockOnInvite} />);
 
     const emailInput = screen.getByLabelText('Email Address');
     await user.type(emailInput, 'test@example.com');
@@ -78,9 +72,7 @@ describe('InviteModal', () => {
   it('closes modal when close button is clicked', async () => {
     const user = userEvent.setup();
 
-    render(
-      <InviteModal familyId="family-1" onClose={mockOnClose} onInvite={mockOnInvite} />,
-    );
+    render(<InviteModal familyId="family-1" onClose={mockOnClose} onInvite={mockOnInvite} />);
 
     const closeButton = screen.getByRole('button', { name: 'Close' });
     await user.click(closeButton);
@@ -89,9 +81,7 @@ describe('InviteModal', () => {
   });
 
   it('disables submit button when email is empty', () => {
-    render(
-      <InviteModal familyId="family-1" onClose={mockOnClose} onInvite={mockOnInvite} />,
-    );
+    render(<InviteModal familyId="family-1" onClose={mockOnClose} onInvite={mockOnInvite} />);
 
     const submitButton = screen.getByRole('button', { name: 'Send Invite' });
     expect(submitButton).toBeDisabled();
@@ -103,9 +93,7 @@ describe('InviteModal', () => {
       () => new Promise((resolve) => setTimeout(() => resolve({ data: { token: 'test' } }), 100)),
     );
 
-    render(
-      <InviteModal familyId="family-1" onClose={mockOnClose} onInvite={mockOnInvite} />,
-    );
+    render(<InviteModal familyId="family-1" onClose={mockOnClose} onInvite={mockOnInvite} />);
 
     const emailInput = screen.getByLabelText('Email Address');
     await user.type(emailInput, 'test@example.com');

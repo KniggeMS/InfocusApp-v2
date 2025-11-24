@@ -6,15 +6,7 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { useWatchlistExport } from '@/lib/hooks/use-watchlist';
 import { useWatchlist } from '@/lib/hooks/use-watchlist';
 import { downloadBlob, generateTimestampedFilename } from '@/lib/utils/file';
-import { 
-  Download, 
-  FileText, 
-  Code, 
-  CheckCircle, 
-  AlertCircle,
-  Calendar,
-  Film
-} from 'lucide-react';
+import { Download, FileText, Code, CheckCircle, AlertCircle, Calendar, Film } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 type ExportFormat = 'csv' | 'json';
@@ -32,14 +24,15 @@ export function ExportPanel() {
 
     try {
       const blob = await exportMutation.mutateAsync(format);
-      
+
       // Generate filename and download
       const filename = generateTimestampedFilename('watchlist', format);
       downloadBlob(blob, filename);
-      
+
       toast.success(`Exported ${watchlist.length} items as ${format.toUpperCase()}`);
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to export watchlist';
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Failed to export watchlist';
       toast.error(errorMessage);
     }
   };
@@ -99,18 +92,14 @@ export function ExportPanel() {
                     </span>
                   </div>
                 </div>
-                {watchlist.length > 0 && (
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                )}
+                {watchlist.length > 0 && <CheckCircle className="h-5 w-5 text-green-500" />}
               </div>
             </div>
           )}
 
           {/* Format Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              Export Format
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-3">Export Format</label>
             <div className="grid grid-cols-2 gap-4">
               {(['csv', 'json'] as ExportFormat[]).map((fmt) => (
                 <button
@@ -119,24 +108,25 @@ export function ExportPanel() {
                   onClick={() => setFormat(fmt)}
                   className={`
                     p-4 border rounded-lg text-left transition-all
-                    ${format === fmt
-                      ? 'border-primary-500 bg-primary-50 ring-2 ring-primary-500 ring-opacity-20'
-                      : 'border-gray-200 hover:border-gray-300'
+                    ${
+                      format === fmt
+                        ? 'border-primary-500 bg-primary-50 ring-2 ring-primary-500 ring-opacity-20'
+                        : 'border-gray-200 hover:border-gray-300'
                     }
                   `}
                 >
                   <div className="flex items-start space-x-3">
-                    <div className={`
+                    <div
+                      className={`
                       p-2 rounded-lg
                       ${format === fmt ? 'bg-primary-100 text-primary-600' : 'bg-gray-100 text-gray-600'}
-                    `}>
+                    `}
+                    >
                       {getFormatIcon(fmt)}
                     </div>
                     <div className="flex-1">
                       <h4 className="font-medium text-gray-900 uppercase">{fmt}</h4>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {getFormatDescription(fmt)}
-                      </p>
+                      <p className="text-sm text-gray-600 mt-1">{getFormatDescription(fmt)}</p>
                     </div>
                   </div>
                 </button>
@@ -149,7 +139,7 @@ export function ExportPanel() {
             <div className="flex items-start space-x-2">
               <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
               <div className="text-sm text-blue-800">
-                <p className="font-medium mb-2">What's included:</p>
+                <p className="font-medium mb-2">What&apos;s included:</p>
                 <ul className="space-y-1 text-xs">
                   <li>• Title, year, and media type (movie/TV)</li>
                   <li>• Watch status, rating, and personal notes</li>

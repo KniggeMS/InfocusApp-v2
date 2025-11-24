@@ -81,7 +81,9 @@ describe('ImportExportSection', () => {
     jest.clearAllMocks();
     mockWatchlistApi.previewImport.mockResolvedValue(mockPreviewItems);
     mockWatchlistApi.confirmImport.mockResolvedValue(mockImportResult);
-    mockWatchlistApi.exportWatchlistAsFile.mockResolvedValue(new Blob(['{}'], { type: 'application/json' }));
+    mockWatchlistApi.exportWatchlistAsFile.mockResolvedValue(
+      new Blob(['{}'], { type: 'application/json' }),
+    );
     mockSharing.isAvailableAsync.mockResolvedValue(true);
     mockFileSystem.readAsStringAsync.mockResolvedValue('test file content');
     mockDocumentPicker.getDocumentAsync.mockResolvedValue({
@@ -293,9 +295,12 @@ describe('ImportExportSection', () => {
       fireEvent.press(importButton);
 
       // Should not call preview if no file was selected
-      await waitFor(() => {
-        expect(mockWatchlistApi.previewImport).not.toHaveBeenCalled();
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          expect(mockWatchlistApi.previewImport).not.toHaveBeenCalled();
+        },
+        { timeout: 1000 },
+      );
     });
   });
 
@@ -524,9 +529,12 @@ describe('ImportExportSection', () => {
       fireEvent.press(cancelButton);
 
       // Modal should be closed
-      await waitFor(() => {
-        expect(screen.queryByText(/Import Preview/)).toBeFalsy();
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/Import Preview/)).toBeFalsy();
+        },
+        { timeout: 1000 },
+      );
     });
 
     it('clears preview data after closing modal', async () => {
@@ -543,9 +551,12 @@ describe('ImportExportSection', () => {
       fireEvent.press(cancelButton);
 
       // Preview items should be cleared
-      await waitFor(() => {
-        expect(screen.queryByText('Inception')).toBeFalsy();
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText('Inception')).toBeFalsy();
+        },
+        { timeout: 1000 },
+      );
     });
   });
 });

@@ -55,7 +55,7 @@ The mobile app uses the same import/export API endpoints as the web app:
 Main component providing import/export UI:
 
 ```typescript
-<ImportExportSection 
+<ImportExportSection
   onImportComplete={() => {
     // Refresh watchlist after successful import
   }}
@@ -63,6 +63,7 @@ Main component providing import/export UI:
 ```
 
 Props:
+
 - `onImportComplete` (optional) - Callback fired after successful import
 
 Located in: `src/components/watchlist/ImportExportSection.tsx`

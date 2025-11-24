@@ -35,7 +35,7 @@ describe('Authentication Flow', () => {
       .toBeVisible()
       .withTimeout(5000);
     await element(by.id('login-button')).tap();
-    
+
     await waitFor(element(by.text('Please enter a valid email address')))
       .toBeVisible()
       .withTimeout(5000);
@@ -48,12 +48,12 @@ describe('Authentication Flow', () => {
     await waitFor(element(by.id('email-input')))
       .toBeVisible()
       .withTimeout(5000);
-    
+
     await element(by.id('email-input')).typeText('test@example.com');
     await element(by.id('password-input')).typeText('Password123');
-    
+
     await element(by.id('login-button')).tap();
-    
+
     await waitFor(element(by.text('Watchlist')))
       .toBeVisible()
       .withTimeout(10000);
@@ -63,13 +63,13 @@ describe('Authentication Flow', () => {
     await element(by.id('email-input')).typeText('test@example.com');
     await element(by.id('password-input')).typeText('Password123');
     await element(by.id('login-button')).tap();
-    
+
     await waitFor(element(by.text('Watchlist')))
       .toBeVisible()
       .withTimeout(10000);
-    
+
     await device.reloadReactNative();
-    
+
     await waitFor(element(by.text('Watchlist')))
       .toBeVisible()
       .withTimeout(10000);
@@ -79,25 +79,25 @@ describe('Authentication Flow', () => {
     await element(by.id('email-input')).typeText('test@example.com');
     await element(by.id('password-input')).typeText('Password123');
     await element(by.id('login-button')).tap();
-    
+
     await waitFor(element(by.text('Settings')))
       .toBeVisible()
       .withTimeout(10000);
-    
+
     await element(by.text('Settings')).tap();
-    
+
     await waitFor(element(by.id('logout-button')))
       .toBeVisible()
       .withTimeout(5000);
-    
+
     await element(by.id('logout-button')).tap();
-    
+
     await waitFor(element(by.text('Logout')))
       .toBeVisible()
       .withTimeout(5000);
-    
+
     await element(by.text('Logout')).tap();
-    
+
     await waitFor(element(by.text('Welcome Back')))
       .toBeVisible()
       .withTimeout(5000);
@@ -105,18 +105,18 @@ describe('Authentication Flow', () => {
 
   it('should show onboarding after registration without display name', async () => {
     await element(by.id('register-link')).tap();
-    
+
     await waitFor(element(by.id('email-input')))
       .toBeVisible()
       .withTimeout(5000);
-    
+
     await element(by.id('displayName-input')).typeText('');
     await element(by.id('email-input')).typeText('newuser@example.com');
     await element(by.id('password-input')).typeText('Password123');
     await element(by.id('confirmPassword-input')).typeText('Password123');
-    
+
     await element(by.id('register-button')).tap();
-    
+
     await waitFor(element(by.text('Welcome to InFocus!')))
       .toBeVisible()
       .withTimeout(10000);

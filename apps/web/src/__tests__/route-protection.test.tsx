@@ -57,7 +57,7 @@ const renderWithProviders = (component: React.ReactElement) => {
   return render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>{component}</AuthProvider>
-    </QueryClientProvider>
+    </QueryClientProvider>,
   );
 };
 
@@ -75,7 +75,7 @@ describe('Route Protection', () => {
       renderWithProviders(
         <ProtectedRoute>
           <div>Protected Content</div>
-        </ProtectedRoute>
+        </ProtectedRoute>,
       );
 
       // Should show spinner while loading
@@ -89,7 +89,7 @@ describe('Route Protection', () => {
       renderWithProviders(
         <ProtectedRoute>
           <div>Protected Content</div>
-        </ProtectedRoute>
+        </ProtectedRoute>,
       );
 
       await waitFor(() => {
@@ -109,7 +109,7 @@ describe('Route Protection', () => {
       renderWithProviders(
         <ProtectedRoute>
           <div>Protected Content</div>
-        </ProtectedRoute>
+        </ProtectedRoute>,
       );
 
       await waitFor(() => {
@@ -131,7 +131,7 @@ describe('Route Protection', () => {
       const { rerender } = renderWithProviders(
         <ProtectedRoute>
           <div>Protected Content</div>
-        </ProtectedRoute>
+        </ProtectedRoute>,
       );
 
       await waitFor(() => {
@@ -146,7 +146,7 @@ describe('Route Protection', () => {
               <div>Protected Content</div>
             </ProtectedRoute>
           </AuthProvider>
-        </QueryClientProvider>
+        </QueryClientProvider>,
       );
 
       expect(screen.getByText('Protected Content')).toBeInTheDocument();
@@ -164,7 +164,7 @@ describe('Route Protection', () => {
       const { rerender } = renderWithProviders(
         <ProtectedRoute>
           <div>Protected Content</div>
-        </ProtectedRoute>
+        </ProtectedRoute>,
       );
 
       await waitFor(() => {
@@ -182,7 +182,7 @@ describe('Route Protection', () => {
               <div>Protected Content</div>
             </ProtectedRoute>
           </AuthProvider>
-        </QueryClientProvider>
+        </QueryClientProvider>,
       );
 
       await waitFor(() => {
@@ -199,7 +199,7 @@ describe('Route Protection', () => {
       renderWithProviders(
         <ProtectedRoute>
           <div>Protected Content</div>
-        </ProtectedRoute>
+        </ProtectedRoute>,
       );
 
       await waitFor(() => {

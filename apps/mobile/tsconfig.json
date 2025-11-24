@@ -7,24 +7,10 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@infocus/shared": [
-        "../../packages/shared/src"
-      ]
+      "@/*": ["./src/*"],
+      "@infocus/shared": ["../../packages/shared/src"]
     }
   },
-  "include": [
-    "src/**/*",
-    "*.ts",
-    "*.tsx",
-    "*.js"
-  ],
-  "exclude": [
-    "node_modules",
-    "android",
-    "ios",
-    ".expo"
-  ]
+  "include": ["src/**/*", "*.ts", "*.tsx", "*.js"],
+  "exclude": ["node_modules", "android", "ios", ".expo"]
 }

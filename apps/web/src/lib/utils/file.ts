@@ -29,11 +29,11 @@ export function generateTimestampedFilename(baseName: string, extension: string)
  */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
@@ -43,9 +43,9 @@ export function formatFileSize(bytes: number): string {
 export function isValidImportFile(file: File): boolean {
   const validTypes = ['text/csv', 'application/json', 'text/plain'];
   const validExtensions = ['csv', 'json', 'txt'];
-  
+
   const fileExtension = file.name.split('.').pop()?.toLowerCase();
-  
+
   return validTypes.includes(file.type) || validExtensions.includes(fileExtension || '');
 }
 

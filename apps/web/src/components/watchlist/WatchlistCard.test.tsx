@@ -34,20 +34,17 @@ const mockEntry: WatchlistEntry = {
   },
 };
 
-const createTestQueryClient = () => new QueryClient({
-  defaultOptions: {
-    queries: { retry: false },
-    mutations: { retry: false },
-  },
-});
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
 
 const renderWithProviders = (ui: React.ReactElement) => {
   const queryClient = createTestQueryClient();
-  return render(
-    <QueryClientProvider client={queryClient}>
-      {ui}
-    </QueryClientProvider>
-  );
+  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
 };
 
 describe('WatchlistCard', () => {
@@ -60,11 +57,7 @@ describe('WatchlistCard', () => {
 
   it('renders watchlist entry correctly', () => {
     renderWithProviders(
-      <WatchlistCard
-        entry={mockEntry}
-        onEdit={mockOnEdit}
-        onRemove={mockOnRemove}
-      />
+      <WatchlistCard entry={mockEntry} onEdit={mockOnEdit} onRemove={mockOnRemove} />,
     );
 
     expect(screen.getByText('Test Movie')).toBeInTheDocument();
@@ -78,11 +71,7 @@ describe('WatchlistCard', () => {
 
   it('displays correct status icon and color for watching status', () => {
     renderWithProviders(
-      <WatchlistCard
-        entry={mockEntry}
-        onEdit={mockOnEdit}
-        onRemove={mockOnRemove}
-      />
+      <WatchlistCard entry={mockEntry} onEdit={mockOnEdit} onRemove={mockOnRemove} />,
     );
 
     expect(screen.getByTestId('play-circle-icon')).toBeInTheDocument();
@@ -91,13 +80,9 @@ describe('WatchlistCard', () => {
 
   it('displays correct status icon and color for completed status', () => {
     const completedEntry = { ...mockEntry, status: 'completed' as const };
-    
+
     renderWithProviders(
-      <WatchlistCard
-        entry={completedEntry}
-        onEdit={mockOnEdit}
-        onRemove={mockOnRemove}
-      />
+      <WatchlistCard entry={completedEntry} onEdit={mockOnEdit} onRemove={mockOnRemove} />,
     );
 
     expect(screen.getByTestId('check-circle-icon')).toBeInTheDocument();
@@ -106,13 +91,9 @@ describe('WatchlistCard', () => {
 
   it('displays correct status icon and color for not_watched status', () => {
     const notWatchedEntry = { ...mockEntry, status: 'not_watched' as const };
-    
+
     renderWithProviders(
-      <WatchlistCard
-        entry={notWatchedEntry}
-        onEdit={mockOnEdit}
-        onRemove={mockOnRemove}
-      />
+      <WatchlistCard entry={notWatchedEntry} onEdit={mockOnEdit} onRemove={mockOnRemove} />,
     );
 
     expect(screen.getByTestId('clock-icon')).toBeInTheDocument();
@@ -121,13 +102,9 @@ describe('WatchlistCard', () => {
 
   it('handles missing rating gracefully', () => {
     const entryWithoutRating = { ...mockEntry, rating: undefined };
-    
+
     renderWithProviders(
-      <WatchlistCard
-        entry={entryWithoutRating}
-        onEdit={mockOnEdit}
-        onRemove={mockOnRemove}
-      />
+      <WatchlistCard entry={entryWithoutRating} onEdit={mockOnEdit} onRemove={mockOnRemove} />,
     );
 
     expect(screen.queryByText('/10')).not.toBeInTheDocument();
@@ -135,13 +112,9 @@ describe('WatchlistCard', () => {
 
   it('handles missing notes gracefully', () => {
     const entryWithoutNotes = { ...mockEntry, notes: undefined };
-    
+
     renderWithProviders(
-      <WatchlistCard
-        entry={entryWithoutNotes}
-        onEdit={mockOnEdit}
-        onRemove={mockOnRemove}
-      />
+      <WatchlistCard entry={entryWithoutNotes} onEdit={mockOnEdit} onRemove={mockOnRemove} />,
     );
 
     expect(screen.queryByText('Great movie!')).not.toBeInTheDocument();
@@ -150,15 +123,11 @@ describe('WatchlistCard', () => {
   it('handles missing poster gracefully', () => {
     const entryWithoutPoster = {
       ...mockEntry,
-      mediaItem: { ...mockEntry.mediaItem, posterPath: undefined }
+      mediaItem: { ...mockEntry.mediaItem, posterPath: undefined },
     };
-    
+
     renderWithProviders(
-      <WatchlistCard
-        entry={entryWithoutPoster}
-        onEdit={mockOnEdit}
-        onRemove={mockOnRemove}
-      />
+      <WatchlistCard entry={entryWithoutPoster} onEdit={mockOnEdit} onRemove={mockOnRemove} />,
     );
 
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
@@ -166,11 +135,7 @@ describe('WatchlistCard', () => {
 
   it('calls onEdit when Edit button is clicked', () => {
     renderWithProviders(
-      <WatchlistCard
-        entry={mockEntry}
-        onEdit={mockOnEdit}
-        onRemove={mockOnRemove}
-      />
+      <WatchlistCard entry={mockEntry} onEdit={mockOnEdit} onRemove={mockOnRemove} />,
     );
 
     const editButton = screen.getByRole('button', { name: 'Edit' });
@@ -181,11 +146,7 @@ describe('WatchlistCard', () => {
 
   it('calls onRemove when Remove button is clicked', () => {
     renderWithProviders(
-      <WatchlistCard
-        entry={mockEntry}
-        onEdit={mockOnEdit}
-        onRemove={mockOnRemove}
-      />
+      <WatchlistCard entry={mockEntry} onEdit={mockOnEdit} onRemove={mockOnRemove} />,
     );
 
     const removeButton = screen.getByRole('button', { name: 'Remove' });
@@ -197,15 +158,11 @@ describe('WatchlistCard', () => {
   it('displays TV show media type correctly', () => {
     const tvEntry = {
       ...mockEntry,
-      mediaItem: { ...mockEntry.mediaItem, mediaType: 'tv' as const }
+      mediaItem: { ...mockEntry.mediaItem, mediaType: 'tv' as const },
     };
-    
+
     renderWithProviders(
-      <WatchlistCard
-        entry={tvEntry}
-        onEdit={mockOnEdit}
-        onRemove={mockOnRemove}
-      />
+      <WatchlistCard entry={tvEntry} onEdit={mockOnEdit} onRemove={mockOnRemove} />,
     );
 
     expect(screen.getByText('tv')).toBeInTheDocument();

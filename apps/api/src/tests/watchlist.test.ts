@@ -849,7 +849,7 @@ Unknown Movie,2025,not_watched,7,,2024-01-17,`;
           status: 'completed',
           rating: 10,
           notes: 'Tarantino masterpiece',
-          streamingProviders: ['netflix']
+          streamingProviders: ['netflix'],
         },
         {
           title: 'The Godfather',
@@ -857,8 +857,8 @@ Unknown Movie,2025,not_watched,7,,2024-01-17,`;
           status: 'not_watched',
           rating: null,
           notes: null,
-          streamingProviders: []
-        }
+          streamingProviders: [],
+        },
       ]);
 
       const response = await request(app)
@@ -915,8 +915,8 @@ Unknown Movie,2025,not_watched,7,,2024-01-17,`;
                 title: 'Fight Club',
                 year: 1999,
                 posterPath: '/test.jpg',
-                confidence: 0.9
-              }
+                confidence: 0.9,
+              },
             ],
             selectedMatchIndex: 0,
             suggestedStatus: 'completed',
@@ -927,12 +927,12 @@ Unknown Movie,2025,not_watched,7,,2024-01-17,`;
             hasExistingEntry: false,
             existingEntryId: null,
             shouldSkip: false,
-            error: null
-          }
+            error: null,
+          },
         ],
         resolutions: [],
         skipUnmatched: false,
-        defaultDuplicateStrategy: 'skip'
+        defaultDuplicateStrategy: 'skip',
       };
 
       const response = await request(app)
@@ -978,8 +978,8 @@ Unknown Movie,2025,not_watched,7,,2024-01-17,`;
                 title: 'The Shawshank Redemption',
                 year: 1994,
                 posterPath: '/test.jpg',
-                confidence: 0.95
-              }
+                confidence: 0.95,
+              },
             ],
             selectedMatchIndex: 0,
             suggestedStatus: 'completed',
@@ -988,17 +988,17 @@ Unknown Movie,2025,not_watched,7,,2024-01-17,`;
             hasExistingEntry: true,
             existingEntryId: existingEntry.id,
             shouldSkip: false,
-            error: null
-          }
+            error: null,
+          },
         ],
         resolutions: [
           {
             itemIndex: 0,
-            strategy: 'skip'
-          }
+            strategy: 'skip',
+          },
         ],
         skipUnmatched: false,
-        defaultDuplicateStrategy: 'skip'
+        defaultDuplicateStrategy: 'skip',
       };
 
       const response = await request(app)
@@ -1152,9 +1152,7 @@ Unknown Movie,2025,not_watched,7,,2024-01-17,`;
     });
 
     it('should return 401 without authentication', async () => {
-      const response = await request(app)
-        .get('/watchlist/export')
-        .expect(401);
+      const response = await request(app).get('/watchlist/export').expect(401);
 
       expect(response.body.error).toBe('Access token required');
     });

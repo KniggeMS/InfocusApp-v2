@@ -18,7 +18,7 @@ describe('Search Routes', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Create mock Prisma instance
     mockPrismaInstance = {
       mediaItem: {
@@ -75,9 +75,7 @@ describe('Search Routes', () => {
       mockTmdbService.searchMulti.mockResolvedValue(mockSearchResponse);
       mockPrismaInstance.mediaItem.findUnique.mockResolvedValue(null);
 
-      const response = await request(app)
-        .get('/search')
-        .query({ query: 'test query' });
+      const response = await request(app).get('/search').query({ query: 'test query' });
 
       expect(response.status).toBe(200);
       expect(response.body.results).toHaveLength(2);
@@ -90,9 +88,7 @@ describe('Search Routes', () => {
       const cachedResponse = { ...mockSearchResponse, cached: true };
       mockCacheService.get.mockReturnValue(cachedResponse);
 
-      const response = await request(app)
-        .get('/search')
-        .query({ query: 'test query' });
+      const response = await request(app).get('/search').query({ query: 'test query' });
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(cachedResponse);
@@ -102,7 +98,7 @@ describe('Search Routes', () => {
     it('should enrich results with database provider data', async () => {
       mockCacheService.get.mockReturnValue(undefined);
       mockTmdbService.searchMulti.mockResolvedValue(mockSearchResponse);
-      
+
       // Mock existing media item with providers
       mockPrismaInstance.mediaItem.findUnique
         .mockResolvedValueOnce({
@@ -117,9 +113,7 @@ describe('Search Routes', () => {
         })
         .mockResolvedValueOnce(null);
 
-      const response = await request(app)
-        .get('/search')
-        .query({ query: 'test query' });
+      const response = await request(app).get('/search').query({ query: 'test query' });
 
       expect(response.status).toBe(200);
       expect(response.body.results[0]).toHaveProperty('inDatabase', true);
@@ -131,18 +125,14 @@ describe('Search Routes', () => {
       mockTmdbService.searchMulti.mockResolvedValue(mockSearchResponse);
       mockPrismaInstance.mediaItem.findUnique.mockResolvedValue(null);
 
-      const response = await request(app)
-        .get('/search')
-        .query({ query: 'test query', page: 2 });
+      const response = await request(app).get('/search').query({ query: 'test query', page: 2 });
 
       expect(mockTmdbService.searchMulti).toHaveBeenCalledWith('test query', 2);
       expect(response.status).toBe(200);
     });
 
     it('should validate query parameters', async () => {
-      const response = await request(app)
-        .get('/search')
-        .query({ query: '' });
+      const response = await request(app).get('/search').query({ query: '' });
 
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Invalid query parameters');
@@ -164,9 +154,7 @@ describe('Search Routes', () => {
       mockCacheService.get.mockReturnValue(undefined);
       mockTmdbService.searchMulti.mockRejectedValue(new Error('TMDB API Error'));
 
-      const response = await request(app)
-        .get('/search')
-        .query({ query: 'test query' });
+      const response = await request(app).get('/search').query({ query: 'test query' });
 
       expect(response.status).toBe(500);
       expect(response.body.error).toBe('Failed to perform search');
@@ -176,12 +164,10 @@ describe('Search Routes', () => {
       mockCacheService.get
         .mockReturnValueOnce(undefined) // First call for fresh cache
         .mockReturnValueOnce(mockSearchResponse); // Second call for stale cache
-      
+
       mockTmdbService.searchMulti.mockRejectedValue(new Error('TMDB API Error'));
 
-      const response = await request(app)
-        .get('/search')
-        .query({ query: 'test query' });
+      const response = await request(app).get('/search').query({ query: 'test query' });
 
       expect(response.status).toBe(200);
       expect(response.body.stale).toBe(true);
@@ -208,9 +194,7 @@ describe('Search Routes', () => {
       mockTmdbService.getMediaDetails.mockResolvedValue(mockMediaDetails);
       mockPrismaInstance.mediaItem.findUnique.mockResolvedValue(null);
 
-      const response = await request(app)
-        .get('/media/123')
-        .query({ type: 'movie' });
+      const response = await request(app).get('/media/123').query({ type: 'movie' });
 
       expect(response.status).toBe(200);
       expect(response.body.id).toBe(123);
@@ -223,9 +207,7 @@ describe('Search Routes', () => {
       const cachedDetails = { ...mockMediaDetails, cached: true };
       mockCacheService.get.mockReturnValue(cachedDetails);
 
-      const response = await request(app)
-        .get('/media/123')
-        .query({ type: 'movie' });
+      const response = await request(app).get('/media/123').query({ type: 'movie' });
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(cachedDetails);
@@ -235,7 +217,7 @@ describe('Search Routes', () => {
     it('should enrich media details with database provider data', async () => {
       mockCacheService.get.mockReturnValue(undefined);
       mockTmdbService.getMediaDetails.mockResolvedValue(mockMediaDetails);
-      
+
       mockPrismaInstance.mediaItem.findUnique.mockResolvedValue({
         id: 'media-123',
         tmdbId: 123,
@@ -247,9 +229,7 @@ describe('Search Routes', () => {
         ],
       });
 
-      const response = await request(app)
-        .get('/media/123')
-        .query({ type: 'movie' });
+      const response = await request(app).get('/media/123').query({ type: 'movie' });
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('inDatabase', true);
@@ -262,27 +242,21 @@ describe('Search Routes', () => {
       mockTmdbService.getMediaDetails.mockResolvedValue(tvDetails);
       mockPrismaInstance.mediaItem.findUnique.mockResolvedValue(null);
 
-      const response = await request(app)
-        .get('/media/123')
-        .query({ type: 'tv' });
+      const response = await request(app).get('/media/123').query({ type: 'tv' });
 
       expect(response.status).toBe(200);
       expect(mockTmdbService.getMediaDetails).toHaveBeenCalledWith(123, 'tv');
     });
 
     it('should validate tmdbId parameter', async () => {
-      const response = await request(app)
-        .get('/media/invalid')
-        .query({ type: 'movie' });
+      const response = await request(app).get('/media/invalid').query({ type: 'movie' });
 
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Invalid parameters');
     });
 
     it('should validate type parameter', async () => {
-      const response = await request(app)
-        .get('/media/123')
-        .query({ type: 'invalid' });
+      const response = await request(app).get('/media/123').query({ type: 'invalid' });
 
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Invalid parameters');
@@ -292,24 +266,18 @@ describe('Search Routes', () => {
       mockCacheService.get.mockReturnValue(undefined);
       mockTmdbService.getMediaDetails.mockRejectedValue(new Error('TMDB API Error'));
 
-      const response = await request(app)
-        .get('/media/123')
-        .query({ type: 'movie' });
+      const response = await request(app).get('/media/123').query({ type: 'movie' });
 
       expect(response.status).toBe(500);
       expect(response.body.error).toBe('Failed to fetch media details');
     });
 
     it('should return stale cache for media details when TMDB is down', async () => {
-      mockCacheService.get
-        .mockReturnValueOnce(undefined)
-        .mockReturnValueOnce(mockMediaDetails);
-      
+      mockCacheService.get.mockReturnValueOnce(undefined).mockReturnValueOnce(mockMediaDetails);
+
       mockTmdbService.getMediaDetails.mockRejectedValue(new Error('TMDB API Error'));
 
-      const response = await request(app)
-        .get('/media/123')
-        .query({ type: 'movie' });
+      const response = await request(app).get('/media/123').query({ type: 'movie' });
 
       expect(response.status).toBe(200);
       expect(response.body.stale).toBe(true);
@@ -330,8 +298,7 @@ describe('Search Routes', () => {
       mockCacheService.get.mockReturnValue(undefined);
       mockTmdbService.getGenres.mockResolvedValue(mockGenres.genres);
 
-      const response = await request(app)
-        .get('/genres/movie');
+      const response = await request(app).get('/genres/movie');
 
       expect(response.status).toBe(200);
       expect(response.body.genres).toEqual(mockGenres.genres);
@@ -343,8 +310,7 @@ describe('Search Routes', () => {
       mockCacheService.get.mockReturnValue(undefined);
       mockTmdbService.getGenres.mockResolvedValue(mockGenres.genres);
 
-      const response = await request(app)
-        .get('/genres/tv');
+      const response = await request(app).get('/genres/tv');
 
       expect(response.status).toBe(200);
       expect(response.body.genres).toEqual(mockGenres.genres);
@@ -355,8 +321,7 @@ describe('Search Routes', () => {
       const cachedGenres = { genres: mockGenres.genres, cached: true };
       mockCacheService.get.mockReturnValue(cachedGenres);
 
-      const response = await request(app)
-        .get('/genres/movie');
+      const response = await request(app).get('/genres/movie');
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(cachedGenres);
@@ -364,8 +329,7 @@ describe('Search Routes', () => {
     });
 
     it('should validate genre type', async () => {
-      const response = await request(app)
-        .get('/genres/invalid');
+      const response = await request(app).get('/genres/invalid');
 
       expect(response.status).toBe(400);
       expect(response.body.error).toContain('Invalid type');
@@ -375,8 +339,7 @@ describe('Search Routes', () => {
       mockCacheService.get.mockReturnValue(undefined);
       mockTmdbService.getGenres.mockRejectedValue(new Error('TMDB API Error'));
 
-      const response = await request(app)
-        .get('/genres/movie');
+      const response = await request(app).get('/genres/movie');
 
       expect(response.status).toBe(500);
       expect(response.body.error).toBe('Failed to fetch genres');
@@ -387,8 +350,7 @@ describe('Search Routes', () => {
     it('should clear cache successfully', async () => {
       mockCacheService.clear.mockImplementation(() => {});
 
-      const response = await request(app)
-        .post('/cache/clear');
+      const response = await request(app).post('/cache/clear');
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('Cache cleared successfully');
@@ -400,8 +362,7 @@ describe('Search Routes', () => {
         throw new Error('Cache clear error');
       });
 
-      const response = await request(app)
-        .post('/cache/clear');
+      const response = await request(app).post('/cache/clear');
 
       expect(response.status).toBe(500);
       expect(response.body.error).toBe('Failed to clear cache');
@@ -419,8 +380,7 @@ describe('Search Routes', () => {
       };
       mockCacheService.getStats.mockReturnValue(mockStats);
 
-      const response = await request(app)
-        .get('/cache/stats');
+      const response = await request(app).get('/cache/stats');
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(mockStats);
@@ -432,8 +392,7 @@ describe('Search Routes', () => {
         throw new Error('Stats error');
       });
 
-      const response = await request(app)
-        .get('/cache/stats');
+      const response = await request(app).get('/cache/stats');
 
       expect(response.status).toBe(500);
       expect(response.body.error).toBe('Failed to get cache statistics');

@@ -153,6 +153,7 @@ This API uses two TypeScript configurations:
 - **`tsconfig.build.json`** - Build-focused configuration that excludes test files, used for production builds
 
 The build configuration:
+
 - Sets `rootDir` to `src` to ensure clean output
 - Excludes `src/tests/**` and `**/*.test.ts` to prevent test files from being included in builds
 - Outputs to the `dist` directory

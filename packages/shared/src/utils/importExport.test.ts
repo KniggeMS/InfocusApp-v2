@@ -61,10 +61,7 @@ describe('Import/Export Utilities', () => {
 
   describe('parseStreamingProviders', () => {
     it('parses array of strings', () => {
-      expect(parseStreamingProviders(['Netflix', 'Hulu'])).toEqual([
-        'netflix',
-        'hulu',
-      ]);
+      expect(parseStreamingProviders(['Netflix', 'Hulu'])).toEqual(['netflix', 'hulu']);
       expect(parseStreamingProviders(['NETFLIX', 'HULU', 'Prime'])).toEqual([
         'netflix',
         'hulu',
@@ -73,23 +70,12 @@ describe('Import/Export Utilities', () => {
     });
 
     it('parses comma-separated strings', () => {
-      expect(parseStreamingProviders('Netflix, Hulu')).toEqual([
-        'netflix',
-        'hulu',
-      ]);
-      expect(parseStreamingProviders('Netflix,Hulu,Prime')).toEqual([
-        'netflix',
-        'hulu',
-        'prime',
-      ]);
+      expect(parseStreamingProviders('Netflix, Hulu')).toEqual(['netflix', 'hulu']);
+      expect(parseStreamingProviders('Netflix,Hulu,Prime')).toEqual(['netflix', 'hulu', 'prime']);
     });
 
     it('parses semicolon-separated strings', () => {
-      expect(parseStreamingProviders('Netflix; Hulu; Prime')).toEqual([
-        'netflix',
-        'hulu',
-        'prime',
-      ]);
+      expect(parseStreamingProviders('Netflix; Hulu; Prime')).toEqual(['netflix', 'hulu', 'prime']);
     });
 
     it('parses pipe-separated strings', () => {
@@ -101,10 +87,7 @@ describe('Import/Export Utilities', () => {
     });
 
     it('parses JSON array strings', () => {
-      expect(parseStreamingProviders('["Netflix", "Hulu"]')).toEqual([
-        'netflix',
-        'hulu',
-      ]);
+      expect(parseStreamingProviders('["Netflix", "Hulu"]')).toEqual(['netflix', 'hulu']);
       expect(parseStreamingProviders('["NETFLIX","HULU","Prime"]')).toEqual([
         'netflix',
         'hulu',
@@ -128,33 +111,18 @@ describe('Import/Export Utilities', () => {
     });
 
     it('filters out empty strings', () => {
-      expect(parseStreamingProviders(['Netflix', '', 'Hulu'])).toEqual([
-        'netflix',
-        'hulu',
-      ]);
-      expect(parseStreamingProviders('Netflix, , Hulu')).toEqual([
-        'netflix',
-        'hulu',
-      ]);
+      expect(parseStreamingProviders(['Netflix', '', 'Hulu'])).toEqual(['netflix', 'hulu']);
+      expect(parseStreamingProviders('Netflix, , Hulu')).toEqual(['netflix', 'hulu']);
     });
 
     it('trims whitespace from provider names', () => {
-      expect(parseStreamingProviders('  Netflix  , Hulu  ')).toEqual([
-        'netflix',
-        'hulu',
-      ]);
-      expect(parseStreamingProviders(['  Netflix  ', '  Hulu  '])).toEqual([
-        'netflix',
-        'hulu',
-      ]);
+      expect(parseStreamingProviders('  Netflix  , Hulu  ')).toEqual(['netflix', 'hulu']);
+      expect(parseStreamingProviders(['  Netflix  ', '  Hulu  '])).toEqual(['netflix', 'hulu']);
     });
 
     it('handles malformed JSON gracefully', () => {
       // Should fall back to CSV parsing
-      expect(parseStreamingProviders('[Netflix, Hulu]')).toEqual([
-        '[netflix',
-        'hulu]',
-      ]);
+      expect(parseStreamingProviders('[Netflix, Hulu]')).toEqual(['[netflix', 'hulu]']);
     });
   });
 
@@ -214,82 +182,40 @@ describe('Import/Export Utilities', () => {
 
   describe('calculateMatchConfidence', () => {
     it('returns 1.0 for perfect match with poster', () => {
-      const confidence = calculateMatchConfidence(
-        'Inception',
-        2010,
-        'Inception',
-        2010,
-        true
-      );
+      const confidence = calculateMatchConfidence('Inception', 2010, 'Inception', 2010, true);
       expect(confidence).toBe(1.0);
     });
 
     it('returns high confidence for exact title and year match', () => {
-      const confidence = calculateMatchConfidence(
-        'Inception',
-        2010,
-        'Inception',
-        2010,
-        false
-      );
+      const confidence = calculateMatchConfidence('Inception', 2010, 'Inception', 2010, false);
       expect(confidence).toBeGreaterThan(0.9);
     });
 
     it('reduces confidence when year is off by 1', () => {
-      const confidence = calculateMatchConfidence(
-        'Inception',
-        2011,
-        'Inception',
-        2010,
-        true
-      );
+      const confidence = calculateMatchConfidence('Inception', 2011, 'Inception', 2010, true);
       expect(confidence).toBeGreaterThan(0.65);
       expect(confidence).toBeLessThan(1.0);
     });
 
     it('reduces confidence when year is missing', () => {
-      const confidence = calculateMatchConfidence(
-        'Inception',
-        2010,
-        'Inception',
-        null,
-        true
-      );
+      const confidence = calculateMatchConfidence('Inception', 2010, 'Inception', null, true);
       expect(confidence).toBeGreaterThan(0.65);
       expect(confidence).toBeLessThan(0.85);
     });
 
     it('handles partial title matches', () => {
-      const confidence = calculateMatchConfidence(
-        'The Matrix',
-        1999,
-        'Matrix',
-        1999,
-        true
-      );
+      const confidence = calculateMatchConfidence('The Matrix', 1999, 'Matrix', 1999, true);
       expect(confidence).toBeGreaterThan(0.7);
       expect(confidence).toBeLessThan(1.0);
     });
 
     it('returns lower confidence for poor matches', () => {
-      const confidence = calculateMatchConfidence(
-        'The Matrix',
-        2000,
-        'Matrix',
-        1999,
-        false
-      );
+      const confidence = calculateMatchConfidence('The Matrix', 2000, 'Matrix', 1999, false);
       expect(confidence).toBeLessThan(0.7);
     });
 
     it('handles case-insensitive matching', () => {
-      const confidence = calculateMatchConfidence(
-        'INCEPTION',
-        2010,
-        'inception',
-        2010,
-        true
-      );
+      const confidence = calculateMatchConfidence('INCEPTION', 2010, 'inception', 2010, true);
       expect(confidence).toBe(1.0);
     });
 
@@ -299,31 +225,19 @@ describe('Import/Export Utilities', () => {
         2001,
         'Oceans Eleven',
         2001,
-        true
+        true,
       );
       expect(confidence).toBe(1.0);
     });
 
     it('awards partial credit when original year is missing', () => {
-      const confidence = calculateMatchConfidence(
-        'Inception',
-        2010,
-        'Inception',
-        undefined,
-        true
-      );
+      const confidence = calculateMatchConfidence('Inception', 2010, 'Inception', undefined, true);
       expect(confidence).toBeGreaterThan(0.65);
       expect(confidence).toBeLessThan(0.85);
     });
 
     it('handles completely different titles', () => {
-      const confidence = calculateMatchConfidence(
-        'Inception',
-        2010,
-        'The Matrix',
-        1999,
-        false
-      );
+      const confidence = calculateMatchConfidence('Inception', 2010, 'The Matrix', 1999, false);
       expect(confidence).toBeLessThan(0.3);
     });
   });
@@ -454,7 +368,7 @@ describe('Import/Export Utilities', () => {
         candidate1.year,
         originalTitle,
         originalYear,
-        candidate1.hasPoster
+        candidate1.hasPoster,
       );
 
       const confidence2 = calculateMatchConfidence(
@@ -462,7 +376,7 @@ describe('Import/Export Utilities', () => {
         candidate2.year,
         originalTitle,
         originalYear,
-        candidate2.hasPoster
+        candidate2.hasPoster,
       );
 
       expect(confidence1).toBeGreaterThan(0.9);

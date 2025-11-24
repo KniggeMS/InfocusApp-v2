@@ -17,6 +17,9 @@ export interface FilterControlsProps {
   className?: string;
 }
 
+// Export the StatusFilter type for use in other components
+export type StatusFilter = 'all' | 'not_watched' | 'watching' | 'completed';
+
 const statusOptions: FilterOption[] = [
   { value: 'all', label: 'All Status' },
   { value: 'not_watched', label: 'Not Watched' },
@@ -38,7 +41,7 @@ export function FilterControls({
   sortBy = 'dateAdded_desc',
   onStatusChange,
   onSortChange,
-  className
+  className,
 }: FilterControlsProps) {
   return (
     <div className={cn('flex flex-col sm:flex-row gap-4 items-start sm:items-center', className)}>
@@ -46,7 +49,7 @@ export function FilterControls({
         <Filter className="w-4 h-4" />
         <span>Filters:</span>
       </div>
-      
+
       <div className="flex flex-col sm:flex-row gap-3 flex-1">
         <Select
           value={statusFilter}
@@ -54,7 +57,7 @@ export function FilterControls({
           options={statusOptions}
           className="w-full sm:w-48"
         />
-        
+
         <Select
           value={sortBy}
           onChange={(e) => onSortChange(e.target.value)}

@@ -80,10 +80,17 @@ export default function LoginPage() {
                 {...register('password')}
                 autoComplete="current-password"
               />
-              {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+              )}
             </div>
 
-            <Button type="submit" variant="primary" className="w-full" isLoading={isSubmitting || authLoading}>
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-full"
+              isLoading={isSubmitting || authLoading}
+            >
               Login
             </Button>
           </form>

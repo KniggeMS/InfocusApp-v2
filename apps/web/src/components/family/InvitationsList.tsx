@@ -36,18 +36,26 @@ export function InvitationsList({ invitations, isLoading, onResend }: Invitation
     const isExpired = new Date(invitation.expiresAt) < new Date();
 
     if (invitation.status === 'accepted') {
-      return <span className="rounded-full bg-green-100 px-3 py-1 text-xs text-green-800">Accepted</span>;
+      return (
+        <span className="rounded-full bg-green-100 px-3 py-1 text-xs text-green-800">Accepted</span>
+      );
     }
 
     if (invitation.status === 'declined') {
-      return <span className="rounded-full bg-red-100 px-3 py-1 text-xs text-red-800">Declined</span>;
+      return (
+        <span className="rounded-full bg-red-100 px-3 py-1 text-xs text-red-800">Declined</span>
+      );
     }
 
     if (isExpired) {
-      return <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-800">Expired</span>;
+      return (
+        <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-800">Expired</span>
+      );
     }
 
-    return <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs text-yellow-800">Pending</span>;
+    return (
+      <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs text-yellow-800">Pending</span>
+    );
   };
 
   const pendingInvitations = invitations.filter((i) => {

@@ -17,7 +17,7 @@ describe('TMDBService', () => {
   beforeEach(() => {
     // Reset all mocks
     jest.clearAllMocks();
-    
+
     // Mock environment variable
     process.env.TMDB_API_KEY = 'test-api-key';
 
@@ -154,7 +154,9 @@ describe('TMDBService', () => {
       });
       (tmdbService as any).client.get = mockGet;
 
-      await expect(tmdbService.searchMulti('test query')).rejects.toThrow('TMDB API Error: Invalid API key (401)');
+      await expect(tmdbService.searchMulti('test query')).rejects.toThrow(
+        'TMDB API Error: Invalid API key (401)',
+      );
     });
   });
 
@@ -168,7 +170,10 @@ describe('TMDBService', () => {
       release_date: '2023-01-01',
       vote_average: 8.5,
       genre_ids: [1, 2],
-      genres: [{ id: 1, name: 'Action' }, { id: 2, name: 'Drama' }],
+      genres: [
+        { id: 1, name: 'Action' },
+        { id: 2, name: 'Drama' },
+      ],
     };
 
     const mockWatchProviders = {
@@ -180,7 +185,8 @@ describe('TMDBService', () => {
     };
 
     it('should get movie details successfully', async () => {
-      const mockGet = jest.fn()
+      const mockGet = jest
+        .fn()
         .mockResolvedValueOnce({ data: mockMovieDetails })
         .mockResolvedValueOnce({ data: mockWatchProviders });
       (tmdbService as any).client.get = mockGet;
@@ -196,7 +202,8 @@ describe('TMDBService', () => {
     });
 
     it('should cache movie details', async () => {
-      const mockGet = jest.fn()
+      const mockGet = jest
+        .fn()
         .mockResolvedValueOnce({ data: mockMovieDetails })
         .mockResolvedValueOnce({ data: mockWatchProviders });
       (tmdbService as any).client.get = mockGet;
@@ -217,7 +224,10 @@ describe('TMDBService', () => {
       first_air_date: '2023-01-01',
       vote_average: 9.0,
       genre_ids: [3, 4],
-      genres: [{ id: 3, name: 'Comedy' }, { id: 4, name: 'Sci-Fi' }],
+      genres: [
+        { id: 3, name: 'Comedy' },
+        { id: 4, name: 'Sci-Fi' },
+      ],
       number_of_seasons: 3,
       number_of_episodes: 24,
     };
@@ -231,7 +241,8 @@ describe('TMDBService', () => {
     };
 
     it('should get TV show details successfully', async () => {
-      const mockGet = jest.fn()
+      const mockGet = jest
+        .fn()
         .mockResolvedValueOnce({ data: mockTVDetails })
         .mockResolvedValueOnce({ data: mockWatchProviders });
       (tmdbService as any).client.get = mockGet;
@@ -247,7 +258,8 @@ describe('TMDBService', () => {
     });
 
     it('should transform TV show data correctly', async () => {
-      const mockGet = jest.fn()
+      const mockGet = jest
+        .fn()
         .mockResolvedValueOnce({ data: mockTVDetails })
         .mockResolvedValueOnce({ data: mockWatchProviders });
       (tmdbService as any).client.get = mockGet;
@@ -280,7 +292,9 @@ describe('TMDBService', () => {
     });
 
     it('should throw error for invalid media type', async () => {
-      await expect(tmdbService.getMediaDetails(123, 'invalid' as any)).rejects.toThrow('Invalid media type: invalid');
+      await expect(tmdbService.getMediaDetails(123, 'invalid' as any)).rejects.toThrow(
+        'Invalid media type: invalid',
+      );
     });
   });
 
@@ -322,7 +336,7 @@ describe('TMDBService', () => {
       expect(mockCache.set).toHaveBeenCalledWith(
         expect.any(String),
         mockGenresResponse,
-        86400 // 24 hours
+        86400, // 24 hours
       );
     });
   });
@@ -385,9 +399,15 @@ describe('TMDBService', () => {
 
   describe('cache key generation', () => {
     it('should generate consistent cache keys', () => {
-      const key1 = (tmdbService as any).getCacheKey('/test', { param1: 'value1', param2: 'value2' });
-      const key2 = (tmdbService as any).getCacheKey('/test', { param2: 'value2', param1: 'value1' });
-      
+      const key1 = (tmdbService as any).getCacheKey('/test', {
+        param1: 'value1',
+        param2: 'value2',
+      });
+      const key2 = (tmdbService as any).getCacheKey('/test', {
+        param2: 'value2',
+        param1: 'value1',
+      });
+
       expect(key1).toBe(key2);
       expect(key1).toBe('/test?param1=value1&param2=value2');
     });

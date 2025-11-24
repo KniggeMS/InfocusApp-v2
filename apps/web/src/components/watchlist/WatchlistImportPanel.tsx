@@ -17,7 +17,7 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const importPreviewMutation = useWatchlistImportPreview();
 
   const handleFileSelect = (file: File) => {
@@ -46,7 +46,7 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
-    
+
     const file = event.dataTransfer.files[0];
     if (file) {
       handleFileSelect(file);
@@ -93,9 +93,7 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">Import Watchlist</h3>
-              <p className="text-sm text-gray-600">
-                Import your watchlist from a CSV or JSON file
-              </p>
+              <p className="text-sm text-gray-600">Import your watchlist from a CSV or JSON file</p>
             </div>
             <FileText className="h-6 w-6 text-gray-400" />
           </div>
@@ -104,9 +102,10 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
           <div
             className={`
               relative border-2 border-dashed rounded-lg p-8 text-center transition-colors
-              ${isDragging 
-                ? 'border-primary-500 bg-primary-50' 
-                : 'border-gray-300 hover:border-gray-400'
+              ${
+                isDragging
+                  ? 'border-primary-500 bg-primary-50'
+                  : 'border-gray-300 hover:border-gray-400'
               }
             `}
             onDrop={handleDrop}
@@ -120,14 +119,12 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
               onChange={handleFileInput}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
-            
+
             <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
             <p className="text-lg font-medium text-gray-900 mb-2">
               Drop your file here, or click to browse
             </p>
-            <p className="text-sm text-gray-600">
-              Supports CSV and JSON files up to 10MB
-            </p>
+            <p className="text-sm text-gray-600">Supports CSV and JSON files up to 10MB</p>
           </div>
 
           {/* Selected File Info */}
@@ -137,9 +134,7 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
                 <CheckCircle className="h-5 w-5 text-green-500" />
                 <div>
                   <p className="font-medium text-gray-900">{selectedFile.name}</p>
-                  <p className="text-sm text-gray-600">
-                    {formatFileSize(selectedFile.size)}
-                  </p>
+                  <p className="text-sm text-gray-600">{formatFileSize(selectedFile.size)}</p>
                 </div>
               </div>
               <Button variant="ghost" size="sm" onClick={handleReset}>
@@ -158,7 +153,11 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
             >
               {importPreviewMutation.isPending ? 'Parsing...' : 'Parse File'}
             </Button>
-            <Button variant="outline" onClick={handleReset} disabled={importPreviewMutation.isPending}>
+            <Button
+              variant="outline"
+              onClick={handleReset}
+              disabled={importPreviewMutation.isPending}
+            >
               Clear
             </Button>
           </div>
@@ -170,11 +169,22 @@ export function WatchlistImportPanel({ onPreviewGenerated }: WatchlistImportPane
               <div className="text-sm text-blue-800">
                 <p className="font-medium mb-2">File Format Guidelines:</p>
                 <ul className="space-y-1 text-xs">
-                  <li>• <strong>CSV:</strong> Columns should include title (required), year, status, rating, notes, dateAdded</li>
-                  <li>• <strong>JSON:</strong> Array of objects with the same fields as CSV</li>
-                  <li>• <strong>Status:</strong> Use "not_watched", "watching", or "completed"</li>
-                  <li>• <strong>Rating:</strong> Scale of 0-10</li>
-                  <li>• <strong>Date:</strong> ISO format (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ)</li>
+                  <li>
+                    • <strong>CSV:</strong> Columns should include title (required), year, status,
+                    rating, notes, dateAdded
+                  </li>
+                  <li>
+                    • <strong>JSON:</strong> Array of objects with the same fields as CSV
+                  </li>
+                  <li>
+                    • <strong>Status:</strong> Use &quot;not_watched&quot;, &quot;watching&quot;, or &quot;completed&quot;
+                  </li>
+                  <li>
+                    • <strong>Rating:</strong> Scale of 0-10
+                  </li>
+                  <li>
+                    • <strong>Date:</strong> ISO format (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ)
+                  </li>
                 </ul>
               </div>
             </div>

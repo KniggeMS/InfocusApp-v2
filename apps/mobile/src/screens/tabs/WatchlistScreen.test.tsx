@@ -58,7 +58,7 @@ describe('WatchlistScreen with Import/Export', () => {
     mockWatchlistApi.previewImport.mockResolvedValue(mockPreviewItems);
     mockWatchlistApi.confirmImport.mockResolvedValue(mockImportResult);
     mockWatchlistApi.exportWatchlistAsFile.mockResolvedValue(
-      new Blob(['{}'], { type: 'application/json' })
+      new Blob(['{}'], { type: 'application/json' }),
     );
     mockSharing.isAvailableAsync.mockResolvedValue(true);
     mockFileSystem.readAsStringAsync.mockResolvedValue('test file content');

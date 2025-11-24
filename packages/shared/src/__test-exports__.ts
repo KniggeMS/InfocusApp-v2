@@ -71,7 +71,18 @@ const _utils = [
 ];
 
 console.log('All exports verified:', {
-  types: [_rawRow, _match, _preview, _strategy, _mergeFields, _resolution, _bulkRequest, _importResult, _exportedEntry, _exportResponse],
+  types: [
+    _rawRow,
+    _match,
+    _preview,
+    _strategy,
+    _mergeFields,
+    _resolution,
+    _bulkRequest,
+    _importResult,
+    _exportedEntry,
+    _exportResponse,
+  ],
   schemas: _schemas.length,
   utils: _utils.length,
 });

@@ -38,11 +38,7 @@ const renderWithQueryClient = (component: React.ReactElement) => {
     },
   });
 
-  return render(
-    <QueryClientProvider client={queryClient}>
-      {component}
-    </QueryClientProvider>
-  );
+  return render(<QueryClientProvider client={queryClient}>{component}</QueryClientProvider>);
 };
 
 describe('WatchlistImportPanel', () => {
@@ -51,9 +47,7 @@ describe('WatchlistImportPanel', () => {
   });
 
   it('renders the import panel correctly', () => {
-    renderWithQueryClient(
-      <WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />
-    );
+    renderWithQueryClient(<WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />);
 
     expect(screen.getByText('Import Watchlist')).toBeInTheDocument();
     expect(screen.getByText(/Import your watchlist from a CSV or JSON file/)).toBeInTheDocument();
@@ -62,9 +56,7 @@ describe('WatchlistImportPanel', () => {
   });
 
   it('shows file format guidelines', () => {
-    renderWithQueryClient(
-      <WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />
-    );
+    renderWithQueryClient(<WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />);
 
     expect(screen.getByText('File Format Guidelines:')).toBeInTheDocument();
     expect(screen.getByText(/CSV:/)).toBeInTheDocument();
@@ -82,9 +74,7 @@ describe('WatchlistImportPanel', () => {
       },
     });
 
-    renderWithQueryClient(
-      <WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />
-    );
+    renderWithQueryClient(<WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />);
 
     const dropArea = screen.getByText(/Drop your file here/).closest('div');
     fireEvent.click(dropArea!);
@@ -93,15 +83,15 @@ describe('WatchlistImportPanel', () => {
   });
 
   it('validates file types correctly', async () => {
-    renderWithQueryClient(
-      <WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />
-    );
+    renderWithQueryClient(<WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />);
 
     // Create a file with invalid type
     const invalidFile = createMockFile('test.txt', 'text/plain');
 
-    const fileInput = screen.getByRole('button', { name: /Drop your file here/ }).querySelector('input[type="file"]');
-    
+    const fileInput = screen
+      .getByRole('button', { name: /Drop your file here/ })
+      .querySelector('input[type="file"]');
+
     if (fileInput) {
       fireEvent.change(fileInput, {
         target: { files: [invalidFile] },
@@ -114,15 +104,15 @@ describe('WatchlistImportPanel', () => {
   });
 
   it('validates file size correctly', async () => {
-    renderWithQueryClient(
-      <WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />
-    );
+    renderWithQueryClient(<WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />);
 
     // Create a file that's too large (15MB)
     const largeFile = createMockFile('test.csv', 'text/csv', 15 * 1024 * 1024);
 
-    const fileInput = screen.getByRole('button', { name: /Drop your file here/ }).querySelector('input[type="file"]');
-    
+    const fileInput = screen
+      .getByRole('button', { name: /Drop your file here/ })
+      .querySelector('input[type="file"]');
+
     if (fileInput) {
       fireEvent.change(fileInput, {
         target: { files: [largeFile] },
@@ -135,14 +125,14 @@ describe('WatchlistImportPanel', () => {
   });
 
   it('accepts valid CSV file', async () => {
-    renderWithQueryClient(
-      <WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />
-    );
+    renderWithQueryClient(<WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />);
 
     const validFile = createMockFile('test.csv', 'text/csv');
 
-    const fileInput = screen.getByRole('button', { name: /Drop your file here/ }).querySelector('input[type="file"]');
-    
+    const fileInput = screen
+      .getByRole('button', { name: /Drop your file here/ })
+      .querySelector('input[type="file"]');
+
     if (fileInput) {
       fireEvent.change(fileInput, {
         target: { files: [validFile] },
@@ -156,14 +146,14 @@ describe('WatchlistImportPanel', () => {
   });
 
   it('accepts valid JSON file', async () => {
-    renderWithQueryClient(
-      <WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />
-    );
+    renderWithQueryClient(<WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />);
 
     const validFile = createMockFile('test.json', 'application/json');
 
-    const fileInput = screen.getByRole('button', { name: /Drop your file here/ }).querySelector('input[type="file"]');
-    
+    const fileInput = screen
+      .getByRole('button', { name: /Drop your file here/ })
+      .querySelector('input[type="file"]');
+
     if (fileInput) {
       fireEvent.change(fileInput, {
         target: { files: [validFile] },
@@ -177,14 +167,14 @@ describe('WatchlistImportPanel', () => {
   });
 
   it('shows selected file info and allows removal', async () => {
-    renderWithQueryClient(
-      <WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />
-    );
+    renderWithQueryClient(<WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />);
 
     const validFile = createMockFile('test.csv', 'text/csv');
 
-    const fileInput = screen.getByRole('button', { name: /Drop your file here/ }).querySelector('input[type="file"]');
-    
+    const fileInput = screen
+      .getByRole('button', { name: /Drop your file here/ })
+      .querySelector('input[type="file"]');
+
     if (fileInput) {
       fireEvent.change(fileInput, {
         target: { files: [validFile] },
@@ -205,17 +195,17 @@ describe('WatchlistImportPanel', () => {
   });
 
   it('enables parse button only when file is selected', async () => {
-    renderWithQueryClient(
-      <WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />
-    );
+    renderWithQueryClient(<WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />);
 
     const parseButton = screen.getByRole('button', { name: 'Parse File' });
     expect(parseButton).toBeDisabled();
 
     const validFile = createMockFile('test.csv', 'text/csv');
 
-    const fileInput = screen.getByRole('button', { name: /Drop your file here/ }).querySelector('input[type="file"]');
-    
+    const fileInput = screen
+      .getByRole('button', { name: /Drop your file here/ })
+      .querySelector('input[type="file"]');
+
     if (fileInput) {
       fireEvent.change(fileInput, {
         target: { files: [validFile] },
@@ -228,12 +218,10 @@ describe('WatchlistImportPanel', () => {
   });
 
   it('handles drag and drop correctly', async () => {
-    renderWithQueryClient(
-      <WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />
-    );
+    renderWithQueryClient(<WatchlistImportPanel onPreviewGenerated={mockOnPreviewGenerated} />);
 
     const dropArea = screen.getByText(/Drop your file here/).closest('div');
-    
+
     // Test drag over
     fireEvent.dragOver(dropArea!);
     expect(dropArea).toHaveClass('border-primary-500');

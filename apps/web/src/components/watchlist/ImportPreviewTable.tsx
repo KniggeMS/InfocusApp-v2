@@ -4,16 +4,16 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
 import type { NormalizedPreviewItem, TmdbMatchCandidate } from '@infocus/shared';
-import { 
-  Check, 
-  X, 
-  AlertTriangle, 
-  Film, 
-  Tv, 
-  Star, 
+import {
+  Check,
+  X,
+  AlertTriangle,
+  Film,
+  Tv,
+  Star,
   Calendar,
   Copy,
-  ExternalLink
+  ExternalLink,
 } from 'lucide-react';
 
 interface ImportPreviewTableProps {
@@ -22,10 +22,10 @@ interface ImportPreviewTableProps {
   onProceedToResolutions: () => void;
 }
 
-export function ImportPreviewTable({ 
-  items, 
-  onItemsUpdate, 
-  onProceedToResolutions 
+export function ImportPreviewTable({
+  items,
+  onItemsUpdate,
+  onProceedToResolutions,
 }: ImportPreviewTableProps) {
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
 
@@ -65,14 +65,13 @@ export function ImportPreviewTable({
     return 'Low';
   };
 
-  const hasItemsNeedingResolution = items.some(item => 
-    item.hasExistingEntry || 
-    (item.matchCandidates.length === 0 && !item.shouldSkip)
+  const hasItemsNeedingResolution = items.some(
+    (item) => item.hasExistingEntry || (item.matchCandidates.length === 0 && !item.shouldSkip),
   );
 
-  const validItemCount = items.filter(item => 
-    !item.shouldSkip && 
-    (item.selectedMatchIndex !== null || item.matchCandidates.length > 0)
+  const validItemCount = items.filter(
+    (item) =>
+      !item.shouldSkip && (item.selectedMatchIndex !== null || item.matchCandidates.length > 0),
   ).length;
 
   return (
@@ -92,7 +91,10 @@ export function ImportPreviewTable({
                 Valid: <span className="font-medium text-green-600">{validItemCount}</span>
               </div>
               <div className="text-sm text-gray-600">
-                Skipped: <span className="font-medium text-orange-600">{items.filter(item => item.shouldSkip).length}</span>
+                Skipped:{' '}
+                <span className="font-medium text-orange-600">
+                  {items.filter((item) => item.shouldSkip).length}
+                </span>
               </div>
             </div>
           </div>
@@ -129,12 +131,14 @@ export function ImportPreviewTable({
                         </span>
                       )}
                     </div>
-                    
+
                     {/* Item Details */}
                     <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600">
                       <div className="flex items-center space-x-1">
                         <span>Status:</span>
-                        <span className="font-medium">{item.suggestedStatus.replace('_', ' ')}</span>
+                        <span className="font-medium">
+                          {item.suggestedStatus.replace('_', ' ')}
+                        </span>
                       </div>
                       {item.rating && (
                         <div className="flex items-center space-x-1">
@@ -150,18 +154,12 @@ export function ImportPreviewTable({
                       )}
                     </div>
 
-                    {item.error && (
-                      <p className="mt-2 text-sm text-red-600">{item.error}</p>
-                    )}
+                    {item.error && <p className="mt-2 text-sm text-red-600">{item.error}</p>}
                   </div>
 
                   {/* Action Buttons */}
                   <div className="flex items-center space-x-2 ml-4">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toggleItemExpanded(index)}
-                    >
+                    <Button variant="ghost" size="sm" onClick={() => toggleItemExpanded(index)}>
                       {expandedItems.has(index) ? 'Collapse' : 'Expand'}
                     </Button>
                     <Button
@@ -186,9 +184,10 @@ export function ImportPreviewTable({
                             key={matchIndex}
                             className={`
                               border rounded-lg p-3 cursor-pointer transition-all
-                              ${item.selectedMatchIndex === matchIndex 
-                                ? 'border-primary-500 bg-primary-50' 
-                                : 'border-gray-200 hover:border-gray-300'
+                              ${
+                                item.selectedMatchIndex === matchIndex
+                                  ? 'border-primary-500 bg-primary-50'
+                                  : 'border-gray-200 hover:border-gray-300'
                               }
                             `}
                             onClick={() => handleMatchSelection(index, matchIndex)}
@@ -196,13 +195,16 @@ export function ImportPreviewTable({
                             <div className="flex items-center justify-between">
                               <div className="flex items-center space-x-3">
                                 {/* Radio Button */}
-                                <div className={`
+                                <div
+                                  className={`
                                   h-4 w-4 rounded-full border-2 flex items-center justify-center
-                                  ${item.selectedMatchIndex === matchIndex 
-                                    ? 'border-primary-500 bg-primary-500' 
-                                    : 'border-gray-300'
+                                  ${
+                                    item.selectedMatchIndex === matchIndex
+                                      ? 'border-primary-500 bg-primary-500'
+                                      : 'border-gray-300'
                                   }
-                                `}>
+                                `}
+                                >
                                   {item.selectedMatchIndex === matchIndex && (
                                     <div className="h-2 w-2 rounded-full bg-white" />
                                   )}
@@ -233,7 +235,9 @@ export function ImportPreviewTable({
 
                               {/* Confidence Score */}
                               <div className="text-right">
-                                <div className={`text-sm font-medium ${getConfidenceColor(match.confidence)}`}>
+                                <div
+                                  className={`text-sm font-medium ${getConfidenceColor(match.confidence)}`}
+                                >
                                   {getConfidenceLabel(match.confidence)}
                                 </div>
                                 <div className={`text-xs ${getConfidenceColor(match.confidence)}`}>
