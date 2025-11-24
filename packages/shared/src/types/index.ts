@@ -4,6 +4,20 @@ export type WatchStatus = 'not_watched' | 'watching' | 'completed';
 
 export type FamilyRole = 'owner' | 'admin' | 'member';
 
+// Import/Export types
+export type {
+  RawWatchlistRow,
+  TmdbMatchCandidate,
+  NormalizedPreviewItem,
+  DuplicateResolutionStrategy,
+  MergeFields,
+  DuplicateResolution,
+  BulkImportRequest,
+  ImportResult,
+  ExportedWatchlistEntry,
+  ExportResponse,
+} from '../schemas/importExport';
+
 export interface User {
   id: string;
   email: string;
