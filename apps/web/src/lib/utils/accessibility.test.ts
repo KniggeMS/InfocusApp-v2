@@ -60,7 +60,7 @@ describe('Accessibility Utilities', () => {
       document.body.appendChild(container);
 
       const focusableElements = getFocusableElements(container);
-      
+
       expect(focusableElements).toHaveLength(6);
       expect(focusableElements[0].tagName).toBe('BUTTON');
       expect(focusableElements[1].tagName).toBe('INPUT');
@@ -80,7 +80,7 @@ describe('Accessibility Utilities', () => {
       document.body.appendChild(container);
 
       const focusableElements = getFocusableElements(container);
-      
+
       expect(focusableElements).toHaveLength(1);
       expect(focusableElements[0].textContent).toBe('Visible button');
     });
@@ -190,10 +190,10 @@ describe('Accessibility Utilities', () => {
 
       // Cleanup and verify event listener is removed
       cleanup();
-      
+
       // Reset focus
       button1.focus();
-      
+
       // Dispatch Tab event again - should not cycle focus
       container.dispatchEvent(tabEvent);
       expect(document.activeElement).toBe(button1);

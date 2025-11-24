@@ -20,8 +20,12 @@ jest.mock('react-hot-toast', () => ({
   error: jest.fn(),
 }));
 
-const mockUseUpdateWatchlistEntry = useUpdateWatchlistEntry as jest.MockedFunction<typeof useUpdateWatchlistEntry>;
-const mockUseRemoveFromWatchlist = useRemoveFromWatchlist as jest.MockedFunction<typeof useRemoveFromWatchlist>;
+const mockUseUpdateWatchlistEntry = useUpdateWatchlistEntry as jest.MockedFunction<
+  typeof useUpdateWatchlistEntry
+>;
+const mockUseRemoveFromWatchlist = useRemoveFromWatchlist as jest.MockedFunction<
+  typeof useRemoveFromWatchlist
+>;
 
 const mockEntry: WatchlistEntry = {
   id: '1',
@@ -44,20 +48,17 @@ const mockEntry: WatchlistEntry = {
   },
 };
 
-const createTestQueryClient = () => new QueryClient({
-  defaultOptions: {
-    queries: { retry: false },
-    mutations: { retry: false },
-  },
-});
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
 
 const renderWithProviders = (ui: React.ReactElement) => {
   const queryClient = createTestQueryClient();
-  return render(
-    <QueryClientProvider client={queryClient}>
-      {ui}
-    </QueryClientProvider>
-  );
+  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
 };
 
 describe('WatchlistDetailDrawer', () => {
@@ -67,7 +68,7 @@ describe('WatchlistDetailDrawer', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     mockUseUpdateWatchlistEntry.mockReturnValue({
       mutateAsync: mockUpdateMutate,
       isPending: false,
@@ -81,11 +82,7 @@ describe('WatchlistDetailDrawer', () => {
 
   it('does not render when closed', () => {
     renderWithProviders(
-      <WatchlistDetailDrawer
-        isOpen={false}
-        onClose={mockOnClose}
-        entry={mockEntry}
-      />
+      <WatchlistDetailDrawer isOpen={false} onClose={mockOnClose} entry={mockEntry} />,
     );
 
     expect(screen.queryByText('Test Movie')).not.toBeInTheDocument();
@@ -93,11 +90,7 @@ describe('WatchlistDetailDrawer', () => {
 
   it('renders when open with entry details', () => {
     renderWithProviders(
-      <WatchlistDetailDrawer
-        isOpen={true}
-        onClose={mockOnClose}
-        entry={mockEntry}
-      />
+      <WatchlistDetailDrawer isOpen={true} onClose={mockOnClose} entry={mockEntry} />,
     );
 
     expect(screen.getByText('Test Movie')).toBeInTheDocument();
@@ -108,13 +101,9 @@ describe('WatchlistDetailDrawer', () => {
 
   it('closes when X button is clicked', async () => {
     const user = userEvent.setup();
-    
+
     renderWithProviders(
-      <WatchlistDetailDrawer
-        isOpen={true}
-        onClose={mockOnClose}
-        entry={mockEntry}
-      />
+      <WatchlistDetailDrawer isOpen={true} onClose={mockOnClose} entry={mockEntry} />,
     );
 
     const closeButton = screen.getByTestId('x-icon');
@@ -125,13 +114,9 @@ describe('WatchlistDetailDrawer', () => {
 
   it('closes when Cancel button is clicked', async () => {
     const user = userEvent.setup();
-    
+
     renderWithProviders(
-      <WatchlistDetailDrawer
-        isOpen={true}
-        onClose={mockOnClose}
-        entry={mockEntry}
-      />
+      <WatchlistDetailDrawer isOpen={true} onClose={mockOnClose} entry={mockEntry} />,
     );
 
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
@@ -143,13 +128,9 @@ describe('WatchlistDetailDrawer', () => {
   it('submits form with updated data', async () => {
     const user = userEvent.setup();
     mockUpdateMutate.mockResolvedValue(undefined);
-    
+
     renderWithProviders(
-      <WatchlistDetailDrawer
-        isOpen={true}
-        onClose={mockOnClose}
-        entry={mockEntry}
-      />
+      <WatchlistDetailDrawer isOpen={true} onClose={mockOnClose} entry={mockEntry} />,
     );
 
     // Change status
@@ -181,20 +162,16 @@ describe('WatchlistDetailDrawer', () => {
     // Mock window.confirm
     window.confirm = jest.fn(() => true);
     mockRemoveMutate.mockResolvedValue(undefined);
-    
+
     renderWithProviders(
-      <WatchlistDetailDrawer
-        isOpen={true}
-        onClose={mockOnClose}
-        entry={mockEntry}
-      />
+      <WatchlistDetailDrawer isOpen={true} onClose={mockOnClose} entry={mockEntry} />,
     );
 
     const deleteButton = screen.getByTestId('trash-icon');
     await user.click(deleteButton);
 
     expect(window.confirm).toHaveBeenCalledWith(
-      'Are you sure you want to remove this from your watchlist?'
+      'Are you sure you want to remove this from your watchlist?',
     );
 
     await waitFor(() => {
@@ -206,13 +183,9 @@ describe('WatchlistDetailDrawer', () => {
     const user = userEvent.setup();
     // Mock window.confirm to return false
     window.confirm = jest.fn(() => false);
-    
+
     renderWithProviders(
-      <WatchlistDetailDrawer
-        isOpen={true}
-        onClose={mockOnClose}
-        entry={mockEntry}
-      />
+      <WatchlistDetailDrawer isOpen={true} onClose={mockOnClose} entry={mockEntry} />,
     );
 
     const deleteButton = screen.getByTestId('trash-icon');
@@ -225,15 +198,11 @@ describe('WatchlistDetailDrawer', () => {
   it('shows episode progress fields for TV shows', () => {
     const tvEntry = {
       ...mockEntry,
-      mediaItem: { ...mockEntry.mediaItem, mediaType: 'tv' as const }
+      mediaItem: { ...mockEntry.mediaItem, mediaType: 'tv' as const },
     };
-    
+
     renderWithProviders(
-      <WatchlistDetailDrawer
-        isOpen={true}
-        onClose={mockOnClose}
-        entry={tvEntry}
-      />
+      <WatchlistDetailDrawer isOpen={true} onClose={mockOnClose} entry={tvEntry} />,
     );
 
     expect(screen.getByLabelText('Episodes Watched')).toBeInTheDocument();
@@ -242,11 +211,7 @@ describe('WatchlistDetailDrawer', () => {
 
   it('does not show episode progress fields for movies', () => {
     renderWithProviders(
-      <WatchlistDetailDrawer
-        isOpen={true}
-        onClose={mockOnClose}
-        entry={mockEntry}
-      />
+      <WatchlistDetailDrawer isOpen={true} onClose={mockOnClose} entry={mockEntry} />,
     );
 
     expect(screen.queryByLabelText('Episodes Watched')).not.toBeInTheDocument();
@@ -255,11 +220,7 @@ describe('WatchlistDetailDrawer', () => {
 
   it('disables save button when form is not dirty', () => {
     renderWithProviders(
-      <WatchlistDetailDrawer
-        isOpen={true}
-        onClose={mockOnClose}
-        entry={mockEntry}
-      />
+      <WatchlistDetailDrawer isOpen={true} onClose={mockOnClose} entry={mockEntry} />,
     );
 
     const saveButton = screen.getByRole('button', { name: 'Save Changes' });
@@ -268,13 +229,9 @@ describe('WatchlistDetailDrawer', () => {
 
   it('enables save button when form is dirty', async () => {
     const user = userEvent.setup();
-    
+
     renderWithProviders(
-      <WatchlistDetailDrawer
-        isOpen={true}
-        onClose={mockOnClose}
-        entry={mockEntry}
-      />
+      <WatchlistDetailDrawer isOpen={true} onClose={mockOnClose} entry={mockEntry} />,
     );
 
     // Change status to make form dirty

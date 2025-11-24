@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
+import { useWatchlist } from '@/lib/hooks/use-watchlist';
 import WatchlistPage from '../page';
 
 // Comprehensive mock for the entire watchlist workflow
@@ -111,11 +112,7 @@ const renderWithQueryClient = (component: React.ReactElement) => {
     },
   });
 
-  return render(
-    <QueryClientProvider client={queryClient}>
-      {component}
-    </QueryClientProvider>
-  );
+  return render(<QueryClientProvider client={queryClient}>{component}</QueryClientProvider>);
 };
 
 describe('Watchlist Page - Complete Import/Export Workflow', () => {
@@ -153,7 +150,7 @@ describe('Watchlist Page - Complete Import/Export Workflow', () => {
 
   it('shows import button in empty watchlist state', () => {
     // Mock empty watchlist
-    jest.mocked(require('@/lib/hooks/use-watchlist').useWatchlist).mockReturnValue({
+    jest.mocked(useWatchlist).mockReturnValue({
       data: [],
       isLoading: false,
       error: null,
@@ -202,7 +199,9 @@ describe('Watchlist Page - Complete Import/Export Workflow', () => {
 
     // Create a mock file
     const file = new File(['test content'], 'test.csv', { type: 'text/csv' });
-    const fileInput = screen.getByRole('button', { name: /Drop your file here/ }).querySelector('input[type="file"]');
+    const fileInput = screen
+      .getByRole('button', { name: /Drop your file here/ })
+      .querySelector('input[type="file"]');
 
     if (fileInput) {
       // Simulate file selection

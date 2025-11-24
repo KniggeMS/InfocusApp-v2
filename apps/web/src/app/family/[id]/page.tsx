@@ -125,9 +125,7 @@ export default function FamilyDetailPage() {
               Created by {family.creator.name || family.creator.email}
             </p>
           </div>
-          {isAdmin && (
-            <Button onClick={() => setShowInviteModal(true)}>Invite Member</Button>
-          )}
+          {isAdmin && <Button onClick={() => setShowInviteModal(true)}>Invite Member</Button>}
         </div>
 
         <div className="border-b border-gray-200">

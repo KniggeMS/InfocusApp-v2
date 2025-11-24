@@ -61,12 +61,14 @@ NEXT_PUBLIC_API_URL_PREVIEW=https://your-staging-api.com
 3. Add the variables for the appropriate environments:
 
 #### For Production
+
 - **Environment**: Production
 - **Key**: `NEXT_PUBLIC_API_URL`
 - **Value**: `https://your-production-api.com`
 - **Type**: Plain
 
 #### For Preview (Optional)
+
 - **Environment**: Preview, Development
 - **Key**: `NEXT_PUBLIC_API_URL_PREVIEW`
 - **Value**: `https://your-staging-api.com`
@@ -85,6 +87,7 @@ Vercel allows different values for different environments:
 ### Option 1: Import from GitHub (Recommended)
 
 1. **Log in to Vercel**
+
    ```bash
    npx vercel login
    ```
@@ -96,6 +99,7 @@ Vercel allows different values for different environments:
    - Vercel will automatically detect Next.js
 
 3. **Configure Project Settings**
+
    ```
    Project Name: infocus-web
    Framework Preset: Next.js
@@ -113,15 +117,17 @@ Vercel allows different values for different environments:
 ### Option 2: CLI Deployment
 
 1. **Navigate to Web App Directory**
+
    ```bash
    cd apps/web
    ```
 
 2. **Link and Deploy**
+
    ```bash
    # Link to existing project or create new
    npx vercel link
-   
+
    # Deploy
    npx vercel --prod
    ```
@@ -231,12 +237,12 @@ const getApiUrl = () => {
   if (process.env.NODE_ENV === 'development') {
     return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
   }
-  
+
   // For preview deployments, use preview API if available
   if (process.env.VERCEL_ENV === 'preview' && process.env.NEXT_PUBLIC_API_URL_PREVIEW) {
     return process.env.NEXT_PUBLIC_API_URL_PREVIEW;
   }
-  
+
   return process.env.NEXT_PUBLIC_API_URL;
 };
 ```
@@ -314,8 +320,8 @@ curl -I https://your-domain.vercel.app
 
 ```javascript
 // Test API connectivity from browser console
-fetch('/api/health')  // Should be proxied to backend
-  .then(r => r.json())
+fetch('/api/health') // Should be proxied to backend
+  .then((r) => r.json())
   .then(console.log);
 ```
 
@@ -336,11 +342,11 @@ Verify data fetching works:
 // Test watchlist data
 fetch('/watchlist', {
   headers: {
-    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-  }
+    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+  },
 })
-.then(r => r.json())
-.then(console.log);
+  .then((r) => r.json())
+  .then(console.log);
 ```
 
 ### Automated Validation
@@ -350,13 +356,14 @@ Create a simple test script:
 ```javascript
 // test-deployment.js
 const tests = [
-  () => fetch('/').then(r => r.ok ? '✓ Homepage loads' : '✗ Homepage failed'),
-  () => fetch('/login').then(r => r.ok ? '✓ Login page loads' : '✗ Login page failed'),
-  () => fetch('/api/health').then(r => r.ok ? '✓ API health check' : '✗ API health failed'),
+  () => fetch('/').then((r) => (r.ok ? '✓ Homepage loads' : '✗ Homepage failed')),
+  () => fetch('/login').then((r) => (r.ok ? '✓ Login page loads' : '✗ Login page failed')),
+  () => fetch('/api/health').then((r) => (r.ok ? '✓ API health check' : '✗ API health failed')),
 ];
 
-Promise.all(tests.map(test => test().catch(e => `✗ Error: ${e.message}`)))
-  .then(results => console.log(results.join('\n')));
+Promise.all(tests.map((test) => test().catch((e) => `✗ Error: ${e.message}`))).then((results) =>
+  console.log(results.join('\n')),
+);
 ```
 
 ### Performance Validation
@@ -377,6 +384,7 @@ Check performance metrics:
 **Symptoms**: Browser console shows CORS errors
 
 **Solutions**:
+
 1. Verify `CORS_ORIGIN` includes your Vercel domain
 2. Check for typos in domain names
 3. Ensure API is deployed and accessible
@@ -393,6 +401,7 @@ curl -H "Origin: https://your-domain.vercel.app" \
 **Symptoms**: 404/500 errors when calling API
 
 **Solutions**:
+
 1. Verify `NEXT_PUBLIC_API_URL` is correct
 2. Check API is deployed and running
 3. Test API directly: `curl https://your-api.com/health`
@@ -403,6 +412,7 @@ curl -H "Origin: https://your-domain.vercel.app" \
 **Symptoms**: Deployment fails during build
 
 **Solutions**:
+
 1. Check build logs in Vercel dashboard
 2. Verify `package.json` scripts are correct
 3. Ensure all dependencies are installed
@@ -413,8 +423,9 @@ curl -H "Origin: https://your-domain.vercel.app" \
 **Symptoms**: App loads but API calls fail
 
 **Solutions**:
+
 1. Verify environment variables are set for correct environment
-2. Check variable names (NEXT_PUBLIC_ prefix is required)
+2. Check variable names (NEXT*PUBLIC* prefix is required)
 3. Ensure values don't have extra spaces or quotes
 4. Redeploy after changing environment variables
 
@@ -423,6 +434,7 @@ curl -H "Origin: https://your-domain.vercel.app" \
 **Symptoms**: Login fails or tokens don't work
 
 **Solutions**:
+
 1. Verify API URL is correct and accessible
 2. Check backend JWT secrets match frontend expectations
 3. Test authentication flow with API directly

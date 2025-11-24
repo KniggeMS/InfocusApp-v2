@@ -77,9 +77,7 @@ export function RecommendationsFeed({ recommendations, isLoading }: Recommendati
                 <div className="flex-1">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        {rec.mediaItem.title}
-                      </h3>
+                      <h3 className="text-lg font-semibold text-gray-900">{rec.mediaItem.title}</h3>
                       <p className="text-sm text-gray-500">
                         {rec.mediaItem.tmdbType === 'movie' ? 'Movie' : 'TV Show'}
                       </p>
@@ -107,7 +105,8 @@ export function RecommendationsFeed({ recommendations, isLoading }: Recommendati
 
                   <div className="mt-3 flex items-center space-x-4 text-sm text-gray-500">
                     <span>
-                      From <span className="font-medium">{rec.fromUser.name || rec.fromUser.email}</span>
+                      From{' '}
+                      <span className="font-medium">{rec.fromUser.name || rec.fromUser.email}</span>
                     </span>
                     <span>•</span>
                     <span>

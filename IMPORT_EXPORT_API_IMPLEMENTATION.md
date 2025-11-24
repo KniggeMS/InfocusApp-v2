@@ -5,6 +5,7 @@ This document describes the implemented import/export functionality for the InFo
 ## Overview
 
 The import/export feature allows users to:
+
 1. Import watchlist data from CSV or JSON files
 2. Preview import data with TMDB match candidates
 3. Resolve duplicates using skip/overwrite/merge strategies
@@ -16,12 +17,14 @@ The import/export feature allows users to:
 
 **Description**: Parse uploaded file and generate preview with TMDB matches
 
-**Request**: 
+**Request**:
+
 - Method: POST
 - Content-Type: multipart/form-data
 - Body: file (CSV or JSON)
 
 **Response**:
+
 ```json
 {
   "message": "Import preview generated successfully",
@@ -55,6 +58,7 @@ The import/export feature allows users to:
 **Description**: Execute import with duplicate resolutions
 
 **Request**:
+
 ```json
 {
   "items": [...], // NormalizedPreviewItem array
@@ -76,6 +80,7 @@ The import/export feature allows users to:
 ```
 
 **Response**:
+
 ```json
 {
   "message": "Import completed successfully",
@@ -95,10 +100,12 @@ The import/export feature allows users to:
 **Description**: Export watchlist data in specified format
 
 **Request**:
+
 - Method: GET
 - Query Parameter: format (csv|json)
 
 **Response**:
+
 - CSV: Content-Type: text/csv with downloadable file
 - JSON: Content-Type: application/json with downloadable file
 
@@ -107,6 +114,7 @@ The import/export feature allows users to:
 ### CSV Import Format
 
 Required columns:
+
 - `title` (string, required)
 - `year` (number, optional)
 - `status` (string, optional) - "not_watched", "watching", "completed"
@@ -116,6 +124,7 @@ Required columns:
 - `streamingProviders` (string, optional) - Comma-separated or JSON array
 
 Example:
+
 ```csv
 title,year,status,rating,notes,dateAdded,streamingProviders
 Inception,2010,completed,9,Amazing movie!,2024-01-15,"netflix,hulu"
@@ -143,6 +152,7 @@ Array of objects with the same fields as CSV:
 ### Export Formats
 
 Both CSV and JSON exports include:
+
 - Title, year, type (movie/tv)
 - Watch status, rating, notes
 - Date added, date watched
@@ -151,14 +161,17 @@ Both CSV and JSON exports include:
 ## Duplicate Resolution Strategies
 
 ### Skip
+
 - Keeps existing entry unchanged
 - Ignores imported data for that item
 
 ### Overwrite
+
 - Replaces existing entry completely with imported data
 - All fields are updated to match import
 
 ### Merge
+
 - Combines existing and imported data
 - Selective field updates via mergeFields configuration:
   - `status`: Update watch status
@@ -180,16 +193,19 @@ Both CSV and JSON exports include:
 ## Error Handling
 
 ### File Upload Errors
+
 - Unsupported file format
 - File size exceeds 10MB limit
 - Invalid CSV/JSON structure
 
 ### Import Errors
+
 - TMDB API failures (graceful degradation)
 - Validation errors for individual items
 - Database constraint violations
 
 ### Export Errors
+
 - Empty watchlist
 - Database query failures
 - File generation errors
@@ -203,12 +219,14 @@ Both CSV and JSON exports include:
 ## Client Integration
 
 ### Web Client
+
 - Drag & drop file upload
 - Real-time preview with match selection
 - Interactive duplicate resolution
 - Export format selection and download
 
 ### Mobile Client
+
 - Document picker integration
 - Modal-based preview and resolution
 - Share integration for exports
@@ -217,6 +235,7 @@ Both CSV and JSON exports include:
 ## Testing
 
 Comprehensive test coverage includes:
+
 - File parsing validation
 - TMDB integration mocking
 - Duplicate resolution scenarios

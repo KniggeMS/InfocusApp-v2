@@ -31,7 +31,10 @@ export class MediaPersistenceService {
   /**
    * Fetches detailed media information from TMDB and persists it to the database
    */
-  async persistMediaItem(tmdbId: number, mediaType: MediaType): Promise<{ mediaItem: any; isNew: boolean }> {
+  async persistMediaItem(
+    tmdbId: number,
+    mediaType: MediaType,
+  ): Promise<{ mediaItem: any; isNew: boolean }> {
     // Check if media item already exists
     const existingMedia = await this.prisma.mediaItem.findUnique({
       where: { tmdbId },
@@ -55,7 +58,7 @@ export class MediaPersistenceService {
       backdropPath: mediaDetails.backdrop_path || undefined,
       releaseDate: mediaDetails.release_date ? new Date(mediaDetails.release_date) : undefined,
       rating: mediaDetails.vote_average || undefined,
-      genres: mediaDetails.genres?.map(genre => genre.name) || [],
+      genres: mediaDetails.genres?.map((genre) => genre.name) || [],
       creators: [], // This would need additional API calls to get directors/creators
     };
 
@@ -82,10 +85,7 @@ export class MediaPersistenceService {
   /**
    * Persists streaming provider information for a media item
    */
-  private async persistStreamingProviders(
-    mediaItemId: string,
-    watchProviders: any,
-  ): Promise<void> {
+  private async persistStreamingProviders(mediaItemId: string, watchProviders: any): Promise<void> {
     const providerEntries: CreateStreamingProviderData[] = [];
 
     // Process watch providers for all regions
@@ -126,12 +126,12 @@ export class MediaPersistenceService {
 
     // Group by provider and merge regions
     const providerMap = new Map<string, Set<string>>();
-    
-    providerEntries.forEach(entry => {
+
+    providerEntries.forEach((entry) => {
       if (!providerMap.has(entry.provider)) {
         providerMap.set(entry.provider, new Set());
       }
-      entry.regions.forEach(region => providerMap.get(entry.provider)!.add(region));
+      entry.regions.forEach((region) => providerMap.get(entry.provider)!.add(region));
     });
 
     // Create streaming provider records
@@ -142,7 +142,7 @@ export class MediaPersistenceService {
           provider,
           regions: Array.from(regions),
         },
-      })
+      }),
     );
 
     await Promise.all(createPromises);
@@ -161,7 +161,10 @@ export class MediaPersistenceService {
     }
 
     // Fetch fresh provider data from TMDB
-    const mediaDetails = await tmdbService.getMediaDetails(mediaItem.tmdbId, mediaItem.tmdbType as MediaType);
+    const mediaDetails = await tmdbService.getMediaDetails(
+      mediaItem.tmdbId,
+      mediaItem.tmdbType as MediaType,
+    );
 
     // Delete existing providers
     await this.prisma.streamingProvider.deleteMany({
@@ -190,7 +193,7 @@ export class MediaPersistenceService {
     const batchSize = 5;
     for (let i = 0; i < items.length; i += batchSize) {
       const batch = items.slice(i, i + batchSize);
-      
+
       await Promise.allSettled(
         batch.map(async ({ tmdbId, mediaType }) => {
           try {
@@ -202,12 +205,12 @@ export class MediaPersistenceService {
               error: error instanceof Error ? error.message : 'Unknown error',
             });
           }
-        })
+        }),
       );
 
       // Small delay between batches to respect rate limits
       if (i + batchSize < items.length) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
 
@@ -245,7 +248,7 @@ export class MediaPersistenceService {
     failed: number;
   }> {
     const staleItems = await this.getStaleMediaItems(daysOld);
-    
+
     let updated = 0;
     let failed = 0;
 

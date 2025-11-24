@@ -60,12 +60,14 @@ The InFocus web application implements a secure authentication system with the f
 ## Token Management
 
 ### Access Token
+
 - Stored in localStorage for client-side access
 - Included in Authorization header: `Bearer {accessToken}`
 - Expires in 15 minutes
 - Automatically refreshed when expired
 
 ### Refresh Token
+
 - Set as httpOnly cookie by backend (secure, not accessible from JS)
 - 7-day expiration
 - Stored in database and can be revoked
@@ -74,6 +76,7 @@ The InFocus web application implements a secure authentication system with the f
 ## Authentication Flow
 
 ### Login Flow
+
 1. User enters email and password
 2. Form validation using Zod schema
 3. Call `authApi.login()` with credentials
@@ -83,6 +86,7 @@ The InFocus web application implements a secure authentication system with the f
 7. Redirect to /watchlist
 
 ### Register Flow
+
 1. User enters display name, email, password, confirm password
 2. Form validation using Zod schema
 3. Call `authApi.register()` with data
@@ -92,12 +96,14 @@ The InFocus web application implements a secure authentication system with the f
 7. Redirect to /watchlist
 
 ### Logout Flow
+
 1. Call `authApi.logout()` to revoke refresh token on backend
 2. Clear localStorage tokens
 3. Reset user context
 4. Redirect to /login
 
 ### Token Refresh Flow
+
 1. API client detects 401 response
 2. Attempts to refresh token using refreshToken from localStorage
 3. If refresh succeeds, stores new accessToken and retries original request
@@ -106,6 +112,7 @@ The InFocus web application implements a secure authentication system with the f
 ## Protected Routes
 
 ### Middleware-Protected Routes
+
 - `/watchlist` - User's watchlist
 - `/search` - Search functionality
 - `/family` - Family groups
@@ -142,16 +149,19 @@ export default function WatchlistPage() {
 ## Error Handling
 
 ### Form Validation Errors
+
 - Displayed inline below form fields
 - Clear, user-friendly messages
 - Prevents submission with invalid data
 
 ### API Errors
+
 - Captured and displayed as toast notifications
 - Specific error messages from backend
 - Graceful handling of network failures
 
 ### Authentication Errors
+
 - Invalid credentials: "Invalid email or password"
 - Email already exists: "User with this email already exists"
 - Weak password: Specific validation message
@@ -160,16 +170,19 @@ export default function WatchlistPage() {
 ## Testing
 
 ### Test Files
+
 - `src/__tests__/auth.test.tsx` - Login/register form validation
 - `src/__tests__/route-protection.test.tsx` - Route protection logic
 - `src/__tests__/auth-flow.integration.test.tsx` - End-to-end authentication flows
 
 ### Running Tests
+
 ```bash
 npm run test
 ```
 
 ### Test Coverage
+
 - Form validation (email, password, password confirmation)
 - Successful login/register flows
 - Error handling and error messages
@@ -202,21 +215,25 @@ NODE_ENV=production
 ## Troubleshooting
 
 ### User redirected immediately after login
+
 - Check if redirect logic in `useEffect` is executing correctly
 - Ensure auth context is properly initialized
 - Check browser console for errors
 
 ### Tokens not persisting after page reload
+
 - Verify localStorage is not cleared
 - Check if `getCurrentUser()` API call is succeeding
 - Look for 401 errors in network tab
 
 ### Protected routes accessible without auth
+
 - Verify middleware.ts is in project root
 - Check that protected route paths match middleware config
 - Clear `.next` build cache and rebuild
 
 ### 401 errors not triggering token refresh
+
 - Check if refresh token exists in localStorage
 - Verify refresh token is not expired
 - Check backend logs for refresh endpoint errors

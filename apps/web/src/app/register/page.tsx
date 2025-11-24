@@ -69,7 +69,9 @@ export default function RegisterPage() {
                 {...register('displayName')}
                 autoComplete="name"
               />
-              {errors.displayName && <p className="mt-1 text-sm text-red-600">{errors.displayName.message}</p>}
+              {errors.displayName && (
+                <p className="mt-1 text-sm text-red-600">{errors.displayName.message}</p>
+              )}
             </div>
 
             <div>
@@ -91,7 +93,9 @@ export default function RegisterPage() {
                 {...register('password')}
                 autoComplete="new-password"
               />
-              {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+              )}
             </div>
 
             <div>
@@ -102,10 +106,17 @@ export default function RegisterPage() {
                 {...register('confirmPassword')}
                 autoComplete="new-password"
               />
-              {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>}
+              {errors.confirmPassword && (
+                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
+              )}
             </div>
 
-            <Button type="submit" variant="primary" className="w-full" isLoading={isSubmitting || authLoading}>
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-full"
+              isLoading={isSubmitting || authLoading}
+            >
               Register
             </Button>
           </form>

@@ -55,7 +55,10 @@ export const authApi = {
     return response.data;
   },
 
-  async updateProfile(data: { displayName?: string; profile?: { preferences?: { streamingProviders?: string[] } } }): Promise<User> {
+  async updateProfile(data: {
+    displayName?: string;
+    profile?: { preferences?: { streamingProviders?: string[] } };
+  }): Promise<User> {
     const response = await apiClient.patch('/profile', data);
     return response.data?.user || response.data;
   },

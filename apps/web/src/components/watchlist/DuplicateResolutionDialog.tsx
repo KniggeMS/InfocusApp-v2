@@ -4,24 +4,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import type { 
-  NormalizedPreviewItem, 
-  DuplicateResolution, 
+import type {
+  NormalizedPreviewItem,
+  DuplicateResolution,
   DuplicateResolutionStrategy,
-  MergeFields 
+  MergeFields,
 } from '@infocus/shared';
 import { createFocusTrap } from '@/lib/utils/accessibility';
-import { 
-  X, 
-  Copy, 
-  ArrowRight, 
-  Check, 
-  AlertTriangle,
-  Film,
-  Tv,
-  Star,
-  Calendar
-} from 'lucide-react';
+import { X, Copy, ArrowRight, Check, AlertTriangle, Film, Tv, Star, Calendar } from 'lucide-react';
 
 interface DuplicateResolutionDialogProps {
   items: NormalizedPreviewItem[];
@@ -34,7 +24,7 @@ export function DuplicateResolutionDialog({
   items,
   existingEntries,
   onConfirm,
-  onCancel
+  onCancel,
 }: DuplicateResolutionDialogProps) {
   const [resolutions, setResolutions] = useState<Record<number, DuplicateResolution>>({});
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
@@ -44,16 +34,16 @@ export function DuplicateResolutionDialog({
   useEffect(() => {
     if (dialogRef.current) {
       const cleanup = createFocusTrap(dialogRef.current);
-      
+
       // Handle escape key
       const handleEscape = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
           onCancel();
         }
       };
-      
+
       document.addEventListener('keydown', handleEscape);
-      
+
       return () => {
         cleanup();
         document.removeEventListener('keydown', handleEscape);
@@ -62,7 +52,7 @@ export function DuplicateResolutionDialog({
   }, [onCancel]);
 
   // Filter items that have duplicates
-  const duplicateItems = items.filter(item => item.hasExistingEntry);
+  const duplicateItems = items.filter((item) => item.hasExistingEntry);
 
   const toggleItemExpanded = (index: number) => {
     const newExpanded = new Set(expandedItems);
@@ -75,36 +65,36 @@ export function DuplicateResolutionDialog({
   };
 
   const updateResolution = (itemIndex: number, resolution: Partial<DuplicateResolution>) => {
-    setResolutions(prev => ({
+    setResolutions((prev) => ({
       ...prev,
       [itemIndex]: {
         ...prev[itemIndex],
         itemIndex,
-        ...resolution
-      }
+        ...resolution,
+      },
     }));
   };
 
   const updateMergeFields = (itemIndex: number, mergeFields: Partial<MergeFields>) => {
-    setResolutions(prev => ({
+    setResolutions((prev) => ({
       ...prev,
       [itemIndex]: {
         ...prev[itemIndex],
         itemIndex,
         mergeFields: {
           ...prev[itemIndex]?.mergeFields,
-          ...mergeFields
-        }
-      }
+          ...mergeFields,
+        },
+      },
     }));
   };
 
   const getExistingEntry = (item: NormalizedPreviewItem) => {
-    return existingEntries.find(entry => entry.id === item.existingEntryId);
+    return existingEntries.find((entry) => entry.id === item.existingEntryId);
   };
 
   const handleConfirm = () => {
-    const resolutionList = duplicateItems.map(item => {
+    const resolutionList = duplicateItems.map((item) => {
       const defaultResolution: DuplicateResolution = {
         itemIndex: items.indexOf(item),
         strategy: 'skip',
@@ -112,8 +102,8 @@ export function DuplicateResolutionDialog({
           status: false,
           rating: false,
           notes: 'keep',
-          streamingProviders: 'keep'
-        }
+          streamingProviders: 'keep',
+        },
       };
 
       return resolutions[items.indexOf(item)] || defaultResolution;
@@ -122,14 +112,17 @@ export function DuplicateResolutionDialog({
     onConfirm(resolutionList);
   };
 
-  const allItemsResolved = duplicateItems.every(item => {
+  const allItemsResolved = duplicateItems.every((item) => {
     const resolution = resolutions[items.indexOf(item)];
     return resolution && resolution.strategy !== 'skip';
   });
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div ref={dialogRef} className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div
+        ref={dialogRef}
+        className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+      >
         <div className="sticky top-0 bg-white border-b border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -188,20 +181,27 @@ export function DuplicateResolutionDialog({
                     <div className="grid grid-cols-3 gap-3">
                       {[
                         { value: 'skip', label: 'Skip', description: 'Keep existing entry' },
-                        { value: 'overwrite', label: 'Overwrite', description: 'Replace with imported data' },
-                        { value: 'merge', label: 'Merge', description: 'Combine both entries' }
+                        {
+                          value: 'overwrite',
+                          label: 'Overwrite',
+                          description: 'Replace with imported data',
+                        },
+                        { value: 'merge', label: 'Merge', description: 'Combine both entries' },
                       ].map((strategy) => (
                         <button
                           key={strategy.value}
                           type="button"
-                          onClick={() => updateResolution(itemIndex, { 
-                            strategy: strategy.value as DuplicateResolutionStrategy 
-                          })}
+                          onClick={() =>
+                            updateResolution(itemIndex, {
+                              strategy: strategy.value as DuplicateResolutionStrategy,
+                            })
+                          }
                           className={`
                             p-3 border rounded-lg text-left transition-all
-                            ${resolution?.strategy === strategy.value
-                              ? 'border-primary-500 bg-primary-50'
-                              : 'border-gray-200 hover:border-gray-300'
+                            ${
+                              resolution?.strategy === strategy.value
+                                ? 'border-primary-500 bg-primary-50'
+                                : 'border-gray-200 hover:border-gray-300'
                             }
                           `}
                         >
@@ -224,7 +224,9 @@ export function DuplicateResolutionDialog({
                             <div className="space-y-2 text-sm">
                               <div className="flex items-center space-x-2">
                                 <span className="text-gray-600">Status:</span>
-                                <span className="font-medium">{existingEntry.status.replace('_', ' ')}</span>
+                                <span className="font-medium">
+                                  {existingEntry.status.replace('_', ' ')}
+                                </span>
                               </div>
                               {existingEntry.rating && (
                                 <div className="flex items-center space-x-2">
@@ -248,7 +250,9 @@ export function DuplicateResolutionDialog({
                           <div className="space-y-2 text-sm">
                             <div className="flex items-center space-x-2">
                               <span className="text-gray-600">Status:</span>
-                              <span className="font-medium">{item.suggestedStatus.replace('_', ' ')}</span>
+                              <span className="font-medium">
+                                {item.suggestedStatus.replace('_', ' ')}
+                              </span>
                             </div>
                             {item.rating && (
                               <div className="flex items-center space-x-2">
@@ -277,9 +281,11 @@ export function DuplicateResolutionDialog({
                                 <input
                                   type="checkbox"
                                   checked={resolution.mergeFields?.status || false}
-                                  onChange={(e) => updateMergeFields(itemIndex, { 
-                                    status: e.target.checked 
-                                  })}
+                                  onChange={(e) =>
+                                    updateMergeFields(itemIndex, {
+                                      status: e.target.checked,
+                                    })
+                                  }
                                   className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                 />
                                 <span className="text-sm text-gray-700">Update status</span>
@@ -292,9 +298,11 @@ export function DuplicateResolutionDialog({
                                 <input
                                   type="checkbox"
                                   checked={resolution.mergeFields?.rating || false}
-                                  onChange={(e) => updateMergeFields(itemIndex, { 
-                                    rating: e.target.checked 
-                                  })}
+                                  onChange={(e) =>
+                                    updateMergeFields(itemIndex, {
+                                      rating: e.target.checked,
+                                    })
+                                  }
                                   className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                 />
                                 <span className="text-sm text-gray-700">Update rating</span>
@@ -308,9 +316,11 @@ export function DuplicateResolutionDialog({
                               </label>
                               <select
                                 value={resolution.mergeFields?.notes || 'keep'}
-                                onChange={(e) => updateMergeFields(itemIndex, { 
-                                  notes: e.target.value as 'append' | 'replace' | 'keep' 
-                                })}
+                                onChange={(e) =>
+                                  updateMergeFields(itemIndex, {
+                                    notes: e.target.value as 'append' | 'replace' | 'keep',
+                                  })
+                                }
                                 className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm"
                               >
                                 <option value="keep">Keep existing</option>
@@ -326,9 +336,14 @@ export function DuplicateResolutionDialog({
                               </label>
                               <select
                                 value={resolution.mergeFields?.streamingProviders || 'keep'}
-                                onChange={(e) => updateMergeFields(itemIndex, { 
-                                  streamingProviders: e.target.value as 'merge' | 'replace' | 'keep' 
-                                })}
+                                onChange={(e) =>
+                                  updateMergeFields(itemIndex, {
+                                    streamingProviders: e.target.value as
+                                      | 'merge'
+                                      | 'replace'
+                                      | 'keep',
+                                  })
+                                }
                                 className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm"
                               >
                                 <option value="keep">Keep existing</option>
@@ -354,7 +369,8 @@ export function DuplicateResolutionDialog({
                 <div className="text-sm text-yellow-800">
                   <p className="font-medium">Please resolve all duplicates</p>
                   <p className="mt-1">
-                    Some items still need a resolution strategy. Select how to handle each duplicate above.
+                    Some items still need a resolution strategy. Select how to handle each duplicate
+                    above.
                   </p>
                 </div>
               </div>
@@ -364,17 +380,18 @@ export function DuplicateResolutionDialog({
           {/* Action Buttons */}
           <div className="flex items-center justify-between pt-4 border-t border-gray-200">
             <div className="text-sm text-gray-600">
-              {duplicateItems.filter((_, i) => resolutions[items.indexOf(duplicateItems[i])]?.strategy !== 'skip').length} of {duplicateItems.length} items resolved
+              {
+                duplicateItems.filter(
+                  (_, i) => resolutions[items.indexOf(duplicateItems[i])]?.strategy !== 'skip',
+                ).length
+              }{' '}
+              of {duplicateItems.length} items resolved
             </div>
             <div className="flex space-x-3">
               <Button variant="outline" onClick={onCancel}>
                 Cancel
               </Button>
-              <Button
-                variant="primary"
-                onClick={handleConfirm}
-                disabled={!allItemsResolved}
-              >
+              <Button variant="primary" onClick={handleConfirm} disabled={!allItemsResolved}>
                 Complete Import
               </Button>
             </div>

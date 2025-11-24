@@ -53,7 +53,9 @@ export class WatchlistImportService {
         throw new Error('Unsupported file format. Please upload a CSV or JSON file.');
       }
     } catch (error) {
-      throw new Error(`Failed to parse file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to parse file: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -63,7 +65,7 @@ export class WatchlistImportService {
   private parseJsonFile(content: string): RawWatchlistRow[] {
     try {
       const data = JSON.parse(content);
-      
+
       if (!Array.isArray(data)) {
         throw new Error('JSON file must contain an array of watchlist items');
       }
@@ -72,12 +74,14 @@ export class WatchlistImportService {
         try {
           return rawWatchlistRowSchema.parse(item);
         } catch (error) {
-          throw new Error(`Invalid item at index ${index}: ${error instanceof Error ? error.message : 'Invalid format'}`);
+          throw new Error(
+            `Invalid item at index ${index}: ${error instanceof Error ? error.message : 'Invalid format'}`,
+          );
         }
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        throw new Error(`Invalid JSON format: ${error.errors.map(e => e.message).join(', ')}`);
+        throw new Error(`Invalid JSON format: ${error.errors.map((e) => e.message).join(', ')}`);
       }
       throw error;
     }
@@ -93,7 +97,7 @@ export class WatchlistImportService {
     }
 
     // Extract headers from first line
-    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+    const headers = lines[0].split(',').map((h) => h.trim().replace(/^"|"$/g, ''));
     const rows: RawWatchlistRow[] = [];
 
     // Process data rows
@@ -103,7 +107,7 @@ export class WatchlistImportService {
 
       // Simple CSV parsing (handles basic quoted fields)
       const values = this.parseCsvLine(line);
-      
+
       if (values.length !== headers.length) {
         throw new Error(`Row ${i + 1} has ${values.length} values but expected ${headers.length}`);
       }
@@ -118,7 +122,9 @@ export class WatchlistImportService {
         const parsedRow = rawWatchlistRowSchema.parse(rowData);
         rows.push(parsedRow);
       } catch (error) {
-        throw new Error(`Invalid row ${i + 1}: ${error instanceof Error ? error.message : 'Invalid format'}`);
+        throw new Error(
+          `Invalid row ${i + 1}: ${error instanceof Error ? error.message : 'Invalid format'}`,
+        );
       }
     }
 
@@ -135,7 +141,7 @@ export class WatchlistImportService {
 
     for (let i = 0; i < line.length; i++) {
       const char = line[i];
-      
+
       if (char === '"') {
         inQuotes = !inQuotes;
       } else if (char === ',' && !inQuotes) {
@@ -145,7 +151,7 @@ export class WatchlistImportService {
         current += char;
       }
     }
-    
+
     result.push(current.trim());
     return result;
   }
@@ -156,7 +162,7 @@ export class WatchlistImportService {
   async generatePreview(
     rows: RawWatchlistRow[],
     userId: string,
-    options: ImportPreviewOptions = {}
+    options: ImportPreviewOptions = {},
   ): Promise<NormalizedPreviewItem[]> {
     const { maxCandidates = 5 } = options;
     const previewItems: NormalizedPreviewItem[] = [];
@@ -168,16 +174,16 @@ export class WatchlistImportService {
     });
 
     const existingMediaMap = new Map(
-      existingEntries.map(entry => [
+      existingEntries.map((entry) => [
         `${entry.mediaItem.title.toLowerCase()}|${entry.mediaItem.releaseDate?.getFullYear() || ''}`,
         entry,
-      ])
+      ]),
     );
 
     // Process each row
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
-      
+
       try {
         // Check for duplicates
         const duplicateKey = `${row.title.toLowerCase()}|${row.year || ''}`;
@@ -232,10 +238,13 @@ export class WatchlistImportService {
   /**
    * Find TMDB matches for a given row
    */
-  private async findTmdbMatches(row: RawWatchlistRow, maxCandidates: number): Promise<TmdbMatchCandidate[]> {
+  private async findTmdbMatches(
+    row: RawWatchlistRow,
+    maxCandidates: number,
+  ): Promise<TmdbMatchCandidate[]> {
     try {
       const searchResponse = await tmdbService.searchMulti(row.title, 1);
-      
+
       const candidates: TmdbMatchCandidate[] = searchResponse.results
         .slice(0, maxCandidates * 2) // Get more to filter by confidence
         .map((result: SearchResult) => {
@@ -244,7 +253,7 @@ export class WatchlistImportService {
             result.release_date ? new Date(result.release_date).getFullYear() : null,
             row.title,
             row.year,
-            !!result.poster_path
+            !!result.poster_path,
           );
 
           return {
@@ -258,7 +267,7 @@ export class WatchlistImportService {
             confidence,
           };
         })
-        .filter(candidate => candidate.confidence > 0.3) // Filter low-confidence matches
+        .filter((candidate) => candidate.confidence > 0.3) // Filter low-confidence matches
         .sort((a, b) => b.confidence - a.confidence)
         .slice(0, maxCandidates);
 
@@ -275,10 +284,10 @@ export class WatchlistImportService {
   async confirmImport(
     request: BulkImportRequest,
     userId: string,
-    options: ImportConfirmOptions = {}
+    options: ImportConfirmOptions = {},
   ): Promise<ImportResult> {
     const { skipUnmatched = false, defaultDuplicateStrategy = 'skip' } = options;
-    
+
     const result: ImportResult = {
       imported: 0,
       skipped: 0,
@@ -289,13 +298,11 @@ export class WatchlistImportService {
     };
 
     // Create a map of resolutions by item index
-    const resolutionMap = new Map(
-      request.resolutions.map(res => [res.itemIndex, res])
-    );
+    const resolutionMap = new Map(request.resolutions.map((res) => [res.itemIndex, res]));
 
     for (let i = 0; i < request.items.length; i++) {
       const item = request.items[i];
-      
+
       try {
         // Skip if marked to skip
         if (item.shouldSkip) {
@@ -334,7 +341,6 @@ export class WatchlistImportService {
         // Import new item
         await this.importNewItem(item, userId);
         result.imported++;
-
       } catch (error) {
         result.failed++;
         result.errors.push({
@@ -355,7 +361,7 @@ export class WatchlistImportService {
     item: NormalizedPreviewItem,
     strategy: 'overwrite' | 'merge',
     mergeFields: any,
-    userId: string
+    userId: string,
   ): Promise<void> {
     if (!item.existingEntryId) {
       throw new Error('Missing existing entry ID');
@@ -426,7 +432,7 @@ export class WatchlistImportService {
     // Ensure media item exists
     const mediaResult = await mediaPersistenceService.persistMediaItem(
       candidate.tmdbId,
-      candidate.tmdbType
+      candidate.tmdbType,
     );
 
     // Create watchlist entry
@@ -457,7 +463,7 @@ export class WatchlistImportService {
       orderBy: { dateAdded: 'asc' },
     });
 
-    const entries: ExportedWatchlistEntry[] = watchlistEntries.map(entry => ({
+    const entries: ExportedWatchlistEntry[] = watchlistEntries.map((entry) => ({
       title: entry.mediaItem.title,
       year: entry.mediaItem.releaseDate?.getFullYear() || null,
       type: entry.mediaItem.tmdbType as 'movie' | 'tv',
@@ -466,7 +472,7 @@ export class WatchlistImportService {
       notes: entry.notes,
       dateAdded: entry.dateAdded.toISOString(),
       dateWatched: entry.dateUpdated?.toISOString() || null,
-      streamingProviders: entry.mediaItem.streamingProviders.map(p => p.provider),
+      streamingProviders: entry.mediaItem.streamingProviders.map((p) => p.provider),
       tmdbId: entry.mediaItem.tmdbId,
       posterPath: entry.mediaItem.posterPath,
     }));

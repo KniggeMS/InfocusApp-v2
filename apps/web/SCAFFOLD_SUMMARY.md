@@ -102,41 +102,50 @@ apps/web/
 ## 🎨 UI Components
 
 ### Button Component
+
 - **Variants**: primary, secondary, outline, ghost, danger
 - **Sizes**: sm, md, lg
 - **States**: Loading, disabled
 - **Accessibility**: Proper focus states and ARIA attributes
 
 ### Input Component
+
 - **Features**: Label, placeholder, error messages
 - **Validation**: Visual error states
 - **Accessibility**: Proper label associations
 
 ### Card Component
+
 - **Sections**: Card, CardHeader, CardTitle, CardDescription, CardContent
 - **Usage**: Consistent content containers across the app
 
 ### Layout Components
+
 - **Navigation**: Responsive nav bar with auth-aware menu items
 - **PageShell**: Consistent page wrapper with title and description
 
 ## 📡 API Client Layer
 
 ### Axios Configuration
+
 - **Base URL**: Configured via `NEXT_PUBLIC_API_URL`
 - **Request Interceptor**: Automatically adds Bearer token
 - **Response Interceptor**: Handles 401 errors with token refresh
 - **Error Handling**: Graceful error handling with user notifications
 
 ### API Services
+
 Each service provides typed methods for API calls:
+
 - **auth.ts**: login, register, logout, getCurrentUser, refreshToken
 - **watchlist.ts**: getWatchlist, addToWatchlist, updateWatchlistEntry, removeFromWatchlist
 - **family.ts**: getFamilies, getFamily, createFamily, getFamilyMembers, inviteToFamily, leaveFamily
 - **search.ts**: search
 
 ### React Query Hooks
+
 Custom hooks for data fetching with caching:
+
 - **useWatchlist**: Fetch watchlist with automatic caching
 - **useAddToWatchlist**: Mutation hook with cache invalidation
 - **useUpdateWatchlistEntry**: Update with optimistic updates
@@ -147,12 +156,14 @@ Custom hooks for data fetching with caching:
 ## 🎨 Styling Approach
 
 ### Tailwind CSS
+
 - **Utility-First**: Compose styles with utility classes
 - **Custom Colors**: Primary and secondary color palettes defined
 - **Responsive**: Mobile-first responsive design
 - **Dark Mode**: CSS variables for future dark mode support
 
 ### Design Tokens
+
 - **Primary**: Blue palette (#0ea5e9 - sky-500)
 - **Secondary**: Purple palette (#a855f7 - purple-500)
 - **Gray Scale**: For text and borders
@@ -162,16 +173,19 @@ Custom hooks for data fetching with caching:
 ## 🧪 Testing Strategy
 
 ### Unit Tests
+
 - **Component Tests**: Button, Input components
 - **Utility Tests**: cn() function
 - **Coverage**: Core functionality tested
 
 ### Test Tools
+
 - **Jest**: Test runner with Next.js integration
 - **React Testing Library**: Component testing with user interactions
 - **Jest DOM**: Extended matchers for DOM testing
 
 ### Test Structure
+
 ```typescript
 describe('ComponentName', () => {
   it('should render correctly', () => {
@@ -184,6 +198,7 @@ describe('ComponentName', () => {
 ## 🚀 Development Workflow
 
 ### Getting Started
+
 ```bash
 # Install dependencies
 pnpm install
@@ -194,6 +209,7 @@ pnpm dev
 ```
 
 ### Available Commands
+
 ```bash
 pnpm dev          # Start dev server
 pnpm build        # Build for production
@@ -204,7 +220,9 @@ pnpm typecheck    # Type check
 ```
 
 ### Environment Setup
+
 Create `.env.local`:
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
@@ -212,6 +230,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 ## 📦 Dependencies
 
 ### Core Dependencies
+
 - next: ^14.0.4
 - react: ^18.2.0
 - react-dom: ^18.2.0
@@ -222,6 +241,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 - zod: ^3.22.4
 
 ### Dev Dependencies
+
 - typescript: ^5.3.3
 - @types/react: ^18.2.46
 - @testing-library/react: ^14.1.2
@@ -235,6 +255,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 ## 🎯 Future Enhancements
 
 ### Recommended Additions
+
 1. **Form Validation**: Add react-hook-form + zod for form handling
 2. **State Persistence**: Add zustand/redux for client state
 3. **SEO**: Add next-seo for metadata management
@@ -247,6 +268,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 10. **PWA**: Add progressive web app features
 
 ### Security Enhancements
+
 1. **HTTP-Only Cookies**: Move tokens from localStorage to httpOnly cookies
 2. **CSRF Protection**: Add CSRF token handling
 3. **Rate Limiting**: Add client-side rate limiting
@@ -254,6 +276,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 5. **Input Sanitization**: Add DOMPurify for XSS protection
 
 ### Performance Optimizations
+
 1. **Code Splitting**: Dynamic imports for heavy components
 2. **Image Optimization**: Use Next.js Image component
 3. **Bundle Analysis**: Use webpack-bundle-analyzer

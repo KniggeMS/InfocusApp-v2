@@ -459,9 +459,7 @@ router.get(
       // Validate and set sorting
       const allowedSortFields = ['dateAdded', 'dateUpdated', 'status', 'rating'];
       const sortField =
-        typeof sortBy === 'string' && allowedSortFields.includes(sortBy)
-          ? sortBy
-          : 'dateAdded';
+        typeof sortBy === 'string' && allowedSortFields.includes(sortBy) ? sortBy : 'dateAdded';
       const sortOrder = order === 'asc' ? 'asc' : 'desc';
       const orderBy = { [sortField]: sortOrder };
 

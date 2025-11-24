@@ -48,7 +48,7 @@ export function WatchlistCard({ entry, onEdit, onRemove, className }: WatchlistC
       case 'completed':
         return 'Completed';
       default:
-        return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        return status.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
     }
   };
 
@@ -56,7 +56,7 @@ export function WatchlistCard({ entry, onEdit, onRemove, className }: WatchlistC
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -71,9 +71,7 @@ export function WatchlistCard({ entry, onEdit, onRemove, className }: WatchlistC
             </h3>
             <div className="flex items-center gap-2 mt-1">
               <Film className="w-3 h-3 text-gray-400" />
-              <span className="text-xs text-gray-500 capitalize">
-                {entry.mediaItem.mediaType}
-              </span>
+              <span className="text-xs text-gray-500 capitalize">{entry.mediaItem.mediaType}</span>
               {entry.mediaItem.releaseDate && (
                 <>
                   <span className="text-gray-300">•</span>
@@ -84,7 +82,7 @@ export function WatchlistCard({ entry, onEdit, onRemove, className }: WatchlistC
               )}
             </div>
           </div>
-          
+
           {entry.mediaItem.posterPath && (
             <img
               src={`https://image.tmdb.org/t/p/w92${entry.mediaItem.posterPath}`}
@@ -96,14 +94,16 @@ export function WatchlistCard({ entry, onEdit, onRemove, className }: WatchlistC
 
         {/* Status Badge */}
         <div className="flex items-center gap-2 mb-3">
-          <div className={cn(
-            'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border',
-            getStatusColor(entry.status)
-          )}>
+          <div
+            className={cn(
+              'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border',
+              getStatusColor(entry.status),
+            )}
+          >
             {getStatusIcon(entry.status)}
             <span>{formatStatus(entry.status)}</span>
           </div>
-          
+
           {entry.rating && (
             <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200">
               <Star className="w-3 h-3" />
@@ -113,11 +113,7 @@ export function WatchlistCard({ entry, onEdit, onRemove, className }: WatchlistC
         </div>
 
         {/* Notes Preview */}
-        {entry.notes && (
-          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-            {entry.notes}
-          </p>
-        )}
+        {entry.notes && <p className="text-sm text-gray-600 mb-3 line-clamp-2">{entry.notes}</p>}
 
         {/* Date Added */}
         <div className="flex items-center gap-1 text-xs text-gray-400 mb-3">
@@ -127,12 +123,7 @@ export function WatchlistCard({ entry, onEdit, onRemove, className }: WatchlistC
 
         {/* Actions */}
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onEdit(entry)}
-            className="flex-1"
-          >
+          <Button variant="outline" size="sm" onClick={() => onEdit(entry)} className="flex-1">
             Edit
           </Button>
           <Button

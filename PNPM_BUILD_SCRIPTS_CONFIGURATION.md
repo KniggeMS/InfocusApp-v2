@@ -156,7 +156,7 @@ pnpm build
 
 > Note: The API workspace currently has TypeScript issues that are unrelated to
 > the pnpm build script approvals. Running `pnpm --filter @infocus/api run
-> build` (or `pnpm build`) may fail until those errors are addressed.
+build` (or `pnpm build`) may fail until those errors are addressed.
 
 ## Vercel Deployment
 
@@ -172,6 +172,7 @@ The `onlyBuiltDependencies` configuration maintains pnpm's security posture by:
 4. **Minimal permissions**: Only packages that genuinely need scripts are approved
 
 All approved packages are from trusted sources:
+
 - Prisma packages are from Prisma Labs (database ORM)
 - Detox is from Wix (testing framework)
 - dtrace-provider is optional and fails gracefully

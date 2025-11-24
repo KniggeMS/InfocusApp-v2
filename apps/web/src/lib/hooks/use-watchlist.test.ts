@@ -1,6 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { watchlistApi } from '@/lib/api/watchlist';
-import type { CreateWatchlistEntryData, UpdateWatchlistEntryData, WatchlistEntry } from '@/lib/api/watchlist';
+import { useAddToWatchlist, useUpdateWatchlistEntry, useRemoveFromWatchlist } from '@/lib/hooks/use-watchlist';
+import type {
+  CreateWatchlistEntryData,
+  UpdateWatchlistEntryData,
+  WatchlistEntry,
+} from '@/lib/api/watchlist';
 
 // Mock the API
 jest.mock('@/lib/api/watchlist', () => ({
@@ -26,7 +31,7 @@ describe('useWatchlist hooks', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Create a fresh query client for each test
     queryClient = {
       cancelQueries: jest.fn(),
@@ -36,7 +41,7 @@ describe('useWatchlist hooks', () => {
     };
 
     mockQueryClient = queryClient;
-    
+
     // Mock useQueryClient to return our mock
     jest.doMock('@tanstack/react-query', () => ({
       useQuery: jest.requireActual('@tanstack/react-query').useQuery,
@@ -76,7 +81,6 @@ describe('useWatchlist hooks', () => {
       mockWatchlistApi.addToWatchlist.mockResolvedValue(mockResponse);
       mockQueryClient.getQueryData.mockReturnValue([]);
 
-      const { useAddToWatchlist } = require('@/lib/hooks/use-watchlist');
       const { mutateAsync } = useAddToWatchlist();
 
       // Call the mutation
@@ -86,7 +90,7 @@ describe('useWatchlist hooks', () => {
       expect(mockQueryClient.cancelQueries).toHaveBeenCalledWith({ queryKey: ['watchlist'] });
       expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(
         ['watchlist'],
-        expect.any(Function)
+        expect.any(Function),
       );
 
       // Verify the optimistic entry was added
@@ -112,7 +116,6 @@ describe('useWatchlist hooks', () => {
       mockWatchlistApi.addToWatchlist.mockRejectedValue(new Error('API Error'));
       mockQueryClient.getQueryData.mockReturnValue(previousWatchlist);
 
-      const { useAddToWatchlist } = require('@/lib/hooks/use-watchlist');
       const { mutateAsync } = useAddToWatchlist();
 
       try {
@@ -152,10 +155,12 @@ describe('useWatchlist hooks', () => {
         dateUpdated: '2024-01-01T00:00:00Z',
       };
 
-      mockWatchlistApi.updateWatchlistEntry.mockResolvedValue({ ...existingEntry, ...mockUpdateData });
+      mockWatchlistApi.updateWatchlistEntry.mockResolvedValue({
+        ...existingEntry,
+        ...mockUpdateData,
+      });
       mockQueryClient.getQueryData.mockReturnValue([existingEntry]);
 
-      const { useUpdateWatchlistEntry } = require('@/lib/hooks/use-watchlist');
       const { mutateAsync } = useUpdateWatchlistEntry();
 
       await mutateAsync({ id: '1', data: mockUpdateData });
@@ -164,7 +169,7 @@ describe('useWatchlist hooks', () => {
       expect(mockQueryClient.cancelQueries).toHaveBeenCalledWith({ queryKey: ['watchlist'] });
       expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(
         ['watchlist'],
-        expect.any(Function)
+        expect.any(Function),
       );
 
       // Verify the entry was updated
@@ -201,7 +206,6 @@ describe('useWatchlist hooks', () => {
       mockWatchlistApi.removeFromWatchlist.mockResolvedValue(undefined);
       mockQueryClient.getQueryData.mockReturnValue([existingEntry]);
 
-      const { useRemoveFromWatchlist } = require('@/lib/hooks/use-watchlist');
       const { mutateAsync } = useRemoveFromWatchlist();
 
       await mutateAsync('1');
@@ -210,7 +214,7 @@ describe('useWatchlist hooks', () => {
       expect(mockQueryClient.cancelQueries).toHaveBeenCalledWith({ queryKey: ['watchlist'] });
       expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(
         ['watchlist'],
-        expect.any(Function)
+        expect.any(Function),
       );
 
       // Verify the entry was removed

@@ -1,4 +1,9 @@
-import { filterAndSortWatchlist, groupWatchlistByStatus, extractEpisodeProgress, formatEpisodeProgress } from '../watchlist-utils';
+import {
+  filterAndSortWatchlist,
+  groupWatchlistByStatus,
+  extractEpisodeProgress,
+  formatEpisodeProgress,
+} from '../watchlist-utils';
 import type { WatchlistEntry } from '@/lib/api/watchlist';
 
 const mockEntries: WatchlistEntry[] = [
@@ -66,7 +71,7 @@ describe('watchlist-utils', () => {
     it('returns all entries when status filter is "all"', () => {
       const result = filterAndSortWatchlist(mockEntries, {
         statusFilter: 'all',
-        sortBy: 'dateAdded_desc'
+        sortBy: 'dateAdded_desc',
       });
 
       expect(result).toHaveLength(3);
@@ -75,7 +80,7 @@ describe('watchlist-utils', () => {
     it('filters by status correctly', () => {
       const watching = filterAndSortWatchlist(mockEntries, {
         statusFilter: 'watching',
-        sortBy: 'dateAdded_desc'
+        sortBy: 'dateAdded_desc',
       });
 
       expect(watching).toHaveLength(1);
@@ -85,7 +90,7 @@ describe('watchlist-utils', () => {
     it('sorts by dateAdded descending', () => {
       const result = filterAndSortWatchlist(mockEntries, {
         statusFilter: 'all',
-        sortBy: 'dateAdded_desc'
+        sortBy: 'dateAdded_desc',
       });
 
       expect(result[0].mediaItem.title).toBe('C Series');
@@ -96,7 +101,7 @@ describe('watchlist-utils', () => {
     it('sorts by dateAdded ascending', () => {
       const result = filterAndSortWatchlist(mockEntries, {
         statusFilter: 'all',
-        sortBy: 'dateAdded_asc'
+        sortBy: 'dateAdded_asc',
       });
 
       expect(result[0].mediaItem.title).toBe('A Movie');
@@ -107,7 +112,7 @@ describe('watchlist-utils', () => {
     it('sorts by title ascending', () => {
       const result = filterAndSortWatchlist(mockEntries, {
         statusFilter: 'all',
-        sortBy: 'title_asc'
+        sortBy: 'title_asc',
       });
 
       expect(result[0].mediaItem.title).toBe('A Movie');
@@ -118,7 +123,7 @@ describe('watchlist-utils', () => {
     it('sorts by title descending', () => {
       const result = filterAndSortWatchlist(mockEntries, {
         statusFilter: 'all',
-        sortBy: 'title_desc'
+        sortBy: 'title_desc',
       });
 
       expect(result[0].mediaItem.title).toBe('C Series');
@@ -129,7 +134,7 @@ describe('watchlist-utils', () => {
     it('sorts by rating descending', () => {
       const result = filterAndSortWatchlist(mockEntries, {
         statusFilter: 'all',
-        sortBy: 'rating_desc'
+        sortBy: 'rating_desc',
       });
 
       expect(result[0].rating).toBe(9);
@@ -140,7 +145,7 @@ describe('watchlist-utils', () => {
     it('sorts by rating ascending', () => {
       const result = filterAndSortWatchlist(mockEntries, {
         statusFilter: 'all',
-        sortBy: 'rating_asc'
+        sortBy: 'rating_asc',
       });
 
       expect(result[0].rating).toBeUndefined();

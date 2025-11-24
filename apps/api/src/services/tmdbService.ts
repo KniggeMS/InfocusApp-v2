@@ -58,11 +58,13 @@ export const TMDBWatchProviderSchema = z.object({
 });
 
 export const TMDBWatchProvidersResponseSchema = z.object({
-  results: z.record(z.object({
-    flatrate: z.array(TMDBWatchProviderSchema).optional(),
-    buy: z.array(TMDBWatchProviderSchema).optional(),
-    rent: z.array(TMDBWatchProviderSchema).optional(),
-  })),
+  results: z.record(
+    z.object({
+      flatrate: z.array(TMDBWatchProviderSchema).optional(),
+      buy: z.array(TMDBWatchProviderSchema).optional(),
+      rent: z.array(TMDBWatchProviderSchema).optional(),
+    }),
+  ),
 });
 
 // Type definitions
@@ -166,37 +168,43 @@ export class TMDBService {
     this.client.interceptors.request.use(
       (config) => {
         const now = Date.now();
-        
+
         // Remove old requests outside the time window
-        const recentRequests = requestTimes.filter(time => now - time < TIME_WINDOW);
-        
+        const recentRequests = requestTimes.filter((time) => now - time < TIME_WINDOW);
+
         if (recentRequests.length >= MAX_REQUESTS) {
           const oldestRequest = Math.min(...recentRequests);
           const waitTime = TIME_WINDOW - (now - oldestRequest);
-          
+
           if (waitTime > 0) {
-            throw new Error(`Rate limit exceeded. Please wait ${Math.ceil(waitTime / 1000)} seconds.`);
+            throw new Error(
+              `Rate limit exceeded. Please wait ${Math.ceil(waitTime / 1000)} seconds.`,
+            );
           }
         }
-        
+
         requestTimes.push(now);
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
   }
 
   private getCacheKey(endpoint: string, params: Record<string, any> = {}): string {
     const paramString = Object.keys(params)
       .sort()
-      .map(key => `${key}=${params[key]}`)
+      .map((key) => `${key}=${params[key]}`)
       .join('&');
     return `${endpoint}${paramString ? `?${paramString}` : ''}`;
   }
 
-  private async get<T>(endpoint: string, params: Record<string, any> = {}, cacheTTL?: number): Promise<T> {
+  private async get<T>(
+    endpoint: string,
+    params: Record<string, any> = {},
+    cacheTTL?: number,
+  ): Promise<T> {
     const cacheKey = this.getCacheKey(endpoint, params);
-    
+
     // Try to get from cache first
     const cached = this.cache.get<T>(cacheKey);
     if (cached !== undefined) {
@@ -206,11 +214,11 @@ export class TMDBService {
     try {
       const response = await this.client.get(endpoint, { params });
       const data = response.data;
-      
+
       // Cache the response
       const ttl = cacheTTL || this.CACHE_TTL.SEARCH;
       this.cache.set(cacheKey, data, ttl);
-      
+
       return data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -235,15 +243,19 @@ export class TMDBService {
       include_adult: false,
     };
 
-    const response = await this.get<TMDBSearchResponse>('/search/multi', params, this.CACHE_TTL.SEARCH);
-    
+    const response = await this.get<TMDBSearchResponse>(
+      '/search/multi',
+      params,
+      this.CACHE_TTL.SEARCH,
+    );
+
     // Validate response
     const validated = TMDBSearchResponseSchema.parse(response);
-    
+
     // Transform results to include media_type
     const transformedResults: SearchResult[] = validated.results.map((result) => {
       if ('title' in result) {
-        return { 
+        return {
           id: result.id,
           title: result.title,
           overview: result.overview,
@@ -257,7 +269,7 @@ export class TMDBService {
       } else {
         // TV show case
         const tvResult = result as any;
-        return { 
+        return {
           id: tvResult.id,
           title: tvResult.name,
           overview: tvResult.overview,

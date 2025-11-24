@@ -140,6 +140,7 @@ curl -s https://${RAILWAY_DOMAIN}/health | jq .
 ```
 
 Expected response:
+
 ```json
 {
   "status": "ok",
@@ -356,7 +357,7 @@ HEADERS=$(echo "$CORS" | head -n -1)
 if echo "$HEADERS" | grep -q "Access-Control-Allow-Origin"; then
   ALLOW_ORIGIN=$(echo "$HEADERS" | grep -i "access-control-allow-origin" | cut -d' ' -f2-)
   echo "✓ CORS enabled, Access-Control-Allow-Origin: $ALLOW_ORIGIN"
-  
+
   if [[ "$ALLOW_ORIGIN" == *"$FRONTEND_DOMAIN"* ]]; then
     echo "✓ CORS allows your frontend domain"
   else
@@ -389,10 +390,12 @@ railway run pnpm run prisma -- migrate status
 ### Issue: Health Check Fails (Connection Refused)
 
 **Symptoms:**
+
 - `curl: (7) Failed to connect`
 - Service not accessible at domain
 
 **Solutions:**
+
 ```bash
 # 1. Check service status
 railway status
@@ -409,10 +412,12 @@ railway deployments
 ### Issue: 502 Bad Gateway
 
 **Symptoms:**
+
 - API responds with 502 error
 - Application crashed or not accepting connections
 
 **Solutions:**
+
 ```bash
 # 1. Check logs for errors
 railway logs --follow
@@ -432,10 +437,12 @@ railway run pnpm run prisma -- db push
 ### Issue: Authentication Fails (Invalid Token)
 
 **Symptoms:**
+
 - Login returns but token doesn't work
 - Protected routes return 401 Unauthorized
 
 **Solutions:**
+
 ```bash
 # 1. Verify JWT secrets are set
 railway variables get JWT_ACCESS_SECRET
@@ -455,10 +462,12 @@ railway up --detach
 ### Issue: CORS Errors in Browser
 
 **Symptoms:**
+
 - `Access to XMLHttpRequest has been blocked by CORS policy`
 - Frontend cannot communicate with API
 
 **Solutions:**
+
 ```bash
 # 1. Verify CORS_ORIGIN is set to your frontend domain
 railway variables get CORS_ORIGIN
@@ -478,10 +487,12 @@ curl -s -X OPTIONS https://${RAILWAY_DOMAIN}/auth/login \
 ### Issue: Database Migration Fails
 
 **Symptoms:**
+
 - Startup logs show "migration failed"
 - `prisma migrate` errors in logs
 
 **Solutions:**
+
 ```bash
 # 1. Check recent logs
 railway logs | grep -i "migration\|error"
@@ -503,11 +514,13 @@ railway run pnpm run prisma -- migrate deploy --skip-generate
 ### Issue: Out of Memory or Slow Response
 
 **Symptoms:**
+
 - API responses very slow
 - Memory usage constantly high
 - `out of memory` errors in logs
 
 **Solutions:**
+
 ```bash
 # 1. Check service logs for memory issues
 railway logs | grep -i "memory\|heap"
@@ -528,10 +541,12 @@ railway logs --follow | grep -i "memory\|cpu"
 ### Issue: Service Keeps Restarting
 
 **Symptoms:**
+
 - Service starts and immediately crashes
 - Logs show repeated startup messages
 
 **Solutions:**
+
 ```bash
 # 1. Check startup logs
 railway logs | head -50
@@ -607,6 +622,7 @@ The `.github/workflows/ci-cd.yml` workflow:
 ### Triggering Deployment
 
 **Option 1: Push to main branch**
+
 ```bash
 git add .
 git commit -m "feat: add new feature"
@@ -614,6 +630,7 @@ git push origin main
 ```
 
 **Option 2: Manual dispatch (if configured)**
+
 - Go to GitHub Actions
 - Select CI/CD Pipeline workflow
 - Click "Run workflow"
@@ -635,15 +652,18 @@ git push origin main
 ### Troubleshooting CI/CD Deployments
 
 **Deploy job shows "skipped":**
+
 - Likely triggered on non-main branch or PR
 - The deploy only runs on `git push origin main`
 
 **RAILWAY_TOKEN not found:**
+
 - GitHub Secrets not configured
 - Add to repository: Settings → Secrets and variables → Actions
 - Create `RAILWAY_TOKEN` with Railway API token from https://railway.app/account/tokens
 
 **Build fails:**
+
 - Check Docker build logs in the "Build API" job
 - Fix TypeScript/Lint errors shown in earlier jobs
 - Usually cache issues or dependency problems

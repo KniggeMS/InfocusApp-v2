@@ -1,9 +1,5 @@
 import NodeCache from 'node-cache';
-import { 
-  InMemoryCacheService, 
-  createCacheService, 
-  CacheService 
-} from '../services/cacheService';
+import { InMemoryCacheService, createCacheService, CacheService } from '../services/cacheService';
 
 // Mock NodeCache
 jest.mock('node-cache');
@@ -15,7 +11,7 @@ describe('InMemoryCacheService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Create mock cache instance
     mockCache = {
       get: jest.fn(),
@@ -128,9 +124,9 @@ describe('InMemoryCacheService', () => {
   describe('mget', () => {
     it('should get multiple keys', () => {
       const mockData = {
-        'key1': 'value1',
-        'key2': 'value2',
-        'key3': undefined,
+        key1: 'value1',
+        key2: 'value2',
+        key3: undefined,
       };
       mockCache.mget.mockReturnValue(mockData);
 
@@ -144,8 +140,8 @@ describe('InMemoryCacheService', () => {
   describe('mset', () => {
     it('should set multiple keys', () => {
       const entries = {
-        'key1': 'value1',
-        'key2': 'value2',
+        key1: 'value1',
+        key2: 'value2',
       };
 
       cacheService.mset(entries);
@@ -156,8 +152,8 @@ describe('InMemoryCacheService', () => {
 
     it('should set multiple keys with custom TTL', () => {
       const entries = {
-        'key1': 'value1',
-        'key2': 'value2',
+        key1: 'value1',
+        key2: 'value2',
       };
 
       cacheService.mset(entries, 300);
@@ -210,37 +206,41 @@ describe('createCacheService', () => {
   });
 
   it('should attempt to create RedisCacheService when redis type is specified and REDIS_URL is set', () => {
-  process.env.REDIS_URL = 'redis://localhost:6379';
+    process.env.REDIS_URL = 'redis://localhost:6379';
 
-  // Mock redis module
-  const mockRedisClient = {
-    get: jest.fn(),
-    setex: jest.fn(),
-    del: jest.fn(),
-    flushdb: jest.fn(),
-    info: jest.fn(),
-  };
+    // Mock redis module
+    const mockRedisClient = {
+      get: jest.fn(),
+      setex: jest.fn(),
+      del: jest.fn(),
+      flushdb: jest.fn(),
+      info: jest.fn(),
+    };
 
-  const mockRedis = {
-    createClient: jest.fn().mockReturnValue(mockRedisClient),
-  };
+    const mockRedis = {
+      createClient: jest.fn().mockReturnValue(mockRedisClient),
+    };
 
-  // Mock dynamic import
-  jest.doMock('redis', () => mockRedis, { virtual: true });
+    // Mock dynamic import
+    jest.doMock('redis', () => mockRedis, { virtual: true });
 
-  const cacheService = createCacheService('redis');
+    const cacheService = createCacheService('redis');
 
-  // Since Redis import might fail, it should fall back to InMemoryCacheService
-  expect(cacheService).toBeInstanceOf(InMemoryCacheService);
+    // Since Redis import might fail, it should fall back to InMemoryCacheService
+    expect(cacheService).toBeInstanceOf(InMemoryCacheService);
   });
 
   it('should fall back to InMemoryCacheService when Redis is not available', () => {
     process.env.REDIS_URL = 'redis://localhost:6379';
 
     // Mock require to throw error
-    jest.doMock('redis', () => {
-      throw new Error('Redis module not found');
-    }, { virtual: true });
+    jest.doMock(
+      'redis',
+      () => {
+        throw new Error('Redis module not found');
+      },
+      { virtual: true },
+    );
 
     const cacheService = createCacheService('redis');
 

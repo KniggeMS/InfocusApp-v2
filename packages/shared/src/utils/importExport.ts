@@ -2,15 +2,15 @@ import type { WatchStatus } from '../types';
 
 /**
  * Normalizes user-provided status strings to valid WatchStatus values.
- * 
+ *
  * Handles common variations and synonyms:
  * - "completed", "watched", "done", "finished" → "completed"
  * - "watching", "in progress", "started" → "watching"
  * - "not watched", "unwatched", "to watch", "plan to watch" → "not_watched"
- * 
+ *
  * @param status - The raw status string from user input
  * @returns A valid WatchStatus value or null if unable to normalize
- * 
+ *
  * @example
  * ```typescript
  * normalizeWatchStatus("Watched") // returns "completed"
@@ -77,16 +77,16 @@ export function normalizeWatchStatus(status: string | null | undefined): WatchSt
 
 /**
  * Safely parses streaming provider data from various input formats.
- * 
+ *
  * Handles:
  * - Array of strings: ["netflix", "hulu"]
  * - Comma-separated string: "netflix, hulu"
  * - JSON string: '["netflix", "hulu"]'
  * - Single string: "netflix"
- * 
+ *
  * @param providers - Raw provider data in any supported format
  * @returns Array of normalized provider names (lowercase, trimmed)
- * 
+ *
  * @example
  * ```typescript
  * parseStreamingProviders(["Netflix", "Hulu"]) // ["netflix", "hulu"]
@@ -96,9 +96,7 @@ export function normalizeWatchStatus(status: string | null | undefined): WatchSt
  * parseStreamingProviders(null) // []
  * ```
  */
-export function parseStreamingProviders(
-  providers: string | string[] | null | undefined
-): string[] {
+export function parseStreamingProviders(providers: string | string[] | null | undefined): string[] {
   if (!providers) {
     return [];
   }
@@ -150,17 +148,17 @@ export function parseStreamingProviders(
 
 /**
  * Normalizes a date string to ISO 8601 format with timezone offset.
- * 
+ *
  * Handles various date formats:
  * - ISO 8601 with timezone: "2024-01-15T00:00:00.000Z"
  * - ISO date only: "2024-01-15"
  * - US format: "01/15/2024" or "1/15/2024"
  * - EU format: "15/01/2024" or "15.01.2024"
  * - Timestamp: 1705276800000
- * 
+ *
  * @param dateStr - Raw date input in various formats
  * @returns ISO 8601 date string with timezone, or null if invalid
- * 
+ *
  * @example
  * ```typescript
  * normalizeDateString("2024-01-15") // "2024-01-15T00:00:00.000Z"
@@ -171,7 +169,7 @@ export function parseStreamingProviders(
  * ```
  */
 export function normalizeDateString(
-  dateStr: string | number | Date | null | undefined
+  dateStr: string | number | Date | null | undefined,
 ): string | null {
   if (!dateStr) {
     return null;
@@ -226,21 +224,21 @@ export function normalizeDateString(
 
 /**
  * Calculates the confidence score for a TMDB match candidate.
- * 
+ *
  * Scoring factors:
  * - Exact title match: +0.5
  * - Partial title match: +0.3 (scaled by similarity)
  * - Year match: +0.3
  * - Year off by 1: +0.15
  * - Has poster: +0.05
- * 
+ *
  * @param candidateTitle - Title from TMDB
  * @param candidateYear - Year from TMDB
  * @param originalTitle - Original title from import
  * @param originalYear - Original year from import
  * @param hasPoster - Whether the candidate has a poster image
  * @returns Confidence score between 0 and 1
- * 
+ *
  * @example
  * ```typescript
  * calculateMatchConfidence("Inception", 2010, "Inception", 2010, true) // 1.0
@@ -254,7 +252,7 @@ export function calculateMatchConfidence(
   candidateYear: number | null | undefined,
   originalTitle: string,
   originalYear: number | null | undefined,
-  hasPoster = false
+  hasPoster = false,
 ): number {
   let score = 0;
 
@@ -276,12 +274,9 @@ export function calculateMatchConfidence(
     // Calculate similarity based on common words
     const candidateWords = new Set(normCandidate.split(' '));
     const originalWords = new Set(normOriginal.split(' '));
-    const intersection = new Set(
-      [...candidateWords].filter((w) => originalWords.has(w))
-    );
+    const intersection = new Set([...candidateWords].filter((w) => originalWords.has(w)));
 
-    const similarity =
-      (2 * intersection.size) / (candidateWords.size + originalWords.size);
+    const similarity = (2 * intersection.size) / (candidateWords.size + originalWords.size);
     score += similarity * 0.3;
   }
 
@@ -313,17 +308,17 @@ export function calculateMatchConfidence(
 
 /**
  * Validates and normalizes a rating value.
- * 
+ *
  * Handles:
  * - Scale conversion: 5-star (0-5) → 10-point (0-10)
  * - Percentage: 0-100 → 0-10
  * - Decimal values: rounds to nearest integer
  * - Out of range: clamps to 0-10
- * 
+ *
  * @param rating - Raw rating value
  * @param scale - The scale of the input rating (5, 10, or 100)
  * @returns Normalized rating (0-10) or null if invalid
- * 
+ *
  * @example
  * ```typescript
  * normalizeRating(5, 5) // 10
@@ -336,7 +331,7 @@ export function calculateMatchConfidence(
  */
 export function normalizeRating(
   rating: number | null | undefined,
-  scale: 5 | 10 | 100 = 10
+  scale: 5 | 10 | 100 = 10,
 ): number | null {
   if (rating === null || rating === undefined || isNaN(rating)) {
     return null;

@@ -1,10 +1,10 @@
 import { apiClient } from './client';
-import type { 
-  NormalizedPreviewItem, 
-  BulkImportRequest, 
-  ImportResult, 
+import type {
+  NormalizedPreviewItem,
+  BulkImportRequest,
+  ImportResult,
   ExportResponse,
-  DuplicateResolution
+  DuplicateResolution,
 } from '@infocus/shared';
 
 export interface WatchlistEntry {
@@ -79,13 +79,13 @@ export const watchlistApi = {
   async importWatchlistPreview(file: File): Promise<NormalizedPreviewItem[]> {
     const formData = new FormData();
     formData.append('file', file);
-    
+
     const response = await apiClient.post('/watchlist/import/preview', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    
+
     return response.data.data;
   },
 
@@ -98,7 +98,7 @@ export const watchlistApi = {
     const response = await apiClient.get(`/watchlist/export?format=${format}`, {
       responseType: 'blob',
     });
-    
+
     return response.data;
   },
 };

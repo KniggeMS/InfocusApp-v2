@@ -32,7 +32,5 @@ export const TMDB_GENRES: Record<number, string> = {
 };
 
 export function getGenreNames(genreIds: number[]): string[] {
-  return genreIds
-    .map((id) => TMDB_GENRES[id])
-    .filter((genre) => genre !== undefined);
+  return genreIds.map((id) => TMDB_GENRES[id]).filter((genre) => genre !== undefined);
 }

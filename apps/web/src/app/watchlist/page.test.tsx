@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
+import { useWatchlist } from '@/lib/hooks/use-watchlist';
 import WatchlistPage from '../page';
 
 // Mock the toast
@@ -71,11 +72,7 @@ const renderWithQueryClient = (component: React.ReactElement) => {
     },
   });
 
-  return render(
-    <QueryClientProvider client={queryClient}>
-      {component}
-    </QueryClientProvider>
-  );
+  return render(<QueryClientProvider client={queryClient}>{component}</QueryClientProvider>);
 };
 
 describe('Watchlist Page Import/Export Integration', () => {
@@ -130,7 +127,7 @@ describe('Watchlist Page Import/Export Integration', () => {
 
   it('shows import button in empty state', () => {
     // Mock empty watchlist
-    jest.mocked(require('@/lib/hooks/use-watchlist').useWatchlist).mockReturnValue({
+    jest.mocked(useWatchlist).mockReturnValue({
       data: [],
       isLoading: false,
       error: null,

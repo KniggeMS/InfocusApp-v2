@@ -18,7 +18,7 @@ export function Sheet({ isOpen, onClose, title, description, children, className
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={onClose} />
-      
+
       {/* Sheet */}
       <div className="fixed inset-y-0 right-0 w-full max-w-lg bg-white shadow-xl">
         <div className="flex h-full flex-col">
@@ -35,11 +35,9 @@ export function Sheet({ isOpen, onClose, title, description, children, className
               <X className="h-5 w-5" />
             </button>
           </div>
-          
+
           {/* Content */}
-          <div className={cn('flex-1 overflow-y-auto px-6 py-4', className)}>
-            {children}
-          </div>
+          <div className={cn('flex-1 overflow-y-auto px-6 py-4', className)}>{children}</div>
         </div>
       </div>
     </div>

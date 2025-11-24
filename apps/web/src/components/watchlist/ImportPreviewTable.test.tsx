@@ -88,7 +88,7 @@ describe('ImportPreviewTable', () => {
         items={mockItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     expect(screen.getByText('Import Preview')).toBeInTheDocument();
@@ -104,7 +104,7 @@ describe('ImportPreviewTable', () => {
         items={mockItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     // Check first item details
@@ -120,7 +120,7 @@ describe('ImportPreviewTable', () => {
         items={mockItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     expect(screen.getByText('Duplicate')).toBeInTheDocument();
@@ -133,7 +133,7 @@ describe('ImportPreviewTable', () => {
         items={mockItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     expect(screen.getByText('Valid: 1')).toBeInTheDocument(); // Only first item has matches
@@ -146,7 +146,7 @@ describe('ImportPreviewTable', () => {
         items={mockItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     // Initially collapsed
@@ -175,7 +175,7 @@ describe('ImportPreviewTable', () => {
         items={mockItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     // Expand first item
@@ -193,7 +193,7 @@ describe('ImportPreviewTable', () => {
         }),
         mockItems[1],
         mockItems[2],
-      ])
+      ]),
     );
   });
 
@@ -203,7 +203,7 @@ describe('ImportPreviewTable', () => {
         items={mockItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     // Click skip on first item
@@ -217,7 +217,7 @@ describe('ImportPreviewTable', () => {
         }),
         mockItems[1],
         mockItems[2],
-      ])
+      ]),
     );
   });
 
@@ -227,7 +227,7 @@ describe('ImportPreviewTable', () => {
         items={mockItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     // Expand third item (no matches)
@@ -244,7 +244,7 @@ describe('ImportPreviewTable', () => {
         items={mockItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     // Expand first item
@@ -264,7 +264,7 @@ describe('ImportPreviewTable', () => {
         items={mockItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     // Expand first item
@@ -279,19 +279,19 @@ describe('ImportPreviewTable', () => {
     expect(screen.getByText('View on TMDB')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /View on TMDB/ })).toHaveAttribute(
       'href',
-      'https://www.themoviedb.org/movie/27205'
+      'https://www.themoviedb.org/movie/27205',
     );
   });
 
   it('disables proceed button when no valid items', () => {
-    const allSkippedItems = mockItems.map(item => ({ ...item, shouldSkip: true }));
+    const allSkippedItems = mockItems.map((item) => ({ ...item, shouldSkip: true }));
 
     render(
       <ImportPreviewTable
         items={allSkippedItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     const proceedButton = screen.getByRole('button', { name: /Review Duplicates \(0 items\)/ });
@@ -304,7 +304,7 @@ describe('ImportPreviewTable', () => {
         items={mockItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     const proceedButton = screen.getByRole('button', { name: /Review Duplicates \(1 items\)/ });
@@ -317,7 +317,7 @@ describe('ImportPreviewTable', () => {
         items={mockItems}
         onItemsUpdate={mockOnItemsUpdate}
         onProceedToResolutions={mockOnProceedToResolutions}
-      />
+      />,
     );
 
     const proceedButton = screen.getByRole('button', { name: /Review Duplicates/ });

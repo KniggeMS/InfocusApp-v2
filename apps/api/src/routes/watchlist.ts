@@ -4,10 +4,7 @@ import { PrismaClient, WatchStatus, Prisma } from '@prisma/client';
 import { authMiddleware } from '../middleware/auth';
 import multer from 'multer';
 import { watchlistImportService } from '../services/watchlistImportService';
-import {
-  bulkImportRequestSchema,
-  exportResponseSchema,
-} from '@infocus/shared';
+import { bulkImportRequestSchema, exportResponseSchema } from '@infocus/shared';
 
 const router: Router = Router();
 const prisma = new PrismaClient();
@@ -21,9 +18,11 @@ const upload = multer({
   fileFilter: (_req, file, cb) => {
     const allowedTypes = ['text/csv', 'application/json', 'text/plain'];
     const allowedExtensions = ['.csv', '.json'];
-    
-    if (allowedTypes.includes(file.mimetype) || 
-        allowedExtensions.some(ext => file.originalname?.toLowerCase().endsWith(ext))) {
+
+    if (
+      allowedTypes.includes(file.mimetype) ||
+      allowedExtensions.some((ext) => file.originalname?.toLowerCase().endsWith(ext))
+    ) {
       cb(null, true);
     } else {
       cb(new Error('Only CSV and JSON files are allowed'));
@@ -130,9 +129,7 @@ router.get(
 
       const allowedSortFields = ['dateAdded', 'dateUpdated', 'status', 'rating'];
       const sortField =
-        typeof sortBy === 'string' && allowedSortFields.includes(sortBy)
-          ? sortBy
-          : 'dateAdded';
+        typeof sortBy === 'string' && allowedSortFields.includes(sortBy) ? sortBy : 'dateAdded';
       const sortOrder = order === 'asc' ? 'asc' : 'desc';
       const orderBy = { [sortField]: sortOrder };
 
@@ -464,7 +461,7 @@ router.post(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const userId = req.user!.id;
-      
+
       if (!req.file) {
         res.status(400).json({ error: 'No file uploaded' });
         return;
@@ -472,7 +469,7 @@ router.post(
 
       // Parse the uploaded file
       const rawRows = await watchlistImportService.parseUploadedFile(req.file);
-      
+
       // Generate preview with TMDB matches
       const previewItems = await watchlistImportService.generatePreview(rawRows, userId);
 
@@ -527,7 +524,7 @@ router.get(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const userId = req.user!.id;
-      const format = req.query.format as string || 'json';
+      const format = (req.query.format as string) || 'json';
 
       if (!['json', 'csv'].includes(format)) {
         res.status(400).json({ error: 'Invalid format. Use "json" or "csv"' });
@@ -544,14 +541,14 @@ router.get(
         // Return CSV
         const csv = watchlistImportService.exportToCsv(validatedData);
         const filename = `watchlist-export-${new Date().toISOString().split('T')[0]}.csv`;
-        
+
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
         res.send(csv);
       } else {
         // Return JSON
         const filename = `watchlist-export-${new Date().toISOString().split('T')[0]}.json`;
-        
+
         res.setHeader('Content-Type', 'application/json');
         res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
         res.json(validatedData);

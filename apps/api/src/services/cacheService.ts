@@ -144,7 +144,10 @@ export class RedisCacheService extends CacheService {
 }
 
 // Factory function to create appropriate cache service
-export function createCacheService(type: 'memory' | 'redis' = 'memory', options?: any): CacheService {
+export function createCacheService(
+  type: 'memory' | 'redis' = 'memory',
+  options?: any,
+): CacheService {
   if (type === 'redis' && process.env.REDIS_URL) {
     // Import Redis dynamically to avoid dependency issues
     try {
@@ -157,7 +160,7 @@ export function createCacheService(type: 'memory' | 'redis' = 'memory', options?
       console.warn('Redis not available, falling back to in-memory cache:', error);
     }
   }
-  
+
   return new InMemoryCacheService(options);
 }
 

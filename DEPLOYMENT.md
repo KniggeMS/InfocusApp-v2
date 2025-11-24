@@ -277,6 +277,7 @@ curl -s https://$RAILWAY_DOMAIN/health | jq .
 ```
 
 Expected response:
+
 ```json
 {
   "status": "ok",
@@ -400,6 +401,7 @@ curl -s -X OPTIONS https://$RAILWAY_DOMAIN/auth/login \
 ```
 
 Expected response header:
+
 ```
 access-control-allow-origin: https://your-frontend-domain.vercel.app
 ```
@@ -411,26 +413,31 @@ If this header is missing, the frontend will encounter CORS errors. Ensure `CORS
 If any of the above tests fail:
 
 **Health Check Fails:**
+
 - Check that the service is running: `railway status`
 - View logs: `railway logs --service infocus-api --tail 100`
 - Verify PORT is set to 3000: `railway variables get PORT`
 
 **Migration Errors:**
+
 - Check recent logs: `railway logs | grep -i "migration\|error"`
 - Manually run migrations: `railway run pnpm run migrate:prod`
 - Check database connectivity: `railway run pnpm run prisma -- db push`
 
 **Authentication/Database Errors:**
+
 - Verify DATABASE_URL is set correctly: `railway variables get DATABASE_URL`
 - Check database is accessible: `railway run pnpm run prisma -- db validate`
 - View application logs: `railway logs --service infocus-api --follow`
 
 **CORS Errors:**
+
 - Verify CORS_ORIGIN is set to frontend domain: `railway variables get CORS_ORIGIN`
 - Update if needed: `railway variables set CORS_ORIGIN "https://your-frontend-domain.vercel.app"`
 - Redeploy: `railway up --detach`
 
 **Log Streaming for Debugging:**
+
 ```bash
 # Real-time log streaming
 railway logs --follow
@@ -446,6 +453,7 @@ railway logs --service infocus-api
 ```
 
 **Manual Rollback:**
+
 ```bash
 # If deployment is broken, rollback to previous version
 railway rollback
@@ -568,9 +576,11 @@ The project includes a comprehensive CI/CD pipeline (`.github/workflows/ci-cd.ym
 Configure these secrets in GitHub repository settings to enable automated deployments:
 
 **For Railway Deployment:**
+
 - `RAILWAY_TOKEN` - Railway API token for automated deployments
 
 **For Render Deployment (Optional):**
+
 - `RENDER_DEPLOY_HOOK_URL` - Webhook URL for Render deployments
 
 ### Configuring Secrets

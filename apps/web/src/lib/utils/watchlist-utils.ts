@@ -1,7 +1,13 @@
 import type { WatchlistEntry } from '@/lib/api/watchlist';
 
 export type StatusFilter = 'all' | 'not_watched' | 'watching' | 'completed';
-export type SortOption = 'dateAdded_desc' | 'dateAdded_asc' | 'title_asc' | 'title_desc' | 'rating_desc' | 'rating_asc';
+export type SortOption =
+  | 'dateAdded_desc'
+  | 'dateAdded_asc'
+  | 'title_asc'
+  | 'title_desc'
+  | 'rating_desc'
+  | 'rating_asc';
 
 export interface FilterOptions {
   statusFilter: StatusFilter;
@@ -10,10 +16,10 @@ export interface FilterOptions {
 
 export function filterAndSortWatchlist(
   entries: WatchlistEntry[],
-  { statusFilter, sortBy }: FilterOptions
+  { statusFilter, sortBy }: FilterOptions,
 ): WatchlistEntry[] {
   // Filter by status
-  let filtered = entries.filter(entry => {
+  let filtered = entries.filter((entry) => {
     if (statusFilter === 'all') return true;
     return entry.status === statusFilter;
   });
@@ -29,15 +35,17 @@ export function filterAndSortWatchlist(
         return a.mediaItem.title.localeCompare(b.mediaItem.title);
       case 'title_desc':
         return b.mediaItem.title.localeCompare(a.mediaItem.title);
-      case 'rating_desc':
+      case 'rating_desc': {
         // Handle undefined ratings
         const aRating = a.rating ?? -1;
         const bRating = b.rating ?? -1;
         return bRating - aRating;
-      case 'rating_asc':
+      }
+      case 'rating_asc': {
         const aRatingAsc = a.rating ?? 999;
         const bRatingAsc = b.rating ?? 999;
         return aRatingAsc - bRatingAsc;
+      }
       default:
         return 0;
     }
@@ -48,9 +56,9 @@ export function filterAndSortWatchlist(
 
 export function groupWatchlistByStatus(entries: WatchlistEntry[]) {
   const groups = {
-    not_watched: entries.filter(entry => entry.status === 'not_watched'),
-    watching: entries.filter(entry => entry.status === 'watching'),
-    completed: entries.filter(entry => entry.status === 'completed'),
+    not_watched: entries.filter((entry) => entry.status === 'not_watched'),
+    watching: entries.filter((entry) => entry.status === 'watching'),
+    completed: entries.filter((entry) => entry.status === 'completed'),
   };
 
   return groups;
@@ -58,10 +66,10 @@ export function groupWatchlistByStatus(entries: WatchlistEntry[]) {
 
 export function extractEpisodeProgress(notes?: string): { watched: number; total: number } | null {
   if (!notes) return null;
-  
+
   const progressMatch = notes.match(/Progress:\s*(\d+)\/(\d+)\s*episodes?/i);
   if (!progressMatch) return null;
-  
+
   return {
     watched: parseInt(progressMatch[1], 10),
     total: parseInt(progressMatch[2], 10),

@@ -20,17 +20,6 @@ export default function SearchPage() {
 
   const handleAddToWatchlist = async (result: SearchResult) => {
     try {
-      // Prepare metadata for the watchlist entry
-      const metadata = {
-        title: result.title,
-        description: result.overview,
-        posterPath: result.posterPath,
-        backdropPath: result.backdropPath,
-        releaseDate: result.releaseDate,
-        rating: result.voteAverage,
-        genres: getGenreNames(result.genres || []),
-      };
-
       await addToWatchlistMutation.mutateAsync({
         tmdbId: result.id,
         mediaType: result.mediaType,
@@ -119,7 +108,10 @@ export default function SearchPage() {
           <p className="mb-4 text-sm text-gray-600">Found {results.length} result(s)</p>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {results.map((result) => (
-              <Card key={result.id} className="group hover:shadow-lg transition-shadow overflow-hidden flex flex-col">
+              <Card
+                key={result.id}
+                className="group hover:shadow-lg transition-shadow overflow-hidden flex flex-col"
+              >
                 <CardContent className="p-0 space-y-0 flex flex-col flex-1">
                   {/* Poster */}
                   {result.posterPath ? (
@@ -144,7 +136,9 @@ export default function SearchPage() {
                       </h3>
                       <div className="flex items-center justify-between text-sm text-gray-600 mt-1">
                         <span className="capitalize">{result.mediaType}</span>
-                        {result.releaseDate && <span>{new Date(result.releaseDate).getFullYear()}</span>}
+                        {result.releaseDate && (
+                          <span>{new Date(result.releaseDate).getFullYear()}</span>
+                        )}
                       </div>
                     </div>
 

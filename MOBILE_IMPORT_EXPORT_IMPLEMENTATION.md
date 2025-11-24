@@ -34,6 +34,7 @@ Created a new watchlist API service with:
 Main component providing complete import/export workflow:
 
 **Features:**
+
 - File picker with support for CSV, JSON, and plain text files
 - Import preview modal showing:
   - Original item titles and years
@@ -51,11 +52,13 @@ Main component providing complete import/export workflow:
 - Error alerts with user-friendly messages
 
 **Nested Components:**
+
 - `PreviewModal` - Modal displaying import preview
 - `PreviewItem` - Individual item row with match and duplicate controls
 - `DuplicateStrategyOption` - Clickable strategy selector
 
 **State Management:**
+
 - `isImporting` - File selection/preview loading
 - `isExporting` - Export operation
 - `exportFormat` - Selected export format (json/csv)
@@ -77,17 +80,20 @@ Updated the watchlist screen to:
 ### 5. Build Configuration
 
 **Babel Configuration (`apps/mobile/babel.config.js`):**
+
 - Updated to use `babel-preset-expo` instead of individual presets
 - Added `module-resolver` plugin for path aliases:
   - `@/` → `./src/`
   - `@infocus/shared` → `../../packages/shared/src`
 
 **Metro Configuration (`apps/mobile/metro.config.js`):**
+
 - Already properly configured for monorepo
 - Watches both local and workspace node_modules
 - Resolves shared packages correctly
 
 **TypeScript Configuration (`apps/mobile/tsconfig.json`):**
+
 - Path aliases already configured
 - Extends react-native base config from shared packages
 - Strict mode enabled
@@ -97,6 +103,7 @@ Updated the watchlist screen to:
 **Component Tests (`apps/mobile/src/components/watchlist/ImportExportSection.test.tsx`):**
 
 Tests covering:
+
 - **Import workflow:** File selection, preview display, item listing
 - **TMDB matching:** Display of match candidates, confidence scores
 - **Duplicate handling:** Warning display, strategy options
@@ -105,6 +112,7 @@ Tests covering:
 - **State management:** Modal closing, data clearing, callback invocation
 
 Tests use:
+
 - React Testing Library for component testing
 - Jest mocks for API, file system, and document picker
 - Mock preview data with realistic items
@@ -113,6 +121,7 @@ Tests use:
 **Integration Tests (`apps/mobile/src/screens/tabs/WatchlistScreen.test.tsx`):**
 
 Tests covering:
+
 - Screen rendering and component integration
 - Full import/export workflows
 - Button visibility and functionality
@@ -123,6 +132,7 @@ Tests covering:
 **IMPORT_EXPORT.md** (`apps/mobile/IMPORT_EXPORT.md`)
 
 Comprehensive documentation including:
+
 - Feature overview
 - Implementation details
 - Component props and state
@@ -190,17 +200,20 @@ ExportedWatchlistEntry - Individual exported item
 ## Testing Strategy
 
 ### Unit Tests
+
 - Component rendering and state
 - User interactions (button presses, selections)
 - API calls with mocked responses
 - Error scenarios
 
 ### Integration Tests
+
 - Full workflows from screen level
 - Component integration
 - State flow through multiple operations
 
 ### Mocking
+
 - `watchlistApi` - Mocked for predictable responses
 - `expo-document-picker` - Returns test file data
 - `expo-file-system` - Mocked file operations
@@ -209,11 +222,13 @@ ExportedWatchlistEntry - Individual exported item
 ## Browser/Device Compatibility
 
 ### Minimum Requirements
+
 - iOS 13+
 - Android 6+
 - React Native 0.73.11+
 
 ### Tested On
+
 - Expo ~50.0.0
 - NativeBase ^3.2.1
 - React 18.2.0

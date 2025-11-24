@@ -328,18 +328,18 @@ time curl -s https://${RAILWAY_DOMAIN}/health > /dev/null
 
 If any check fails, mark the corresponding row and take corrective action:
 
-| Issue | Checked | Status | Notes |
-|-------|---------|--------|-------|
-| Health check fails | [ ] | _____ | ___________________________________ |
-| Auth register fails | [ ] | _____ | ___________________________________ |
-| Auth login fails | [ ] | _____ | ___________________________________ |
-| Protected routes blocked | [ ] | _____ | ___________________________________ |
-| CORS errors | [ ] | _____ | ___________________________________ |
-| Database connection fails | [ ] | _____ | ___________________________________ |
-| Migrations not applied | [ ] | _____ | ___________________________________ |
-| Slow response times | [ ] | _____ | ___________________________________ |
-| Memory/CPU issues | [ ] | _____ | ___________________________________ |
-| Service keeps crashing | [ ] | _____ | ___________________________________ |
+| Issue                     | Checked | Status | Notes                                  |
+| ------------------------- | ------- | ------ | -------------------------------------- |
+| Health check fails        | [ ]     | **\_** | ****************\_\_\_**************** |
+| Auth register fails       | [ ]     | **\_** | ****************\_\_\_**************** |
+| Auth login fails          | [ ]     | **\_** | ****************\_\_\_**************** |
+| Protected routes blocked  | [ ]     | **\_** | ****************\_\_\_**************** |
+| CORS errors               | [ ]     | **\_** | ****************\_\_\_**************** |
+| Database connection fails | [ ]     | **\_** | ****************\_\_\_**************** |
+| Migrations not applied    | [ ]     | **\_** | ****************\_\_\_**************** |
+| Slow response times       | [ ]     | **\_** | ****************\_\_\_**************** |
+| Memory/CPU issues         | [ ]     | **\_** | ****************\_\_\_**************** |
+| Service keeps crashing    | [ ]     | **\_** | ****************\_\_\_**************** |
 
 ## Sign-Off
 

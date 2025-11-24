@@ -40,12 +40,13 @@ async function enrichSearchResults(results: SearchResult[]): Promise<SearchResul
 
     if (existingMedia) {
       // Add streaming provider info from our database
-      enrichedResult.streamingProviders = existingMedia.streamingProviders?.map(provider => ({
-        provider_id: provider.provider,
-        provider_name: provider.provider,
-        logo_path: null,
-        regions: provider.regions,
-      })) || [];
+      enrichedResult.streamingProviders =
+        existingMedia.streamingProviders?.map((provider) => ({
+          provider_id: provider.provider,
+          provider_name: provider.provider,
+          logo_path: null,
+          regions: provider.regions,
+        })) || [];
       enrichedResult.inDatabase = true;
     }
 
@@ -67,7 +68,7 @@ async function enrichMediaDetails(details: MediaDetails): Promise<MediaDetails> 
 
   if (existingMedia) {
     // Merge TMDB provider data with our cached provider data
-    const ourProviders = existingMedia.streamingProviders?.map(provider => ({
+    const ourProviders = existingMedia.streamingProviders?.map((provider) => ({
       provider_id: provider.provider,
       provider_name: provider.provider,
       logo_path: null,
@@ -76,10 +77,12 @@ async function enrichMediaDetails(details: MediaDetails): Promise<MediaDetails> 
 
     return {
       ...details,
-      streamingProviders: details.watch_providers ? {
-        ...details.watch_providers,
-        cached: ourProviders || [],
-      } as any : (ourProviders || []) as any,
+      streamingProviders: details.watch_providers
+        ? ({
+            ...details.watch_providers,
+            cached: ourProviders || [],
+          } as any)
+        : ((ourProviders || []) as any),
       inDatabase: true,
     };
   }
@@ -95,7 +98,7 @@ router.get('/search', async (req: Request, res: Response) => {
 
     // Create cache key for this search
     const cacheKey = `search:${query}:${page}:${include_adult}`;
-    
+
     // Try to get from cache first
     const cached = cacheService.get(cacheKey);
     if (cached) {
@@ -104,7 +107,7 @@ router.get('/search', async (req: Request, res: Response) => {
 
     // Perform search through TMDB service
     const searchResponse = await tmdbService.searchMulti(query, page);
-    
+
     // Enrich results with our cached provider data
     const enrichedResults = await enrichSearchResults(searchResponse.results);
 
@@ -120,7 +123,7 @@ router.get('/search', async (req: Request, res: Response) => {
     return res.json(response);
   } catch (error) {
     console.error('Search error:', error);
-    
+
     if (error instanceof z.ZodError) {
       return res.status(400).json({
         error: 'Invalid query parameters',
@@ -156,7 +159,7 @@ router.get('/media/:tmdbId', async (req: Request, res: Response) => {
 
     // Create cache key for this request
     const cacheKey = `media:${tmdbId}:${type}${language ? `:${language}` : ''}`;
-    
+
     // Try to get from cache first
     const cached = cacheService.get(cacheKey);
     if (cached) {
@@ -165,7 +168,7 @@ router.get('/media/:tmdbId', async (req: Request, res: Response) => {
 
     // Get media details from TMDB service
     const details = await tmdbService.getMediaDetails(tmdbId, type);
-    
+
     // Enrich with our cached provider data
     const enrichedDetails = await enrichMediaDetails(details);
 
@@ -175,7 +178,7 @@ router.get('/media/:tmdbId', async (req: Request, res: Response) => {
     return res.json(enrichedDetails);
   } catch (error) {
     console.error('Media details error:', error);
-    
+
     if (error instanceof z.ZodError) {
       return res.status(400).json({
         error: 'Invalid parameters',
@@ -208,7 +211,7 @@ router.get('/media/:tmdbId', async (req: Request, res: Response) => {
 router.get('/genres/:type', async (req: Request, res: Response) => {
   try {
     const { type } = req.params;
-    
+
     if (!['movie', 'tv'].includes(type)) {
       return res.status(400).json({
         error: 'Invalid type. Must be "movie" or "tv"',
@@ -217,7 +220,7 @@ router.get('/genres/:type', async (req: Request, res: Response) => {
 
     // Create cache key
     const cacheKey = `genres:${type}`;
-    
+
     // Try to get from cache first
     const cached = cacheService.get(cacheKey);
     if (cached) {
@@ -233,7 +236,7 @@ router.get('/genres/:type', async (req: Request, res: Response) => {
     return res.json({ genres });
   } catch (error) {
     console.error('Genres error:', error);
-    
+
     // Try to get stale cache
     const cacheKey = `genres:${req.params.type}`;
     const staleCache = cacheService.get(cacheKey);

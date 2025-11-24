@@ -24,7 +24,11 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { watchlistApi } from '../../lib/api/watchlist';
-import type { NormalizedPreviewItem, BulkImportRequest, DuplicateResolution } from '@infocus/shared';
+import type {
+  NormalizedPreviewItem,
+  BulkImportRequest,
+  DuplicateResolution,
+} from '@infocus/shared';
 
 interface ImportExportSectionProps {
   onImportComplete?: () => void;
@@ -332,20 +336,17 @@ const PreviewItem: React.FC<PreviewItemProps> = ({
       <HStack justifyContent="space-between" alignItems="flex-start" mb={2}>
         <VStack flex={1}>
           <Text style={styles.itemTitle}>{item.originalTitle}</Text>
-          {item.originalYear && (
-            <Text style={styles.itemYear}>({item.originalYear})</Text>
-          )}
+          {item.originalYear && <Text style={styles.itemYear}>({item.originalYear})</Text>}
         </VStack>
-        {item.error && (
-          <WarningOutlineIcon size="lg" color="red.500" ml={2} />
-        )}
+        {item.error && <WarningOutlineIcon size="lg" color="red.500" ml={2} />}
       </HStack>
 
       {item.matchCandidates.length > 0 && (
         <Box mb={3}>
           <TouchableOpacity onPress={() => setShowMatches(!showMatches)}>
             <Text style={styles.matchLabel}>
-              TMDB Match: {selectedMatch?.title} ({selectedMatch?.year}) - {Math.round((selectedMatch?.confidence || 0) * 100)}%
+              TMDB Match: {selectedMatch?.title} ({selectedMatch?.year}) -{' '}
+              {Math.round((selectedMatch?.confidence || 0) * 100)}%
             </Text>
           </TouchableOpacity>
 
@@ -379,18 +380,13 @@ const PreviewItem: React.FC<PreviewItemProps> = ({
       )}
 
       {item.hasExistingEntry && (
-        <Box
-          style={styles.duplicateWarning}
-          mb={2}
-        >
+        <Box style={styles.duplicateWarning} mb={2}>
           <HStack alignItems="center" space={2}>
             <WarningOutlineIcon color="orange.500" />
             <VStack flex={1}>
               <Text style={styles.duplicateLabel}>Duplicate Entry Found</Text>
               <TouchableOpacity onPress={() => setShowDuplicateOptions(!showDuplicateOptions)}>
-                <Text style={styles.duplicateValue}>
-                  Strategy: {duplicateStrategy}
-                </Text>
+                <Text style={styles.duplicateValue}>Strategy: {duplicateStrategy}</Text>
               </TouchableOpacity>
             </VStack>
           </HStack>

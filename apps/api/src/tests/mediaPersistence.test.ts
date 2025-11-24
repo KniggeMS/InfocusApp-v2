@@ -1,5 +1,8 @@
 import { PrismaClient } from '@prisma/client';
-import { MediaPersistenceService, mediaPersistenceService } from '../services/mediaPersistenceService';
+import {
+  MediaPersistenceService,
+  mediaPersistenceService,
+} from '../services/mediaPersistenceService';
 import { tmdbService } from '../services/tmdbService';
 
 // Mock dependencies
@@ -17,7 +20,7 @@ describe('MediaPersistenceService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Create mock Prisma instance
     mockPrismaInstance = {
       mediaItem: {
@@ -48,7 +51,10 @@ describe('MediaPersistenceService', () => {
         vote_average: 8.5,
         genre_ids: [1, 2],
         media_type: 'movie' as const,
-        genres: [{ id: 1, name: 'Action' }, { id: 2, name: 'Drama' }],
+        genres: [
+          { id: 1, name: 'Action' },
+          { id: 2, name: 'Drama' },
+        ],
         watch_providers: {
           results: {
             US: {
@@ -96,7 +102,7 @@ describe('MediaPersistenceService', () => {
     it('should create new media item from TMDB data', async () => {
       mockPrismaInstance.mediaItem.findUnique.mockResolvedValue(null);
       mockTmdbService.getMediaDetails.mockResolvedValue(mockMediaDetails);
-      
+
       const createdMedia = {
         id: 'new-media-123',
         tmdbId: 123,
@@ -121,7 +127,7 @@ describe('MediaPersistenceService', () => {
           rating: 8.5,
           genres: ['Action', 'Drama'],
           creators: [],
-        }
+        },
       });
       expect(result.isNew).toBe(true);
     });
@@ -147,7 +153,7 @@ describe('MediaPersistenceService', () => {
           tmdbId: 456,
           tmdbType: 'tv',
           title: 'Test TV Show',
-        })
+        }),
       });
     });
 
@@ -161,14 +167,14 @@ describe('MediaPersistenceService', () => {
 
       // Check that streaming providers are created
       expect(mockPrismaInstance.streamingProvider.create).toHaveBeenCalledTimes(3);
-      
+
       // Netflix (US)
       expect(mockPrismaInstance.streamingProvider.create).toHaveBeenCalledWith({
         data: {
           mediaItemId: 'new-media-123',
           provider: 'netflix',
           regions: ['US'],
-        }
+        },
       });
 
       // Apple TV (US) - buy
@@ -177,7 +183,7 @@ describe('MediaPersistenceService', () => {
           mediaItemId: 'new-media-123',
           provider: 'apple tv_buy',
           regions: ['US'],
-        }
+        },
       });
 
       // Disney+ (GB)
@@ -186,7 +192,7 @@ describe('MediaPersistenceService', () => {
           mediaItemId: 'new-media-123',
           provider: 'disney+',
           regions: ['GB'],
-        }
+        },
       });
     });
 
@@ -223,21 +229,20 @@ describe('MediaPersistenceService', () => {
           rating: undefined,
           genres: [],
           creators: [],
-        })
+        }),
       });
     });
 
     it('should fetch complete media item after creation', async () => {
       mockPrismaInstance.mediaItem.findUnique
         .mockResolvedValueOnce(null) // Initial check
-        .mockResolvedValueOnce({ // Final fetch with providers
+        .mockResolvedValueOnce({
+          // Final fetch with providers
           id: 'new-media-123',
           tmdbId: 123,
-          streamingProviders: [
-            { provider: 'netflix', regions: ['US'] },
-          ],
+          streamingProviders: [{ provider: 'netflix', regions: ['US'] }],
         });
-      
+
       mockTmdbService.getMediaDetails.mockResolvedValue(mockMediaDetails);
       mockPrismaInstance.mediaItem.create.mockResolvedValue({ id: 'new-media-123' });
       mockPrismaInstance.streamingProvider.create.mockResolvedValue({});
@@ -259,7 +264,7 @@ describe('MediaPersistenceService', () => {
         tmdbId: 123,
         tmdbType: 'movie',
       };
-      
+
       mockMediaDetails = {
         id: 123,
         title: 'Test Movie',
@@ -286,8 +291,9 @@ describe('MediaPersistenceService', () => {
     it('should throw error if media item not found', async () => {
       mockPrismaInstance.mediaItem.findUnique.mockResolvedValue(null);
 
-      await expect(mediaService.updateStreamingProviders('non-existent'))
-        .rejects.toThrow('Media item not found');
+      await expect(mediaService.updateStreamingProviders('non-existent')).rejects.toThrow(
+        'Media item not found',
+      );
     });
   });
 
@@ -421,7 +427,7 @@ describe('MediaPersistenceService', () => {
               lt: expect.any(Date),
             },
           },
-        })
+        }),
       );
     });
   });
@@ -432,7 +438,7 @@ describe('MediaPersistenceService', () => {
       mockTmdbService.getMediaDetails.mockResolvedValue({
         watch_providers: { results: {} },
       } as any);
-      
+
       // Mock updateStreamingProviders to avoid calling getMediaDetails
       jest.spyOn(mediaService, 'updateStreamingProviders').mockResolvedValue();
     });
@@ -483,9 +489,10 @@ describe('MediaPersistenceService', () => {
       ];
 
       mockPrismaInstance.mediaItem.findMany.mockResolvedValue(staleItems);
-      
+
       // Mock updateStreamingProviders to resolve once, reject once
-      jest.spyOn(mediaService, 'updateStreamingProviders')
+      jest
+        .spyOn(mediaService, 'updateStreamingProviders')
         .mockResolvedValueOnce()
         .mockRejectedValueOnce(new Error('Update failed'));
 

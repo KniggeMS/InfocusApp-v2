@@ -47,7 +47,8 @@ const mockSearchResults = [
     mediaType: 'movie',
     posterPath: '/test-poster.jpg',
     backdropPath: '/test-backdrop.jpg',
-    overview: 'A computer programmer is chosen by a mysterious resistance to help fight a war against machines.',
+    overview:
+      'A computer programmer is chosen by a mysterious resistance to help fight a war against machines.',
     releaseDate: '1999-03-31',
     voteAverage: 8.7,
     genres: [28, 878], // Action, Sci-Fi
@@ -76,7 +77,7 @@ const renderWithProviders = (component: React.ReactElement) => {
   return render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>{component}</AuthProvider>
-    </QueryClientProvider>
+    </QueryClientProvider>,
   );
 };
 
@@ -340,7 +341,6 @@ describe('Search Page', () => {
 
       jest.advanceTimersByTime(200);
     });
-
   });
 
   describe('Error Handling', () => {
