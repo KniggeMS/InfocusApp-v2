@@ -19,13 +19,11 @@ import {
 import {
   filterAndSortWatchlist,
   groupWatchlistByStatus,
-  type StatusFilter,
-  type SortOption,
 } from '@/lib/utils/watchlist-utils';
 import { PlayCircle, CheckCircle, Clock, Plus, Download, Upload } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import type { WatchlistEntry } from '@/lib/api/watchlist';
-import type { StatusFilter } from '@/components/ui/FilterControls';
+import type { StatusFilter, SortOption } from '@/lib/utils/watchlist-utils';
 import type { NormalizedPreviewItem, DuplicateResolution } from '@infocus/shared';
 
 export default function WatchlistPage() {
