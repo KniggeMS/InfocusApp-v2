@@ -5,7 +5,7 @@
   "description": "InFocus API server",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "NODE_ENV=development ts-node src/index.ts",
+    "dev": "ts-node src/index.ts",
     "build": "tsc --project tsconfig.build.json",
     "clean": "rm -rf dist",
     "typecheck": "tsc --project tsconfig.build.json --noEmit",
@@ -60,3 +60,4 @@
     "typescript": "^5.3.3"
   }
 }
+
