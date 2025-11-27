@@ -273,7 +273,7 @@ router.get('/genres/:type', async (req: Request, res: Response) => {
 
     // Try to get stale cache
     const cacheKey = `genres:${req.params.type}`;
-    const staleCache = cacheService.get(cacheKey);
+    const staleCache = cacheService.get(cacheKey) as CachedSearchResponse | undefined;
     if (staleCache) {
       return res.json({
         ...staleCache,
