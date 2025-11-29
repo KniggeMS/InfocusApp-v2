@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Container } from '../../components/layout/Container';
 import { Button } from '../../components/forms/Button';
 import { useAuth } from '../../lib/context/AuthContext';
+import { colors } from '../../theme';
 
 export const SettingsScreen: React.FC = () => {
   const { logout, user } = useAuth();
@@ -56,26 +57,26 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   label: {
-    color: '#6b7280',
+    color: colors.gray[500],
     fontSize: 12,
     marginBottom: 4,
     marginTop: 12,
   },
   title: {
-    color: '#1f2937',
+    color: colors.gray[800],
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 24,
   },
   userInfo: {
-    backgroundColor: '#fff',
-    borderColor: '#e5e7eb',
+    backgroundColor: colors.white,
+    borderColor: colors.gray[200],
     borderRadius: 8,
     borderWidth: 1,
     padding: 16,
   },
   value: {
-    color: '#1f2937',
+    color: colors.gray[800],
     fontSize: 16,
     fontWeight: '500',
   },

@@ -8,6 +8,7 @@ import { Input } from '../../components/forms/Input';
 import { Button } from '../../components/forms/Button';
 import { onboardingSchema, OnboardingFormData } from '../../lib/validation/auth';
 import { useAuth } from '../../lib/context/AuthContext';
+import { colors } from '../../theme';
 
 const STREAMING_PROVIDERS = [
   { id: 'netflix', name: 'Netflix' },
@@ -150,24 +151,24 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   providerCard: {
-    backgroundColor: '#fff',
-    borderColor: '#ddd',
+    backgroundColor: colors.white,
+    borderColor: colors.gray[300],
     borderRadius: 8,
     borderWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   providerCardSelected: {
-    backgroundColor: '#eff6ff',
-    borderColor: '#3b82f6',
+    backgroundColor: colors.blue[50],
+    borderColor: colors.blue[500],
   },
   providerText: {
-    color: '#6b7280',
+    color: colors.gray[500],
     fontSize: 14,
     fontWeight: '500',
   },
   providerTextSelected: {
-    color: '#3b82f6',
+    color: colors.blue[500],
   },
   providersGrid: {
     flexDirection: 'row',
@@ -178,12 +179,12 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionSubtitle: {
-    color: '#6b7280',
+    color: colors.gray[500],
     fontSize: 14,
     marginBottom: 16,
   },
   sectionTitle: {
-    color: '#1f2937',
+    color: colors.gray[800],
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 4,
@@ -192,11 +193,11 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   subtitle: {
-    color: '#6b7280',
+    color: colors.gray[500],
     fontSize: 16,
   },
   title: {
-    color: '#1f2937',
+    color: colors.gray[800],
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 8,

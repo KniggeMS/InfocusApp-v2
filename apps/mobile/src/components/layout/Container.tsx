@@ -8,6 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { colors } from '../../theme';
 
 interface ContainerProps {
   children: React.ReactNode;
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   safeArea: {
-    backgroundColor: '#f9fafb',
+    backgroundColor: colors.gray[50],
     flex: 1,
   },
   scrollContent: {

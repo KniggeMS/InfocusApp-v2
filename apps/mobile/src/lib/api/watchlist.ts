@@ -86,11 +86,13 @@ export const watchlistApi = {
 
   async previewImport(file: ArrayBuffer | string): Promise<NormalizedPreviewItem[]> {
     const formData = new FormData();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fileBlob = new Blob([file as any], {
       type: typeof file === 'string' ? 'text/csv' : 'application/octet-stream',
       lastModified: Date.now(),
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     formData.append('file', fileBlob as any);
 
     const response = await apiClient.post('/watchlist/import/preview', formData, {

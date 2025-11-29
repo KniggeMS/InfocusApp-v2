@@ -1,5 +1,6 @@
 import React from 'react';
 import { TextInput, View, Text, StyleSheet } from 'react-native';
+import { colors } from '../../theme';
 
 interface InputProps {
   label?: string;
@@ -38,7 +39,7 @@ export const Input: React.FC<InputProps> = ({
         secureTextEntry={secureTextEntry}
         editable={editable}
         autoCapitalize={autoCapitalize}
-        placeholderTextColor="#9ca3af"
+        placeholderTextColor={colors.gray[400]}
         testID={testID}
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
@@ -51,28 +52,28 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     width: '100%',
   },
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#374151',
-    marginBottom: 6,
-  },
-  input: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-    color: '#000000',
-  },
-  inputError: {
-    borderColor: '#ef4444',
-  },
   errorText: {
-    color: '#ef4444',
+    color: colors.red[500],
     fontSize: 12,
     marginTop: 4,
+  },
+  input: {
+    backgroundColor: colors.white,
+    borderColor: colors.gray[300],
+    borderRadius: 6,
+    borderWidth: 1,
+    color: colors.black,
+    fontSize: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  inputError: {
+    borderColor: colors.red[500],
+  },
+  label: {
+    color: colors.gray[700],
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 6,
   },
 });

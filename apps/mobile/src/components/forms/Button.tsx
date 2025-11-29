@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle } from 'react-native';
+import { colors } from '../../theme';
 
 interface ButtonProps {
   onPress: () => void;
@@ -58,7 +59,7 @@ export const Button: React.FC<ButtonProps> = ({
       testID={testID}
     >
       {loading ? (
-        <ActivityIndicator color="#ffffff" />
+        <ActivityIndicator color={colors.white} />
       ) : (
         <Text style={getTextStyle()}>{title}</Text>
       )}
@@ -69,56 +70,56 @@ export const Button: React.FC<ButtonProps> = ({
 const styles = StyleSheet.create({
   dangerButton: {
     alignItems: 'center',
-    backgroundColor: '#64748b',
+    backgroundColor: colors.slate[500],
     borderRadius: 6,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   dangerText: {
-    color: '#ffffff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   disabled: {
     opacity: 0.5,
   },
-  primaryButton: {
-    alignItems: 'center',
-    backgroundColor: '#3b82f6',
-    borderRadius: 6,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  primaryText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  secondaryButton: {
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    borderColor: '#3b82f6',
-    borderRadius: 6,
-    borderWidth: 2,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  secondaryText: {
-    color: '#3b82f6',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   outlineButton: {
     alignItems: 'center',
-    backgroundColor: 'transparent',
-    borderColor: '#6b7280',
+    backgroundColor: colors.transparent,
+    borderColor: colors.gray[500],
     borderRadius: 6,
     borderWidth: 2,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   outlineText: {
-    color: '#6b7280',
+    color: colors.gray[500],
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  primaryButton: {
+    alignItems: 'center',
+    backgroundColor: colors.blue[500],
+    borderRadius: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  primaryText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  secondaryButton: {
+    alignItems: 'center',
+    backgroundColor: colors.transparent,
+    borderColor: colors.blue[500],
+    borderRadius: 6,
+    borderWidth: 2,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  secondaryText: {
+    color: colors.blue[500],
     fontSize: 16,
     fontWeight: '600',
   },

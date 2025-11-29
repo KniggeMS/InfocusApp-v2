@@ -285,7 +285,7 @@ describe('ImportExportSection', () => {
 
     it('handles file picker cancellation gracefully', async () => {
       mockDocumentPicker.getDocumentAsync.mockResolvedValue({
-        assets: undefined,
+        assets: null,
         canceled: true,
       });
 
@@ -329,7 +329,7 @@ describe('ImportExportSection', () => {
     });
 
     it('handles export file write', async () => {
-      mockFileSystem.writeAsStringAsync.mockResolvedValue(undefined as any);
+      mockFileSystem.writeAsStringAsync.mockResolvedValue();
       render(<ImportExportSection />);
       const exportButton = screen.getByText('Export Watchlist');
 
@@ -341,7 +341,7 @@ describe('ImportExportSection', () => {
     });
 
     it('shows sharing sheet when available', async () => {
-      mockFileSystem.writeAsStringAsync.mockResolvedValue(undefined as any);
+      mockFileSystem.writeAsStringAsync.mockResolvedValue();
       render(<ImportExportSection />);
       const exportButton = screen.getByText('Export Watchlist');
 
@@ -367,7 +367,7 @@ describe('ImportExportSection', () => {
 
     it('handles unavailable sharing gracefully', async () => {
       mockSharing.isAvailableAsync.mockResolvedValue(false);
-      mockFileSystem.writeAsStringAsync.mockResolvedValue(undefined as any);
+      mockFileSystem.writeAsStringAsync.mockResolvedValue();
       render(<ImportExportSection />);
       const exportButton = screen.getByText('Export Watchlist');
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Container } from '../../components/layout/Container';
 import { ImportExportSection } from '../../components/watchlist/ImportExportSection';
+import { colors } from '../../theme';
 
 export const WatchlistScreen: React.FC = () => {
   const handleImportComplete = () => {
@@ -25,12 +26,12 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   subtitle: {
-    color: '#6b7280',
+    color: colors.gray[500],
     fontSize: 16,
     marginTop: 8,
   },
   title: {
-    color: '#1f2937',
+    color: colors.gray[800],
     fontSize: 24,
     fontWeight: 'bold',
   },

@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { colors } from '../../theme';
 
 export const SplashScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>InFocus</Text>
-      <ActivityIndicator size="large" color="#3b82f6" style={styles.loader} />
+      <ActivityIndicator size="large" color={colors.blue[500]} style={styles.loader} />
     </View>
   );
 };
@@ -13,7 +14,7 @@ export const SplashScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: '#f9fafb',
+    backgroundColor: colors.gray[50],
     flex: 1,
     justifyContent: 'center',
   },
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   title: {
-    color: '#1f2937',
+    color: colors.gray[800],
     fontSize: 48,
     fontWeight: 'bold',
     marginBottom: 24,

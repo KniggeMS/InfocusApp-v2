@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Alert,
-  ActivityIndicator,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { StyleSheet, Alert, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native';
 import {
   Box,
   Button,
@@ -27,6 +21,7 @@ import type {
   BulkImportRequest,
   DuplicateResolution,
 } from '@infocus/shared';
+import { colors } from '../../theme';
 
 interface ImportExportSectionProps {
   onImportComplete?: () => void;
@@ -77,7 +72,8 @@ export const ImportExportSection: React.FC<ImportExportSectionProps> = ({ onImpo
       const resolutions: DuplicateResolution[] = [];
       previewItems.forEach((item, index) => {
         if (item.hasExistingEntry) {
-          const strategy = (duplicateStrategies[index] || 'skip') as any;
+          const strategy = (duplicateStrategies[index] ||
+            'skip') as DuplicateResolution['strategy'];
           resolutions.push({
             itemIndex: index,
             strategy,
@@ -455,120 +451,120 @@ const DuplicateStrategyOption: React.FC<DuplicateStrategyOptionProps> = ({
 );
 
 const styles = StyleSheet.create({
+  duplicateLabel: {
+    color: colors.amber[800],
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  duplicateValue: {
+    color: colors.amber[900],
+    fontSize: 11,
+    marginTop: 2,
+  },
+  duplicateWarning: {
+    backgroundColor: colors.amber[100],
+    borderColor: colors.amber[300],
+    borderRadius: 6,
+    borderWidth: 1,
+    padding: 10,
+  },
+  errorBox: {
+    backgroundColor: colors.red[100],
+    borderColor: colors.red[200],
+    borderRadius: 6,
+    borderWidth: 1,
+    marginTop: 8,
+    padding: 8,
+  },
+  errorText: {
+    color: colors.red[900],
+    fontSize: 11,
+  },
+  exportContainer: {
+    backgroundColor: colors.gray[100],
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+  },
+  itemTitle: {
+    color: colors.gray[800],
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  itemYear: {
+    color: colors.gray[500],
+    fontSize: 12,
+    marginTop: 4,
+  },
+  matchLabel: {
+    color: colors.blue[600],
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  matchOption: {
+    backgroundColor: colors.white,
+    borderColor: colors.gray[300],
+    borderRadius: 6,
+    borderWidth: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+  },
+  matchOptionSelected: {
+    backgroundColor: colors.blue[100],
+    borderColor: colors.blue[600],
+  },
+  matchOptionText: {
+    color: colors.gray[500],
+    fontSize: 12,
+  },
+  matchOptionTextSelected: {
+    color: colors.blue[800],
+    fontWeight: '600',
+  },
+  previewItem: {
+    backgroundColor: colors.gray[50],
+    borderColor: colors.gray[200],
+    borderRadius: 8,
+    borderWidth: 1,
+    marginBottom: 12,
+    padding: 12,
+  },
+  previewList: {
+    maxHeight: '80%',
+  },
   section: {
+    borderTopColor: colors.gray[200],
     borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
-    paddingTop: 16,
     marginTop: 16,
+    paddingTop: 16,
   },
   sectionHeader: {
     marginBottom: 12,
   },
   sectionTitle: {
+    color: colors.gray[800],
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1f2937',
-  },
-  exportContainer: {
-    paddingVertical: 12,
-    backgroundColor: '#f3f4f6',
-    paddingHorizontal: 12,
-    borderRadius: 8,
-  },
-  previewList: {
-    maxHeight: '80%',
-  },
-  previewItem: {
-    backgroundColor: '#f9fafb',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-  },
-  itemTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1f2937',
-  },
-  itemYear: {
-    fontSize: 12,
-    color: '#6b7280',
-    marginTop: 4,
-  },
-  matchLabel: {
-    fontSize: 12,
-    color: '#2563eb',
-    fontWeight: '500',
-  },
-  matchOption: {
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-    backgroundColor: '#fff',
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-  },
-  matchOptionSelected: {
-    backgroundColor: '#dbeafe',
-    borderColor: '#2563eb',
-  },
-  matchOptionText: {
-    fontSize: 12,
-    color: '#6b7280',
-  },
-  matchOptionTextSelected: {
-    color: '#1e40af',
-    fontWeight: '600',
-  },
-  duplicateWarning: {
-    backgroundColor: '#fef3c7',
-    borderRadius: 6,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#fcd34d',
-  },
-  duplicateLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#92400e',
-  },
-  duplicateValue: {
-    fontSize: 11,
-    color: '#78350f',
-    marginTop: 2,
-  },
-  strategyOption: {
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    marginLeft: 20,
-  },
-  strategyOptionSelected: {
-    backgroundColor: '#dcfce7',
-    borderColor: '#22c55e',
   },
   strategyLabel: {
+    color: colors.gray[500],
     fontSize: 12,
-    color: '#6b7280',
   },
   strategyLabelSelected: {
-    color: '#15803d',
+    color: colors.green[700],
     fontWeight: '600',
   },
-  errorBox: {
-    backgroundColor: '#fee2e2',
+  strategyOption: {
+    backgroundColor: colors.white,
+    borderColor: colors.gray[300],
     borderRadius: 6,
-    padding: 8,
-    marginTop: 8,
     borderWidth: 1,
-    borderColor: '#fecaca',
+    marginLeft: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
   },
-  errorText: {
-    fontSize: 11,
-    color: '#7f1d1d',
+  strategyOptionSelected: {
+    backgroundColor: colors.green[100],
+    borderColor: colors.green[500],
   },
 });

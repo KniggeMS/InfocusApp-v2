@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Container } from '../../components/layout/Container';
+import { colors } from '../../theme';
 
 export const FamilyScreen: React.FC = () => {
   return (
@@ -20,11 +21,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   subtitle: {
-    color: '#6b7280',
+    color: colors.gray[500],
     fontSize: 16,
   },
   title: {
-    color: '#1f2937',
+    color: colors.gray[800],
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 8,
