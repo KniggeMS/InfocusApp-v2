@@ -24,6 +24,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/genai": "^1.30.0",
     "@infocus/shared": "workspace:*",
     "@prisma/client": "^5.8.0",
     "@types/bcryptjs": "^3.0.0",
@@ -56,9 +57,10 @@
     "@infocus/tsconfig": "workspace:*",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.10.6",
+    "@types/node-fetch": "^2.6.13",
+    "node-fetch": "^3.3.2",
     "prisma": "^5.8.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }
-
