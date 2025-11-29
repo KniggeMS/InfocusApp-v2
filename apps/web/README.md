@@ -1,14 +1,15 @@
 # InFocus Web App
 
-The InFocus web application built with Next.js 13+ (App Router), TypeScript, Tailwind CSS, and React Query.
+The InFocus web application built with Next.js 13+ (App Router), TypeScript, Tailwind CSS, React Query, and next-intl for internationalization.
 
 ## Features
 
 - **Next.js 13+ App Router** - Modern React framework with file-based routing
+- **Internationalization (i18n)** - Multi-language support with next-intl (English, German)
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first CSS framework for rapid UI development
 - **React Query (TanStack Query)** - Powerful data fetching and state management
-- **Axios** - HTTP client with interceptors for authentication
+- **Axios** - HTTP client with interceptors for authentication and locale headers
 - **React Hot Toast** - Beautiful notifications
 - **Responsive Design** - Mobile-first responsive layouts
 - **Centralized Auth** - Token-based authentication with automatic refresh
@@ -33,6 +34,12 @@ Create a `.env.local` file in the `apps/web` directory:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3000
+
+# Optional: Override default locale (defaults to 'en')
+NEXT_PUBLIC_DEFAULT_LOCALE=en
+
+# Optional: Override supported locales (defaults to 'en,de')
+NEXT_PUBLIC_SUPPORTED_LOCALES=en,de
 ```
 
 For production deployment, see [Deploying to Vercel](#deploying-to-vercel) for required environment variables.
@@ -75,26 +82,37 @@ pnpm typecheck
 apps/web/
 ├── src/
 │   ├── app/                    # Next.js App Router pages
-│   │   ├── layout.tsx         # Root layout with providers
-│   │   ├── page.tsx           # Home page
-│   │   ├── login/             # Login page
-│   │   ├── register/          # Registration page
-│   │   ├── watchlist/         # Watchlist page
-│   │   ├── search/            # Search page
-│   │   ├── family/            # Family groups page
-│   │   └── settings/          # Settings page
+│   │   ├── [locale]/          # Locale-based routing
+│   │   │   ├── layout.tsx     # Locale-specific layout with i18n provider
+│   │   │   ├── page.tsx       # Localized home page
+│   │   │   ├── (auth)/        # Auth routes group
+│   │   │   │   ├── login/     # Login page
+│   │   │   │   └── register/  # Registration page
+│   │   │   ├── watchlist/     # Watchlist page
+│   │   │   ├── search/        # Search page
+│   │   │   ├── family/        # Family groups page
+│   │   │   └── settings/      # Settings page
+│   │   ├── layout.tsx         # Root layout
+│   │   └── page.tsx           # Root redirect page
 │   ├── components/
 │   │   ├── layout/            # Layout components (Navigation, PageShell)
+│   │   ├── i18n/              # Internationalization components (LocaleSwitcher)
 │   │   └── ui/                # Reusable UI components (Button, Input, Card)
 │   ├── lib/
-│   │   ├── api/               # API client and service functions
-│   │   ├── context/           # React contexts (auth)
-│   │   ├── hooks/             # Custom React hooks (React Query hooks)
+│   │   ├── api/               # API client with locale headers
+│   │   ├── context/           # React contexts (auth with locale-aware navigation)
+│   │   ├── hooks/             # Custom React hooks (including locale utilities)
+│   │   ├── i18n/             # Internationalization configuration
 │   │   ├── providers/         # Provider components (QueryProvider)
 │   │   └── utils/             # Utility functions
+│   ├── messages/              # Translation files
+│   │   ├── en.json           # English translations
+│   │   └── de.json           # German translations
+│   ├── messages.d.ts          # TypeScript definitions for messages
 │   └── app/globals.css        # Global styles
 ├── public/                     # Static assets
-├── next.config.js             # Next.js configuration
+├── middleware.ts              # Next.js middleware with locale detection
+├── next.config.js             # Next.js configuration with next-intl
 ├── tailwind.config.ts         # Tailwind CSS configuration
 ├── tsconfig.json              # TypeScript configuration
 └── package.json               # Dependencies and scripts
@@ -102,13 +120,70 @@ apps/web/
 
 ## Routes
 
-- `/` - Home page (redirects to /watchlist if authenticated)
-- `/login` - User login
-- `/register` - User registration
-- `/watchlist` - User's watchlist (protected)
-- `/search` - Search for movies/TV shows (protected)
-- `/family` - Family groups management (protected)
-- `/settings` - User settings (protected)
+- `/` - Root redirect to preferred locale (en/de based on Accept-Language header or cookie)
+- `/[locale]` - Localized home page
+- `/[locale]/login` - User login
+- `/[locale]/register` - User registration  
+- `/[locale]/watchlist` - User's watchlist (protected)
+- `/[locale]/search` - Search for movies/TV shows (protected)
+- `/[locale]/family` - Family groups management (protected)
+- `/[locale]/settings` - User settings (protected)
+
+## Internationalization (i18n)
+
+The app uses [next-intl](https://next-intl-docs.vercel.app/) for internationalization:
+
+### Supported Locales
+- **English (en)** - Default locale
+- **German (de)**
+
+### Locale Detection
+1. **URL Path** - `/en/...` or `/de/...` takes precedence
+2. **Cookie** - `locale` cookie for user preference persistence
+3. **Accept-Language Header** - Browser language detection for first-time visitors
+4. **Fallback** - English (en) as default
+
+### Translation Structure
+Translations are organized by namespace in `src/messages/[locale].json`:
+
+```json
+{
+  "common": { "loading": "Loading...", "save": "Save" },
+  "navigation": { "home": "Home", "watchlist": "Watchlist" },
+  "auth": { "login": "Login", "email": "Email" },
+  "watchlist": { "title": "My Watchlist" },
+  "search": { "title": "Search" },
+  "family": { "title": "Family" },
+  "settings": { "title": "Settings" },
+  "media": { "movie": "Movie", "tvShow": "TV Show" }
+}
+```
+
+### Using Translations
+```tsx
+import { useTranslations } from 'next-intl';
+
+function MyComponent() {
+  const t = useTranslations('common');
+  return <button>{t('save')}</button>; // "Save" or "Speichern"
+}
+```
+
+### Locale Switching
+The `LocaleSwitcher` component provides language switching with:
+- Cookie persistence
+- URL path updates
+- Automatic page refresh with new locale
+
+### API Integration
+All API requests include the `Accept-Language` header based on current locale:
+
+```typescript
+// Automatic in apiClient
+headers: {
+  'Accept-Language': getCurrentLocale() // 'en' or 'de'
+}
+```
 
 ## API Integration
 

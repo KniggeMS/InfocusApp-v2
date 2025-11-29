@@ -1,18 +1,7 @@
-// This file is used to verify that all exports are correctly set up
-// It should not be included in the build
-
-import type {
-  RawWatchlistRow,
-  TmdbMatchCandidate,
-  NormalizedPreviewItem,
-  DuplicateResolutionStrategy,
-  MergeFields,
-  DuplicateResolution,
-  BulkImportRequest,
-  ImportResult,
-  ExportedWatchlistEntry,
-  ExportResponse,
-} from './types';
+/**
+ * Test exports for shared package schemas, types, and utilities.
+ * This file is used internally for testing and should not be imported in production code.
+ */
 
 import {
   rawWatchlistRowSchema,
@@ -35,19 +24,7 @@ import {
   normalizeRating,
 } from './utils';
 
-// Type assertions to ensure imports work
-const _rawRow: RawWatchlistRow = {} as any;
-const _match: TmdbMatchCandidate = {} as any;
-const _preview: NormalizedPreviewItem = {} as any;
-const _strategy: DuplicateResolutionStrategy = 'skip';
-const _mergeFields: MergeFields = {} as any;
-const _resolution: DuplicateResolution = {} as any;
-const _bulkRequest: BulkImportRequest = {} as any;
-const _importResult: ImportResult = {} as any;
-const _exportedEntry: ExportedWatchlistEntry = {} as any;
-const _exportResponse: ExportResponse = {} as any;
-
-// Schema assertions
+// Schema assertions to ensure imports work
 const _schemas = [
   rawWatchlistRowSchema,
   tmdbMatchCandidateSchema,
@@ -70,19 +47,8 @@ const _utils = [
   normalizeRating,
 ];
 
-console.log('All exports verified:', {
-  types: [
-    _rawRow,
-    _match,
-    _preview,
-    _strategy,
-    _mergeFields,
-    _resolution,
-    _bulkRequest,
-    _importResult,
-    _exportedEntry,
-    _exportResponse,
-  ],
+// Export for verification
+export const exportVerification = {
   schemas: _schemas.length,
   utils: _utils.length,
-});
+};

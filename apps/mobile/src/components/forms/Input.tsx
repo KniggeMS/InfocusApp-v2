@@ -1,23 +1,47 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, TextInputProps } from 'react-native';
+import { TextInput, View, Text, StyleSheet } from 'react-native';
 
-interface InputProps extends TextInputProps {
+interface InputProps {
   label?: string;
+  placeholder?: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  onBlur?: () => void;
+  secureTextEntry?: boolean;
   error?: string;
+  editable?: boolean;
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   testID?: string;
 }
 
-export const Input: React.FC<InputProps> = ({ label, error, testID, ...props }) => {
+export const Input: React.FC<InputProps> = ({
+  label,
+  placeholder,
+  value,
+  onChangeText,
+  onBlur,
+  secureTextEntry = false,
+  error,
+  editable = true,
+  autoCapitalize = 'sentences',
+  testID,
+}) => {
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
       <TextInput
-        style={[styles.input, error ? styles.inputError : null]}
-        placeholderTextColor="#999"
+        style={[styles.input, error ? styles.inputError : undefined]}
+        placeholder={placeholder}
+        value={value}
+        onChangeText={onChangeText}
+        onBlur={onBlur}
+        secureTextEntry={secureTextEntry}
+        editable={editable}
+        autoCapitalize={autoCapitalize}
+        placeholderTextColor="#9ca3af"
         testID={testID}
-        {...props}
       />
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 };
@@ -25,29 +49,30 @@ export const Input: React.FC<InputProps> = ({ label, error, testID, ...props }) 
 const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
+    width: '100%',
   },
-  error: {
-    color: '#ef4444',
-    fontSize: 12,
-    marginTop: 4,
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+    marginBottom: 6,
   },
   input: {
-    backgroundColor: '#fff',
-    borderColor: '#ddd',
-    borderRadius: 8,
+    backgroundColor: '#ffffff',
     borderWidth: 1,
-    color: '#000',
+    borderColor: '#ddd',
+    borderRadius: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     fontSize: 16,
-    height: 48,
-    paddingHorizontal: 16,
+    color: '#000000',
   },
   inputError: {
     borderColor: '#ef4444',
   },
-  label: {
-    color: '#333',
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
+  errorText: {
+    color: '#ef4444',
+    fontSize: 12,
+    marginTop: 4,
   },
 });

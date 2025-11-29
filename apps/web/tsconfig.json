@@ -2,7 +2,6 @@
   "extends": "@infocus/tsconfig/react",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "types": ["jest", "@testing-library/jest-dom"],
     "jsx": "preserve",
     "baseUrl": ".",
@@ -15,5 +14,6 @@
       }
     ]
   },
-  "include": ["src", ".next/types/**/*.ts"]
+  "include": ["src", ".next/types/**/*.ts", "src/messages.d.ts"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"]
 }

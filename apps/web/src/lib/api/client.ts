@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { getClientLocale } from '@/lib/i18n/locale';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -18,6 +19,12 @@ apiClient.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
+    
+    // Add Accept-Language header
+    if (config.headers) {
+      config.headers['Accept-Language'] = getClientLocale();
+    }
+    
     return config;
   },
   (error) => {
@@ -48,7 +55,8 @@ apiClient.interceptors.response.use(
           return apiClient(originalRequest);
         } catch (refreshError) {
           localStorage.removeItem('accessToken');
-          window.location.href = '/login';
+          const locale = getClientLocale();
+          window.location.href = `/${locale}/login`;
           return Promise.reject(refreshError);
         }
       }

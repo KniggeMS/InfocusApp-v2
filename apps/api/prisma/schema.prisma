@@ -7,6 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // User account model
@@ -224,3 +225,4 @@ model StreamingProvider {
   @@index([mediaItemId])
   @@index([provider])
 }
+

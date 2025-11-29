@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useLocaleNavigation } from '@/lib/hooks/use-locale';
 import { authApi, type User } from '@/lib/api/auth';
 
 interface AuthContextType {
@@ -18,7 +18,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+  const { push } = useLocaleNavigation();
 
   useEffect(() => {
     const initAuth = async () => {
@@ -46,13 +46,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     const data = await authApi.login({ email, password });
     handleAuthResponse(data.user, data.accessToken);
-    router.push('/watchlist');
+    push('/watchlist');
   };
 
   const register = async (email: string, password: string, displayName: string) => {
     const data = await authApi.register({ email, password, displayName });
     handleAuthResponse(data.user, data.accessToken);
-    router.push('/watchlist');
+    push('/watchlist');
   };
 
   const logout = async () => {
@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       localStorage.removeItem('accessToken');
       setUser(null);
-      router.push('/login');
+      push('/login');
     }
   };
 
