@@ -3,21 +3,26 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/context/auth-context';
+import { useLocale, useLocaleNavigation } from '@/lib/hooks/use-locale';
+import { LocaleSwitcher } from '@/components/i18n/LocaleSwitcher';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/Button';
-
-const navItems = [
-  { href: '/watchlist', label: 'Watchlist' },
-  { href: '/search', label: 'Search' },
-  { href: '/family', label: 'Family' },
-  { href: '/settings', label: 'Settings' },
-];
 
 export function Navigation() {
   const pathname = usePathname();
   const { isAuthenticated, user, logout } = useAuth();
+  const { push, locale } = useLocaleNavigation();
+  const t = useTranslations('navigation');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const navItems = [
+    { href: '/watchlist', label: t('watchlist') },
+    { href: '/search', label: t('search') },
+    { href: '/family', label: t('family') },
+    { href: '/settings', label: t('settings') },
+  ];
 
   if (!isAuthenticated) {
     return null;
@@ -28,20 +33,23 @@ export function Navigation() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0">
+            <button 
+              onClick={() => push('/')}
+              className="flex-shrink-0 text-left"
+            >
               <span className="text-xl sm:text-2xl font-bold text-primary-600">
                 InFocus
               </span>
-            </Link>
+            </button>
 
             {/* Desktop Navigation */}
             <div className="hidden md:ml-8 md:flex md:space-x-1">
               {navItems.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = pathname === `/${locale}${item.href}`;
                 return (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    href={`/${locale}${item.href}`}
                     className={cn(
                       'rounded-md px-3 py-2 text-sm font-medium transition-colors',
                       isActive
@@ -58,11 +66,12 @@ export function Navigation() {
 
           {/* Desktop User Menu */}
           <div className="hidden md:flex md:items-center md:space-x-4">
+            <LocaleSwitcher />
             <span className="text-sm text-gray-700 truncate max-w-[150px]">
               {user?.displayName || user?.email}
             </span>
             <Button variant="outline" size="sm" onClick={logout}>
-              Logout
+              {t('logout')}
             </Button>
           </div>
 
@@ -116,11 +125,11 @@ export function Navigation() {
       <div className={cn('md:hidden', isMobileMenuOpen ? 'block' : 'hidden')}>
         <div className="px-2 pt-2 pb-3 space-y-1 border-t border-gray-200">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname === `/${locale}${item.href}`;
             return (
               <Link
                 key={item.href}
-                href={item.href}
+                href={`/${locale}${item.href}`}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={cn(
                   'block rounded-md px-3 py-2 text-base font-medium transition-colors w-full',
@@ -137,6 +146,9 @@ export function Navigation() {
           {/* Mobile user info and logout */}
           <div className="border-t border-gray-200 pt-4 mt-4">
             <div className="px-3 py-2">
+              <LocaleSwitcher />
+            </div>
+            <div className="px-3 py-2">
               <p className="text-sm font-medium text-gray-900">
                 {user?.displayName || user?.email}
               </p>
@@ -151,7 +163,7 @@ export function Navigation() {
                 onClick={logout}
                 className="w-full justify-center"
               >
-                Logout
+                {t('logout')}
               </Button>
             </div>
           </div>

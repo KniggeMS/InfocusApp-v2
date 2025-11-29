@@ -153,14 +153,14 @@ export default function FamilyPage() {
                           </span>
                         </p>
                         <div className="flex -space-x-2">
-                          {family.members.slice(0, 3).map((member, index) => (
+                          {family.members.slice(0, 3).map((member) => (
                             <div
                               key={member.id}
                               className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-primary-100 border-2 border-white flex items-center justify-center"
-                              title={member.name || member.email}
+                              title={member.user.name || member.user.email}
                             >
                               <span className="text-xs font-medium text-primary-700">
-                                {(member.name || member.email || 'U').charAt(0).toUpperCase()}
+                                {(member.user.name || member.user.email || 'U').charAt(0).toUpperCase()}
                               </span>
                             </div>
                           ))}
