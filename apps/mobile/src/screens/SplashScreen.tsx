@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import { colors } from '../../theme';
+import { colors } from '../theme';
 
 export const SplashScreen: React.FC = () => {
   return (
