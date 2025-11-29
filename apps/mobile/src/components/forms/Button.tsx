@@ -52,38 +52,12 @@ export const Button: React.FC<ButtonProps> = ({
 };
 
 const styles = StyleSheet.create({
-  primaryButton: {
-    backgroundColor: '#3b82f6',
-    borderRadius: 6,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    alignItems: 'center',
-  },
-  primaryText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  secondaryButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#3b82f6',
-    borderRadius: 6,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    alignItems: 'center',
-  },
-  secondaryText: {
-    color: '#3b82f6',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   dangerButton: {
+    alignItems: 'center',
     backgroundColor: '#64748b',
     borderRadius: 6,
-    paddingVertical: 12,
     paddingHorizontal: 16,
-    alignItems: 'center',
+    paddingVertical: 12,
   },
   dangerText: {
     color: '#ffffff',
@@ -92,5 +66,31 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: 0.5,
+  },
+  primaryButton: {
+    alignItems: 'center',
+    backgroundColor: '#3b82f6',
+    borderRadius: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  primaryText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  secondaryButton: {
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderColor: '#3b82f6',
+    borderRadius: 6,
+    borderWidth: 2,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  secondaryText: {
+    color: '#3b82f6',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
