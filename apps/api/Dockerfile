@@ -38,7 +38,10 @@ COPY apps/api ./apps/api
 COPY packages ./packages
 
 # Install all dependencies (needed for building)
-RUN pnpm install --frozen-lockfile --filter @infocus/api
+RUN pnpm install --frozen-lockfile --filter @infocus/api --filter @infocus/shared
+
+# Build shared package
+RUN pnpm run build --filter @infocus/shared
 
 # Generate Prisma client
 RUN cd apps/api && pnpm run prisma:generate
