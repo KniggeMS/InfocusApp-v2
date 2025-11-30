@@ -7,7 +7,7 @@ FROM node:18-alpine AS installer
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm@10.22.0
+RUN npm install -g pnpm@9
 
 # Copy workspace configuration and package files
 COPY pnpm-workspace.yaml ./
@@ -25,7 +25,7 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm@10.22.0
+RUN npm install -g pnpm@9
 
 # Copy workspace files
 COPY pnpm-workspace.yaml ./
@@ -55,7 +55,7 @@ FROM node:18-alpine AS pruner
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm@10.22.0
+RUN npm install -g pnpm@9
 
 # Copy workspace files
 COPY pnpm-workspace.yaml ./
@@ -76,7 +76,7 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Install pnpm for runtime migrations
-RUN npm install -g pnpm@10.22.0
+RUN npm install -g pnpm@9
 
 # Copy pruned dependencies and built code
 COPY --from=pruner /app/node_modules ./node_modules
