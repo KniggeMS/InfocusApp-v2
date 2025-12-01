@@ -97,7 +97,8 @@ export default function ListsPage() {
                     <Button
                         type="submit"
                         disabled={isCreating || !newListName.trim()}
-                        className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/20 border-0"
+                        variant="gradient"
+                        className="w-full sm:w-auto"
                     >
                         {isCreating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
                         Create
