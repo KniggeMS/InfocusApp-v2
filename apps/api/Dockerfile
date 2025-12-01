@@ -69,12 +69,14 @@ COPY --from=builder /app/pnpm-lock.yaml ./
 # We use --prod to only install production dependencies
 RUN pnpm deploy --filter @infocus/api --prod /app/deployed
 
+# Install prisma globally to generate client
+RUN npm install -g prisma
+
+# Generate Prisma client in the deployed app
+RUN cd /app/deployed && prisma generate
+
 # Manually copy the built dist folder
 COPY --from=builder /app/apps/api/dist /app/deployed/dist
-
-# Manually copy the generated Prisma client
-# Try copying from apps/api/node_modules/.prisma as it might be generated there
-COPY --from=builder /app/apps/api/node_modules/.prisma /app/deployed/node_modules/.prisma
 
 # Stage 4: Runtime
 FROM node:18-alpine
