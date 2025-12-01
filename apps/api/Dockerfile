@@ -73,7 +73,8 @@ RUN pnpm deploy --filter @infocus/api --prod /app/deployed
 COPY --from=builder /app/apps/api/dist /app/deployed/dist
 
 # Manually copy the generated Prisma client
-COPY --from=builder /app/node_modules/.prisma /app/deployed/node_modules/.prisma
+# Try copying from apps/api/node_modules/.prisma as it might be generated there
+COPY --from=builder /app/apps/api/node_modules/.prisma /app/deployed/node_modules/.prisma
 
 # Stage 4: Runtime
 FROM node:18-alpine
