@@ -49,44 +49,42 @@ RUN cd apps/api && pnpm run prisma:generate
 # Build the application using the build-focused tsconfig
 RUN pnpm run build --filter @infocus/api
 
-# Stage 3: Production prune
-FROM node:18-alpine AS pruner
+# Stage 3: Deployer
+FROM node:18-alpine AS deployer
 
 WORKDIR /app
 
 # Install pnpm
 RUN npm install -g pnpm@9
 
-# Copy workspace files
-COPY pnpm-workspace.yaml ./
-COPY pnpm-lock.yaml ./
-COPY package.json ./
-
-# Copy built app
+# Copy workspace files from builder
 COPY --from=builder /app/apps ./apps
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/pnpm-workspace.yaml ./
+COPY --from=builder /app/pnpm-lock.yaml ./
 
-# Prune dependencies for production
-RUN pnpm prune --prod --filter @infocus/api
+# Deploy the app to a specific directory
+# We use --prod to only install production dependencies
+RUN pnpm deploy --filter @infocus/api --prod /app/deployed
+
+# Manually copy the built dist folder
+COPY --from=builder /app/apps/api/dist /app/deployed/dist
+
+# Manually copy the generated Prisma client
+COPY --from=builder /app/node_modules/.prisma /app/deployed/node_modules/.prisma
 
 # Stage 4: Runtime
 FROM node:18-alpine
 
 WORKDIR /app
 
-# Install pnpm for runtime migrations
+# Install pnpm
 RUN npm install -g pnpm@9
 
-# Copy pruned dependencies and built code
-COPY --from=pruner /app/node_modules ./node_modules
-COPY --from=pruner /app/apps/api ./apps/api
-COPY --from=pruner /app/packages ./packages
-COPY --from=pruner /app/pnpm-lock.yaml ./
-COPY --from=pruner /app/pnpm-workspace.yaml ./
-COPY --from=pruner /app/package.json ./
-
-WORKDIR /app/apps/api
+# Copy the deployed app
+COPY --from=deployer /app/deployed .
 
 # Expose port
 EXPOSE 3000
