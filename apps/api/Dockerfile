@@ -2,7 +2,7 @@
 # Build from project root: docker build -t infocus-api -f apps/api/Dockerfile .
 
 # Stage 1: Install dependencies
-FROM node:18-alpine AS installer
+FROM node:18-slim AS installer
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ COPY packages/ ./packages/
 RUN pnpm install --frozen-lockfile --filter @infocus/api
 
 # Stage 2: Build
-FROM node:18-alpine AS builder
+FROM node:18-slim AS builder
 
 WORKDIR /app
 
@@ -50,7 +50,7 @@ RUN cd apps/api && pnpm run prisma:generate
 RUN pnpm run build --filter @infocus/api
 
 # Stage 3: Deployer
-FROM node:18-alpine AS deployer
+FROM node:18-slim AS deployer
 
 WORKDIR /app
 
@@ -70,9 +70,11 @@ COPY --from=builder /app/pnpm-lock.yaml ./
 RUN pnpm deploy --filter @infocus/api --prod /app/deployed
 
 # Install prisma globally to generate client (pinned version)
-# Add libc6-compat for Alpine compatibility
+# Install OpenSSL for Debian (slim)
 RUN npm install -g prisma@5.21.1 && \
-  apk add --no-cache openssl libc6-compat
+  apt-get update -y && \
+  apt-get install -y openssl ca-certificates && \
+  rm -rf /var/lib/apt/lists/*
 
 # Generate Prisma client in the deployed app
 RUN cd /app/deployed && prisma generate
@@ -81,13 +83,15 @@ RUN cd /app/deployed && prisma generate
 COPY --from=builder /app/apps/api/dist /app/deployed/dist
 
 # Stage 4: Runtime
-FROM node:18-alpine
+FROM node:18-slim
 
 WORKDIR /app
 
-# Install pnpm and openssl/libc6-compat (needed for Prisma)
+# Install pnpm and openssl (needed for Prisma)
 RUN npm install -g pnpm@9 && \
-  apk add --no-cache openssl libc6-compat
+  apt-get update -y && \
+  apt-get install -y openssl ca-certificates && \
+  rm -rf /var/lib/apt/lists/*
 
 # Copy the deployed app
 COPY --from=deployer /app/deployed .

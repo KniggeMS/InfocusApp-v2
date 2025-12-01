@@ -3,7 +3,7 @@
 
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -29,6 +29,7 @@ model User {
   sessions           Session[]
   refreshTokens      RefreshToken[]
   families           Family[]           @relation("FamilyCreatedBy")
+  customLists        CustomList[]
 
   @@index([email])
 }
@@ -69,6 +70,7 @@ model MediaItem {
   watchlistEntries   WatchlistEntry[]
   recommendations    Recommendation[]
   streamingProviders StreamingProvider[]
+  customListEntries  CustomListEntry[]
 
   @@index([tmdbId])
   @@index([title])
@@ -227,3 +229,36 @@ model StreamingProvider {
   @@index([provider])
 }
 
+
+// Custom List model
+model CustomList {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user  User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CustomListEntry[]
+
+  @@index([userId])
+}
+
+// Entry in a Custom List
+model CustomListEntry {
+  id          String   @id @default(cuid())
+  listId      String
+  mediaItemId String
+  addedAt     DateTime @default(now())
+
+  // Relations
+  list      CustomList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  mediaItem MediaItem  @relation(fields: [mediaItemId], references: [id], onDelete: Cascade)
+
+  @@unique([listId, mediaItemId])
+  @@index([listId])
+  @@index([mediaItemId])
+}

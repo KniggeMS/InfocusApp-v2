@@ -24,11 +24,13 @@ import { aiApi, Recommendation } from '@/lib/api/ai';
 import { useAddToWatchlist, useWatchlist } from '@/lib/hooks/use-watchlist';
 import { toast } from 'react-hot-toast';
 
+import { useLocaleNavigation } from '@/lib/hooks/use-locale';
+
 export function Sidebar() {
     const t = useTranslations('Navigation');
     const pathname = usePathname();
+    const { locale } = useLocaleNavigation();
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const [isAdding, setIsAdding] = useState(false);
 
     // AI Recommendation State
     const { data: watchlist } = useWatchlist();
@@ -43,10 +45,9 @@ export function Sidebar() {
             // Prepare context from watchlist
             const context = watchlist?.map((entry) => ({
                 title: entry.mediaItem.title,
-                year: entry.mediaItem.year,
+                year: entry.mediaItem.releaseDate ? new Date(entry.mediaItem.releaseDate).getFullYear() : undefined,
                 status: entry.status,
                 userRating: entry.rating,
-                isFavorite: entry.isFavorite,
                 userNotes: entry.notes
             })) || [];
 
@@ -84,15 +85,15 @@ export function Sidebar() {
             const { searchApi } = await import('@/lib/api/search');
             const searchResults = await searchApi.search(rec.title);
 
-            const match = searchResults.results.find(
+            const match = searchResults.data.find(
                 r => r.title.toLowerCase() === rec.title.toLowerCase() &&
-                    (rec.year ? r.release_date?.startsWith(rec.year.toString()) : true)
+                    (rec.year ? (r.releaseDate || r.release_date)?.startsWith(rec.year.toString()) : true)
             );
 
             if (match) {
                 await addToWatchlist.mutateAsync({
                     tmdbId: match.id,
-                    mediaType: match.media_type,
+                    mediaType: match.mediaType || match.media_type || 'movie',
                     status: 'not_watched',
                     notes: rec.plot // Add AI reason as note
                 });
@@ -111,10 +112,11 @@ export function Sidebar() {
 
     // Helper for active link styling
     const NavItem = ({ href, icon: Icon, label }: { href: string, icon: any, label: string }) => {
-        const isActive = pathname === href;
+        const localeHref = `/${locale}${href}`;
+        const isActive = pathname === localeHref;
         return (
             <Link
-                href={href}
+                href={localeHref}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
                     ? 'bg-cyan-500/10 text-cyan-400 font-medium'
                     : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
@@ -155,13 +157,14 @@ export function Sidebar() {
                 <NavItem href="/watched" icon={CheckCircle} label={t('seen')} />
                 <NavItem href="/favorites" icon={Heart} label={t('favorites')} />
 
-                {/* Custom Lists Placeholder */}
-                <div className="pt-4 pb-2 px-4 flex items-center justify-between group cursor-pointer">
-                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Custom Lists</span>
-                    <button className="text-slate-500 hover:text-cyan-400 transition-colors">
+                {/* Custom Lists */}
+                <div className="pt-4 pb-2 px-4 flex items-center justify-between group">
+                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Collections</span>
+                    <Link href={`/${locale}/lists`} className="text-slate-500 hover:text-cyan-400 transition-colors">
                         <PlusCircle size={14} />
-                    </button>
+                    </Link>
                 </div>
+                <NavItem href="/lists" icon={List} label="All Lists" />
 
                 {/* Add Button */}
                 <div className="pt-6">

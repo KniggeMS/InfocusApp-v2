@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  X, Film, Clock, MonitorPlay, Heart, Bookmark, Play, ChevronLeft, Layers, Check, PlayCircle, User, ExternalLink, Clapperboard, ImageOff, StickyNote, BrainCircuit, Loader2, Star
+  X, Film, Clock, Check, PlayCircle, ImageOff, StickyNote, BrainCircuit, Loader2, Star, List, Sparkles, Tv
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useUpdateWatchlistEntry, useRemoveFromWatchlist } from '@/lib/hooks/use-watchlist';
 import type { WatchlistEntry } from '@/lib/api/watchlist';
 import { toast } from 'react-hot-toast';
+import { listsApi, CustomList } from '@/lib/api/lists';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w780'; // Higher res for detail
 const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/w1280';
@@ -33,6 +34,32 @@ export function WatchlistDetailDrawer({ isOpen, onClose, entry }: WatchlistDetai
   // AI Analysis State
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // Custom Lists State
+  const [lists, setLists] = useState<CustomList[]>([]);
+  const [showListSelector, setShowListSelector] = useState(false);
+
+  const fetchLists = async () => {
+    try {
+      const data = await listsApi.getLists();
+      setLists(data);
+    } catch (error) {
+      console.error('Failed to fetch lists:', error);
+      toast.error('Failed to load lists');
+    }
+  };
+
+  const handleAddToList = async (listId: string) => {
+    if (!entry) return;
+    try {
+      await listsApi.addItem(listId, entry.mediaItem.id);
+      toast.success('Added to list');
+      setShowListSelector(false);
+    } catch (error) {
+      console.error('Failed to add to list:', error);
+      toast.error('Failed to add to list');
+    }
+  };
 
   useEffect(() => {
     if (entry) {
@@ -215,6 +242,48 @@ export function WatchlistDetailDrawer({ isOpen, onClose, entry }: WatchlistDetai
                       />
                     </button>
                   ))}
+                </div>
+
+                {/* Add to List Button */}
+                <div className="relative">
+                  <button
+                    onClick={() => {
+                      if (!showListSelector) fetchLists();
+                      setShowListSelector(!showListSelector);
+                    }}
+                    className={`p-3 rounded-full transition-all border ${showListSelector ? 'bg-cyan-500 text-white border-cyan-500' : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 border-slate-700'}`}
+                    title="Add to List"
+                  >
+                    <List size={20} />
+                  </button>
+
+                  {/* List Selector Dropdown */}
+                  {showListSelector && (
+                    <div className="absolute bottom-full left-0 mb-2 w-56 bg-slate-900/95 backdrop-blur-xl rounded-xl border border-slate-700/50 shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-2 ring-1 ring-white/10">
+                      <div className="p-3 border-b border-slate-700/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-950/30">
+                        Select List
+                      </div>
+                      <div className="max-h-56 overflow-y-auto custom-scrollbar p-1.5 space-y-0.5">
+                        {lists.length > 0 ? (
+                          lists.map((list) => (
+                            <button
+                              key={list.id}
+                              onClick={() => handleAddToList(list.id)}
+                              className="w-full text-left px-3 py-2.5 text-sm font-medium text-slate-300 hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-blue-500/10 hover:text-cyan-400 rounded-lg transition-all truncate flex items-center gap-2 group"
+                            >
+                              <div className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors" />
+                              {list.name}
+                            </button>
+                          ))
+                        ) : (
+                          <div className="px-3 py-4 text-sm text-slate-500 italic text-center">
+                            No lists found
+                            <div className="text-[10px] mt-1 opacity-60">Create one in "All Lists"</div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <button
