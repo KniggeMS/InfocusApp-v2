@@ -16,6 +16,7 @@
     "@hookform/resolvers": "^3.3.4",
     "@infocus/shared": "workspace:*",
     "@tanstack/react-query": "^5.17.19",
+    "@vercel/speed-insights": "^1.3.0",
     "axios": "^1.6.5",
     "clsx": "^2.1.0",
     "lucide-react": "^0.263.1",
