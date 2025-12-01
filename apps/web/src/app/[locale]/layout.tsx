@@ -5,7 +5,8 @@ import { Inter } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import { QueryProvider } from '@/lib/providers/query-provider';
 import { AuthProvider } from '@/lib/context/auth-context';
-import { Navigation } from '@/components/layout/Navigation';
+import { Sidebar } from '@/components/layout/Sidebar';
+import { MobileHeader } from '@/components/layout/MobileHeader';
 import '../globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -37,8 +38,13 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>
             <AuthProvider>
-              <Navigation />
-              <main className="min-h-screen bg-gray-50">{children}</main>
+              <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col md:flex-row">
+                <Sidebar />
+                <main className="flex-grow p-4 md:p-8 overflow-y-auto h-screen scroll-smooth">
+                  <MobileHeader />
+                  {children}
+                </main>
+              </div>
               <Toaster position="top-right" />
             </AuthProvider>
           </QueryProvider>

@@ -1,28 +1,17 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Save, Trash2 } from 'lucide-react';
-import { Sheet } from '@/components/ui/Sheet';
-import { Button } from '@/components/ui/Button';
-import { Select } from '@/components/ui/Select';
-import { Textarea } from '@/components/ui/Textarea';
-import { RatingInput } from '@/components/ui/RatingInput';
-import { Input } from '@/components/ui/Input';
-import { Card, CardContent } from '@/components/ui/Card';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import {
+  X, Film, Clock, MonitorPlay, Heart, Bookmark, Play, ChevronLeft, Layers, Check, PlayCircle, User, ExternalLink, Clapperboard, ImageOff, StickyNote, BrainCircuit, Loader2, Star
+} from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useUpdateWatchlistEntry, useRemoveFromWatchlist } from '@/lib/hooks/use-watchlist';
-import { toast } from 'react-hot-toast';
 import type { WatchlistEntry } from '@/lib/api/watchlist';
+import { toast } from 'react-hot-toast';
 
-const updateEntrySchema = z.object({
-  status: z.enum(['not_watched', 'watching', 'completed']),
-  rating: z.number().min(1).max(10).optional().or(z.literal('')),
-  notes: z.string().max(1000).optional(),
-  episodesWatched: z.number().min(0).optional(),
-  totalEpisodes: z.number().min(0).optional(),
-});
-
-type UpdateEntryFormData = z.infer<typeof updateEntrySchema>;
+const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w780'; // Higher res for detail
+const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/w1280';
+const LOGO_BASE_URL = 'https://image.tmdb.org/t/p/w300';
 
 export interface WatchlistDetailDrawerProps {
   isOpen: boolean;
@@ -31,237 +20,268 @@ export interface WatchlistDetailDrawerProps {
 }
 
 export function WatchlistDetailDrawer({ isOpen, onClose, entry }: WatchlistDetailDrawerProps) {
-  const [isDeleting, setIsDeleting] = useState(false);
-
+  const t = useTranslations('DetailView'); // Placeholder for translations
   const updateMutation = useUpdateWatchlistEntry();
   const removeMutation = useRemoveFromWatchlist();
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    reset,
-    formState: { errors, isDirty },
-  } = useForm<UpdateEntryFormData>({
-    resolver: zodResolver(updateEntrySchema),
-    defaultValues: {
-      status: entry?.status || 'not_watched',
-      rating: entry?.rating || '',
-      notes: entry?.notes || '',
-      episodesWatched: 0,
-      totalEpisodes: 0,
-    },
-  });
+  const [notes, setNotes] = useState('');
+  const [playingTrailer, setPlayingTrailer] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (entry) {
-      reset({
-        status: entry.status,
-        rating: entry.rating || '',
-        notes: entry.notes || '',
-        episodesWatched: 0,
-        totalEpisodes: 0,
-      });
+      setNotes(entry.notes || '');
+      setImgError(false);
     }
-  }, [entry, reset]);
+  }, [entry]);
 
-  const watchedRating = watch('rating');
-  const episodesWatched = watch('episodesWatched');
-  const totalEpisodes = watch('totalEpisodes');
+  // Auto-save notes logic
+  useEffect(() => {
+    if (entry) {
+      const timeoutId = setTimeout(() => {
+        if (notes !== (entry.notes || '')) {
+          handleUpdate({ notes });
+        }
+      }, 1000); // Save after 1 second of inactivity
+      return () => clearTimeout(timeoutId);
+    }
+  }, [notes, entry]);
 
-  if (!entry) return null;
+  if (!isOpen || !entry) return null;
 
-  const statusOptions = [
-    { value: 'not_watched', label: 'Not Watched' },
-    { value: 'watching', label: 'Currently Watching' },
-    { value: 'completed', label: 'Completed' },
-  ];
+  const item = entry.mediaItem;
+  const backdropUrl = item.backdropPath ? `${BACKDROP_BASE_URL}${item.backdropPath}` : null;
+  const posterUrl = !imgError && item.posterPath ? `${IMAGE_BASE_URL}${item.posterPath}` : null;
 
-  const onSubmit = async (data: UpdateEntryFormData) => {
-    if (!entry) return;
+  // Mock percentage for now as it's not in WatchlistEntry yet, or use rating * 10
+  const percentage = item.rating ? Math.round(item.rating * 10) : 0;
+  const strokeDasharray = `${percentage}, 100`;
 
+  const handleUpdate = async (data: any) => {
     try {
-      const updateData: any = {
-        status: data.status,
-        notes: data.notes || undefined,
-      };
-
-      if (data.rating !== undefined && data.rating !== '') {
-        updateData.rating = data.rating;
-      }
-
-      // For TV shows, include episode progress
-      if (
-        entry.mediaItem.mediaType === 'tv' &&
-        episodesWatched !== undefined &&
-        totalEpisodes !== undefined
-      ) {
-        updateData.notes = data.notes
-          ? `${data.notes}\n\nProgress: ${episodesWatched}/${totalEpisodes} episodes`
-          : `Progress: ${episodesWatched}/${totalEpisodes} episodes`;
-      }
-
       await updateMutation.mutateAsync({
         id: entry.id,
-        data: updateData,
+        data,
       });
-
-      toast.success('Watchlist entry updated successfully!');
-      onClose();
+      // toast.success('Updated'); // Too noisy for auto-save
     } catch (error) {
-      toast.error('Failed to update watchlist entry');
+      toast.error('Failed to update');
     }
   };
 
-  const handleRemove = async () => {
-    if (!entry) return;
+  const handleStatusChange = (status: 'not_watched' | 'watching' | 'completed') => {
+    handleUpdate({ status });
+  };
 
-    const confirmed = window.confirm('Are you sure you want to remove this from your watchlist?');
-    if (!confirmed) return;
+  const handleRatingChange = (rating: number) => {
+    handleUpdate({ rating });
+  };
 
-    setIsDeleting(true);
-    try {
+  const handleDelete = async () => {
+    if (confirm('Remove from watchlist?')) {
       await removeMutation.mutateAsync(entry.id);
-      toast.success('Removed from watchlist');
       onClose();
-    } catch (error) {
-      toast.error('Failed to remove from watchlist');
-    } finally {
-      setIsDeleting(false);
     }
-  };
-
-  const handleRatingChange = (rating: number | undefined) => {
-    setValue('rating', rating || '', { shouldDirty: true });
-  };
+  }
 
   return (
-    <Sheet
-      isOpen={isOpen}
-      onClose={onClose}
-      title={entry.mediaItem.title}
-      description={`Manage your watchlist entry for ${entry.mediaItem.title}`}
-    >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Media Info */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex gap-4">
-              {entry.mediaItem.posterPath && (
-                <img
-                  src={`https://image.tmdb.org/t/p/w154${entry.mediaItem.posterPath}`}
-                  alt={entry.mediaItem.title}
-                  className="w-24 h-36 object-cover rounded"
-                />
-              )}
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 mb-1">{entry.mediaItem.title}</h3>
-                <p className="text-sm text-gray-600 capitalize mb-2">
-                  {entry.mediaItem.mediaType} •{' '}
-                  {new Date(entry.mediaItem.releaseDate || '').getFullYear()}
-                </p>
-                {entry.mediaItem.description && (
-                  <p className="text-sm text-gray-600 line-clamp-3">
-                    {entry.mediaItem.description}
-                  </p>
-                )}
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-0 md:p-4 bg-slate-900/90 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="bg-slate-900 w-full max-w-5xl md:rounded-2xl shadow-2xl flex flex-col h-full md:h-auto md:max-h-[95vh] overflow-hidden relative border border-slate-800">
 
-                {/* Streaming Providers */}
-                {entry.mediaItem.streamingProviders &&
-                  entry.mediaItem.streamingProviders.length > 0 && (
-                    <div className="mt-3">
-                      <p className="text-xs font-medium text-gray-700 mb-1">Available on:</p>
-                      <div className="flex flex-wrap gap-1">
-                        {entry.mediaItem.streamingProviders.map((provider) => (
-                          <span
-                            key={provider.id}
-                            className="inline-block px-2 py-1 text-xs bg-blue-50 text-blue-700 rounded"
-                          >
-                            {provider.provider}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+        <div className="absolute top-4 right-4 z-50 flex gap-2">
+          <button onClick={onClose} className="p-2 bg-black/40 hover:bg-black/60 text-white rounded-full backdrop-blur-sm transition-colors">
+            <X size={24} />
+          </button>
+        </div>
+
+        <div className="relative w-full h-[40vh] md:h-[500px] flex-shrink-0 bg-slate-950 overflow-hidden group">
+          {/* Static Backdrop Image */}
+          {backdropUrl ? (
+            <img
+              src={backdropUrl}
+              alt="Backdrop"
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0 pointer-events-none opacity-60`}
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800 z-0"></div>
+          )}
+
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/70 to-transparent z-10 pointer-events-none"></div>
+
+          <div className="absolute bottom-0 left-0 w-full p-6 md:p-10 flex flex-col md:flex-row gap-8 md:items-end z-20">
+            <div className="hidden md:block w-56 rounded-lg overflow-hidden shadow-2xl border-2 border-slate-700/50 flex-shrink-0 relative transform transition-transform group-hover:scale-[1.02] bg-slate-800 aspect-[2/3]">
+              {posterUrl ? (
+                <img
+                  src={posterUrl}
+                  alt={item.title}
+                  className="w-full h-full object-cover"
+                  onError={() => setImgError(true)}
+                />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center bg-slate-800 text-slate-600 gap-2">
+                  <ImageOff size={48} className="opacity-40 mb-2" />
+                  <span className="text-xs font-medium uppercase tracking-wider opacity-60">No Poster</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex-grow min-w-0 pb-2">
+              <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-2 leading-tight drop-shadow-lg text-balance">
+                {item.title} <span className="text-slate-400 font-light text-2xl">({item.releaseDate ? new Date(item.releaseDate).getFullYear() : 'N/A'})</span>
+              </h1>
+
+              <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-300 mb-6">
+                {item.mediaType === 'movie' ? <Film size={16} /> : <Tv size={16} />}
+                <span>{item.genres?.join(', ')}</span>
+              </div>
+
+              {/* Rating Section */}
+              <div className="flex flex-wrap items-center gap-y-4 gap-x-6 mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-14 h-14 flex items-center justify-center bg-slate-900/80 rounded-full border-2 border-slate-800 shadow-lg flex-shrink-0">
+                    <svg viewBox="0 0 36 36" className="w-12 h-12 transform -rotate-90">
+                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#1e293b" strokeWidth="3" />
+                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={percentage > 70 ? '#22c55e' : percentage > 40 ? '#eab308' : '#ef4444'} strokeWidth="3" strokeDasharray={strokeDasharray} />
+                    </svg>
+                    <span className="absolute text-xs font-bold text-white">{percentage}<span className="text-[9px]">%</span></span>
+                  </div>
+                  <span className="font-bold text-white leading-tight text-sm drop-shadow-md whitespace-nowrap">TMDB Rating</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex bg-slate-800/80 rounded-full p-1 border border-slate-700 backdrop-blur-md">
+                  <button
+                    onClick={() => handleStatusChange('not_watched')}
+                    className={`p-2.5 rounded-full transition-all ${entry.status === 'not_watched' ? 'bg-yellow-500 text-slate-900 shadow-sm' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}
+                    title="Planned"
+                  >
+                    <Clock size={18} />
+                  </button>
+                  <button
+                    onClick={() => handleStatusChange('watching')}
+                    className={`p-2.5 rounded-full transition-all ${entry.status === 'watching' ? 'bg-blue-500 text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}
+                    title="Watching"
+                  >
+                    <PlayCircle size={18} />
+                  </button>
+                  <button
+                    onClick={() => handleStatusChange('completed')}
+                    className={`p-2.5 rounded-full transition-all ${entry.status === 'completed' ? 'bg-green-500 text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}
+                    title="Seen"
+                  >
+                    <Check size={18} />
+                  </button>
+                </div>
+
+                {/* User Rating */}
+                <div className="flex items-center gap-1 bg-slate-800/80 rounded-full px-3 py-2 border border-slate-700">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => handleRatingChange(star)}
+                      className="text-slate-400 hover:text-yellow-400 hover:scale-110 transition-transform"
+                    >
+                      <Star
+                        size={16}
+                        className={(entry.rating || 0) >= star ? 'fill-yellow-500 text-yellow-500' : ''}
+                      />
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleDelete}
+                  className="p-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-full transition-all border border-red-500/20"
+                  title="Remove"
+                >
+                  <X size={20} />
+                </button>
               </div>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Status */}
-        <Select
-          label="Status"
-          {...register('status')}
-          options={statusOptions}
-          error={errors.status?.message}
-        />
-
-        {/* Rating */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Rating (Optional)</label>
-          <RatingInput
-            value={watchedRating ? Number(watchedRating) : undefined}
-            onChange={handleRatingChange}
-            max={10}
-          />
-        </div>
-
-        {/* Episode Progress (TV shows only) */}
-        {entry.mediaItem.mediaType === 'tv' && (
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              label="Episodes Watched"
-              type="number"
-              min="0"
-              {...register('episodesWatched', { valueAsNumber: true })}
-              error={errors.episodesWatched?.message}
-            />
-            <Input
-              label="Total Episodes"
-              type="number"
-              min="0"
-              {...register('totalEpisodes', { valueAsNumber: true })}
-              error={errors.totalEpisodes?.message}
-            />
           </div>
-        )}
-
-        {/* Notes */}
-        <Textarea
-          label="Notes (Optional)"
-          placeholder="Add your thoughts, reactions, or reminders..."
-          {...register('notes')}
-          error={errors.notes?.message}
-        />
-
-        {/* Actions */}
-        <div className="flex gap-3 pt-4 border-t border-gray-200">
-          <Button
-            type="submit"
-            disabled={!isDirty || updateMutation.isPending}
-            isLoading={updateMutation.isPending}
-            className="flex-1"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            Save Changes
-          </Button>
-
-          <Button type="button" variant="outline" onClick={onClose} className="flex-1">
-            Cancel
-          </Button>
-
-          <Button
-            type="button"
-            variant="danger"
-            onClick={handleRemove}
-            disabled={isDeleting || removeMutation.isPending}
-            isLoading={isDeleting || removeMutation.isPending}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
         </div>
-      </form>
-    </Sheet>
+
+        <div className="flex-grow bg-slate-900 p-6 md:p-10 overflow-y-auto custom-scrollbar z-20">
+          <div className="grid md:grid-cols-3 gap-10">
+            <div className="md:col-span-2 space-y-8">
+
+              <div>
+                <h4 className="text-lg font-bold text-white mb-3">Plot</h4>
+                <p className="text-slate-300 leading-relaxed text-lg">
+                  {item.description || 'No description available.'}
+                </p>
+              </div>
+
+              {/* Private Notes Section */}
+              <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700/50">
+                <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                  <StickyNote size={16} className="text-yellow-400" /> Private Notes
+                </h4>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-slate-300 text-sm focus:border-cyan-500 focus:outline-none min-h-[100px] resize-y"
+                  placeholder="Add your thoughts..."
+                />
+                <div className="flex justify-end mt-2">
+                  <span className="text-[10px] text-slate-500">
+                    {notes === (entry.notes || '') ? 'Saved' : 'Saving...'}
+                  </span>
+                </div>
+              </div>
+
+              {item.creators && item.creators.length > 0 && (
+                <div className="grid grid-cols-2 gap-4 border-t border-slate-800 pt-6">
+                  {item.creators.map(creator => (
+                    <div key={creator}>
+                      <div className="font-bold text-white text-base">{creator}</div>
+                      <div className="text-slate-500 text-xs uppercase tracking-wide">Creator</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-8">
+              {item.streamingProviders && item.streamingProviders.length > 0 ? (
+                <div className="bg-gradient-to-br from-slate-800 to-slate-800/50 p-5 rounded-xl border border-slate-700 shadow-xl">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div>
+                      <div className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-0.5">Available on</div>
+                      <div className="text-white font-bold text-base">Watch Now</div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-4 pt-4 border-t border-slate-700/50 flex-wrap">
+                    {item.streamingProviders.map(p => (
+                      <div key={p.id} className="bg-slate-700 px-2 py-1 rounded text-xs text-white">
+                        {p.provider}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="p-5 rounded-xl border border-dashed border-slate-700 text-slate-500 text-sm text-center">
+                  No streaming info available
+                </div>
+              )}
+
+              <div className="space-y-4 text-sm bg-slate-800/30 p-5 rounded-xl border border-slate-800">
+                <div className="flex justify-between border-b border-slate-800 pb-3">
+                  <span className="text-slate-500 font-medium">Original Title</span>
+                  <span className="text-slate-300 text-right font-semibold">{item.title}</span>
+                </div>
+                <div className="flex justify-between border-b border-slate-800 pb-3">
+                  <span className="text-slate-500 font-medium">Type</span>
+                  <span className="text-slate-300 font-semibold capitalize">{item.mediaType}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
