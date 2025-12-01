@@ -13,6 +13,8 @@ const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w780'; // Higher res for deta
 const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/w1280';
 const LOGO_BASE_URL = 'https://image.tmdb.org/t/p/w300';
 
+import { aiApi } from '@/lib/api/ai';
+
 export interface WatchlistDetailDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -28,12 +30,35 @@ export function WatchlistDetailDrawer({ isOpen, onClose, entry }: WatchlistDetai
   const [playingTrailer, setPlayingTrailer] = useState(false);
   const [imgError, setImgError] = useState(false);
 
+  // AI Analysis State
+  const [analysis, setAnalysis] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
   useEffect(() => {
     if (entry) {
       setNotes(entry.notes || '');
       setImgError(false);
+      setAnalysis(null); // Reset analysis on entry change
     }
   }, [entry]);
+
+  const handleAnalyze = async () => {
+    if (!entry) return;
+    setIsAnalyzing(true);
+    try {
+      const result = await aiApi.analyzeContent(
+        entry.mediaItem.title,
+        entry.mediaItem.description || '',
+        notes
+      );
+      setAnalysis(result.analysis);
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      toast.error('Analysis failed');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   // Auto-save notes logic
   useEffect(() => {
@@ -231,6 +256,35 @@ export function WatchlistDetailDrawer({ isOpen, onClose, entry }: WatchlistDetai
                     {notes === (entry.notes || '') ? 'Saved' : 'Saving...'}
                   </span>
                 </div>
+              </div>
+
+              {/* AI Deep Insights */}
+              <div className="bg-gradient-to-br from-indigo-900/20 to-purple-900/20 p-6 rounded-xl border border-indigo-500/30">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-bold text-indigo-200 flex items-center gap-2">
+                    <BrainCircuit size={16} className="text-indigo-400" /> Deep Insights
+                  </h4>
+                  <button
+                    onClick={handleAnalyze}
+                    disabled={isAnalyzing}
+                    className="text-xs bg-indigo-500/20 hover:bg-indigo-500/40 text-indigo-300 px-3 py-1.5 rounded-full transition-colors flex items-center gap-2"
+                  >
+                    {isAnalyzing ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+                    {analysis ? 'Re-Analyze' : 'Analyze Vibe'}
+                  </button>
+                </div>
+
+                {analysis ? (
+                  <div className="animate-in fade-in slide-in-from-bottom-2">
+                    <p className="text-indigo-100/80 text-sm leading-relaxed italic">
+                      "{analysis}"
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-indigo-300/40 text-xs text-center py-2">
+                    Get a vibe check based on the plot and your notes.
+                  </p>
+                )}
               </div>
 
               {item.creators && item.creators.length > 0 && (
