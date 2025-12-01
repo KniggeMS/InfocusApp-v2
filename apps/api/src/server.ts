@@ -6,6 +6,7 @@ import { watchlistRouter } from './routes/watchlist';
 import { searchRouter } from './routes/search';
 import { familyRouter } from './routes/family';
 import { aiRouter } from './routes/ai';
+import { userRouter } from './routes/user';
 import { errorHandler } from './middleware/errorHandler';
 
 const app: Express = express();
@@ -33,6 +34,7 @@ app.use('/watchlist', watchlistRouter);
 app.use('/search', searchRouter);
 app.use('/family', familyRouter);
 app.use('/ai', aiRouter);
+app.use('/user', userRouter);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);

@@ -16,6 +16,7 @@ export interface User {
   email: string;
   name?: string;
   displayName?: string;
+  avatar?: string | null;
   createdAt?: string;
 }
 
@@ -48,5 +49,14 @@ export const authApi = {
     const response = await apiClient.get('/auth/me');
     // Backend returns user directly in data or wrapped in user property
     return response.data?.user || response.data;
+  },
+
+  async updateProfile(data: { name?: string; avatar?: string | null }): Promise<User> {
+    const response = await apiClient.put('/user', data);
+    return response.data.user;
+  },
+
+  async changePassword(data: { currentPassword: string; newPassword: string }): Promise<void> {
+    await apiClient.post('/user/change-password', data);
   },
 };
