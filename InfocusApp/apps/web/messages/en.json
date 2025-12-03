@@ -6,7 +6,8 @@
         "delete": "Delete",
         "edit": "Edit",
         "back": "Back",
-        "family": "Family"
+        "family": "Family",
+        "watchlist": "Watchlist"
     },
     "Navigation": {
         "home": "Home",
