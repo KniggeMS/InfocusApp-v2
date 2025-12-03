@@ -1,5 +1,6 @@
 import { Tv, Film, Clock, CheckCircle2, PlaySquare, MoreVertical, PlusCircle, Heart, Bookmark, Star } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { API_URL } from "@/config";
 
 interface MediaItem {
     id: string;
@@ -65,7 +66,7 @@ export function MediaCard({ item, onClick }: { item: MediaItem; onClick?: () => 
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        fetch("http://localhost:3001/api/lists", {
+        fetch(`${API_URL}/api/lists`, {
             headers: { "Authorization": `Bearer ${token}` }
         })
             .then(res => res.json())
@@ -81,7 +82,7 @@ export function MediaCard({ item, onClick }: { item: MediaItem; onClick?: () => 
             const token = localStorage.getItem("token");
             if (!token) return;
 
-            await fetch(`http://localhost:3001/api/media/${item.id}`, {
+            await fetch(`${API_URL}/api/media/${item.id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -103,7 +104,7 @@ export function MediaCard({ item, onClick }: { item: MediaItem; onClick?: () => 
             const token = localStorage.getItem("token");
             if (!token) return;
 
-            await fetch(`http://localhost:3001/api/lists/${listId}/items`, {
+            await fetch(`${API_URL}/api/lists/${listId}/items`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

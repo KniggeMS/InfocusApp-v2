@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Upload, Sparkles, Save, Lock } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { API_URL } from "@/config";
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -30,7 +31,7 @@ export default function ProfilePage() {
             }
 
             try {
-                const res = await fetch("http://localhost:3001/api/auth/me", {
+                const res = await fetch(`${API_URL}/api/auth/me`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -55,7 +56,7 @@ export default function ProfilePage() {
 
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:3001/api/auth/generate-avatar", {
+            const res = await fetch(`${API_URL}/api/auth/generate-avatar`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -89,7 +90,7 @@ export default function ProfilePage() {
 
         try {
             // 1. Upload File
-            const uploadRes = await fetch("http://localhost:3001/api/upload", {
+            const uploadRes = await fetch(`${API_URL}/api/upload`, {
                 method: "POST",
                 body: formData
             });
@@ -99,7 +100,7 @@ export default function ProfilePage() {
 
             // 2. Update Profile
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:3001/api/auth/me", {
+            const res = await fetch(`${API_URL}/api/auth/me`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -132,7 +133,7 @@ export default function ProfilePage() {
         setUpdating(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:3001/api/auth/change-password", {
+            const res = await fetch(`${API_URL}/api/auth/change-password`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

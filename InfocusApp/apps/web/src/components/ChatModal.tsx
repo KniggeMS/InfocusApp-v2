@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { X, Send, Bot, User } from "lucide-react";
+import { API_URL } from "@/config";
 
 interface ChatModalProps {
     isOpen: boolean;
@@ -39,7 +40,7 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
 
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:3001/api/ai/chat", {
+            const res = await fetch(`${API_URL}/api/ai/chat`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

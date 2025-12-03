@@ -35,7 +35,7 @@ export function Sidebar() {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        fetch("http://localhost:3001/api/lists", {
+        fetch(`${API_URL}/api/lists`, {
             headers: { "Authorization": `Bearer ${token}` }
         })
             .then(res => {
@@ -104,7 +104,7 @@ export function Sidebar() {
         setIsRecLoading(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:3001/api/ai/recommendations", {
+            const res = await fetch(`${API_URL}/api/ai/recommendations`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
 
@@ -264,7 +264,7 @@ export function Sidebar() {
                                                     if (name) {
                                                         try {
                                                             const token = localStorage.getItem("token");
-                                                            await fetch("http://localhost:3001/api/lists", {
+                                                            await fetch(`${API_URL}/api/lists`, {
                                                                 method: "POST",
                                                                 headers: {
                                                                     "Content-Type": "application/json",

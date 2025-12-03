@@ -65,7 +65,7 @@ export function SettingsPanel({ isOpen, onClose, user, onLogout }: SettingsPanel
         let successCount = 0;
         for (const item of results) {
             try {
-                await fetch("http://localhost:3001/api/media", {
+                await fetch(`${API_URL}/api/media`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

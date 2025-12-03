@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ChatModal } from "@/components/ChatModal";
+import { API_URL } from "@/config";
 
 export default function Home() {
     const searchParams = useSearchParams();
@@ -23,7 +24,7 @@ export default function Home() {
             const token = localStorage.getItem("token");
             if (!token) return;
 
-            let url = "http://localhost:3001/api/media";
+            let url = `${API_URL}/api/media`;
             const params = new URLSearchParams();
             if (status) params.append("status", status);
             if (isFavorite) params.append("favorite", "true");

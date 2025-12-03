@@ -4,6 +4,7 @@ import { X, Calendar, Star, Clock, Trash2, Check, PlaySquare, Tv, CheckCircle2, 
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { API_URL } from "@/config";
 
 interface MediaDetailModalProps {
     isOpen: boolean;
@@ -46,7 +47,7 @@ export function MediaDetailModal({ isOpen, onClose, item }: MediaDetailModalProp
             const token = localStorage.getItem("token");
             if (!token) return;
 
-            fetch("http://localhost:3001/api/lists", {
+            fetch(`${API_URL}/api/lists`, {
                 headers: { "Authorization": `Bearer ${token}` }
             })
                 .then(res => res.json())
@@ -60,7 +61,7 @@ export function MediaDetailModal({ isOpen, onClose, item }: MediaDetailModalProp
     useEffect(() => {
         if (isOpen && item.tmdbId) {
             setLoading(true);
-            fetch(`http://localhost:3001/api/tmdb/${item.type.toLowerCase()}/${item.tmdbId}`)
+            fetch(`${API_URL}/api/tmdb/${item.type.toLowerCase()}/${item.tmdbId}`)
                 .then((res) => res.json())
                 .then((data) => setDetails(data))
                 .catch((err) => console.error("Failed to load details", err))
@@ -76,7 +77,7 @@ export function MediaDetailModal({ isOpen, onClose, item }: MediaDetailModalProp
             const token = localStorage.getItem("token");
             if (!token) return;
 
-            await fetch(`http://localhost:3001/api/media/${item.id}`, {
+            await fetch(`${API_URL}/api/media/${item.id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -101,7 +102,7 @@ export function MediaDetailModal({ isOpen, onClose, item }: MediaDetailModalProp
             const token = localStorage.getItem("token");
             if (!token) return;
 
-            await fetch(`http://localhost:3001/api/media/${item.id}`, {
+            await fetch(`${API_URL}/api/media/${item.id}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -121,7 +122,7 @@ export function MediaDetailModal({ isOpen, onClose, item }: MediaDetailModalProp
             const token = localStorage.getItem("token");
             if (!token) return;
 
-            await fetch(`http://localhost:3001/api/lists/${listId}/items`, {
+            await fetch(`${API_URL}/api/lists/${listId}/items`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

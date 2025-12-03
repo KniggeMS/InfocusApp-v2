@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { X, Search, Plus, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { API_URL } from "@/config";
 
 interface SearchModalProps {
     isOpen: boolean;
@@ -49,7 +49,7 @@ export function SearchModal({ isOpen, onClose, initialQuery = "" }: SearchModalP
 
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost:3001/api/search?q=${encodeURIComponent(q)}`);
+            const res = await fetch(`${API_URL}/api/search?q=${encodeURIComponent(q)}`);
             const data = await res.json();
             setResults(data.results || []);
         } catch (error) {
@@ -68,7 +68,7 @@ export function SearchModal({ isOpen, onClose, initialQuery = "" }: SearchModalP
                 return;
             }
 
-            const res = await fetch("http://localhost:3001/api/media", {
+            const res = await fetch(`${API_URL}/api/media`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

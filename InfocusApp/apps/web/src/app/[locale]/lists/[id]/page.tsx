@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Film, Trash2 } from "lucide-react";
 import { MediaCard } from "@/components/MediaCard";
+import { API_URL } from "@/config";
 import { MediaDetailModal } from "@/components/MediaDetailModal";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -16,7 +17,7 @@ export default function ListPage({ params }: { params: { id: string } }) {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        fetch(`http://localhost:3001/api/lists/${params.id}`, {
+        fetch(`${API_URL}/api/lists/${params.id}`, {
             headers: { "Authorization": `Bearer ${token}` }
         })
             .then(res => {
@@ -33,7 +34,7 @@ export default function ListPage({ params }: { params: { id: string } }) {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        await fetch(`http://localhost:3001/api/lists/${params.id}`, {
+        await fetch(`${API_URL}/api/lists/${params.id}`, {
             method: "DELETE",
             headers: { "Authorization": `Bearer ${token}` }
         });
