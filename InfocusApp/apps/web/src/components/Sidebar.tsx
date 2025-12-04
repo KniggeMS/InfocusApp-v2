@@ -209,7 +209,7 @@ export function Sidebar() {
                                         }`}
                                 >
                                     <PlaySquare className={`w-5 h-5 ${isActive("PLANNED") ? "text-cyan-400" : "group-hover:text-cyan-400"} transition-colors`} />
-                                    <span>Geplant</span>
+                                    <span>{t('planned')}</span>
                                 </Link>
                                 <Link
                                     href="/?status=WATCHING"
@@ -217,7 +217,7 @@ export function Sidebar() {
                                         }`}
                                 >
                                     <Tv className={`w-5 h-5 ${isActive("WATCHING") ? "text-cyan-400" : "group-hover:text-cyan-400"} transition-colors`} />
-                                    <span>Dabei</span>
+                                    <span>{t('watching')}</span>
                                 </Link>
                                 <Link
                                     href="/?status=WATCHED"
@@ -225,7 +225,7 @@ export function Sidebar() {
                                         }`}
                                 >
                                     <CheckCircle2 className={`w-5 h-5 ${isActive("WATCHED") ? "text-cyan-400" : "group-hover:text-cyan-400"} transition-colors`} />
-                                    <span>Gesehen</span>
+                                    <span>{t('seen')}</span>
                                 </Link>
                                 <Link
                                     href="/?favorite=true"
@@ -233,7 +233,7 @@ export function Sidebar() {
                                         }`}
                                 >
                                     <Heart className={`w-5 h-5 ${isActive(undefined, true) ? "text-pink-500" : "group-hover:text-pink-500"} transition-colors`} />
-                                    <span>Favoriten</span>
+                                    <span>{t('favorites')}</span>
                                 </Link>
                             </div>
                         </div>
@@ -334,9 +334,9 @@ export function Sidebar() {
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-2 text-purple-400">
                                     <Sparkles className="w-4 h-4" />
-                                    <span className="text-xs font-bold uppercase tracking-wider">AI Tipp</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider">{t('ai_tip')}</span>
                                 </div>
-                                <span className="px-1.5 py-0.5 bg-purple-500/20 text-purple-300 text-[10px] font-bold rounded uppercase">Neu</span>
+                                <span className="px-1.5 py-0.5 bg-purple-500/20 text-purple-300 text-[10px] font-bold rounded uppercase">{t('new_rec')}</span>
                             </div>
                             <p className="text-sm text-slate-300 font-medium leading-snug">
                                 Füge etwas hinzu!

@@ -9,12 +9,22 @@
         "family": "Family",
         "watchlist": "Watchlist"
     },
+    "common": {
+        "family": "Family",
+        "watchlist": "Watchlist"
+    },
     "Navigation": {
         "home": "Home",
         "lists": "Lists",
         "profile": "Profile",
         "login": "Login",
-        "logout": "Logout"
+        "logout": "Logout",
+        "planned": "Planned",
+        "watching": "Watching",
+        "seen": "Watched",
+        "favorites": "Favorites",
+        "ai_tip": "AI Tip",
+        "new_rec": "New"
     },
     "Profile": {
         "title": "My Profile",
