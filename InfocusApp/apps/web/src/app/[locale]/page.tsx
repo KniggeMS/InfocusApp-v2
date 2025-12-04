@@ -1,5 +1,5 @@
 "use client";
-// Force update
+
 
 import { ArrowUpDown, Film, MessageCircle } from "lucide-react";
 import { MediaCard } from "@/components/MediaCard";
